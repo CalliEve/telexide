@@ -1,0 +1,8 @@
+imports_layout = "HorizontalVertical"
+match_block_trailing_comma = true
+merge_imports = true
+struct_lit_single_line = false
+use_field_init_shorthand = true
+use_try_shorthand = true
+wrap_comments = true
+combine_control_expr = false
