@@ -1,5 +1,5 @@
 [package]
-name = "telegram-botoxide"
+name = "telexide"
 version = "0.1.0"
 authors = ["Callidus <callidusumbra@gmail.com>"]
 edition = "2018"

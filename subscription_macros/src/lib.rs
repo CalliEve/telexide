@@ -42,9 +42,9 @@ pub fn command(attr: TokenStream, item: TokenStream) -> TokenStream {
     let command_cooked = command_fun.cooked.clone();
     let options_cooked = command_cooked.clone();
 
-    let command_struct_path = quote!(telegram_botoxide::raw_cmd::RawTelegramCommand);
-    let options_struct_path = quote!(telegram_botoxide::framework::types::CommandOptions);
-    let default_command_type_path = quote!(telegram_botoxide::raw_cmd::RawCommandTypes::Default);
+    let command_struct_path = quote!(telexide::raw_cmd::RawTelegramCommand);
+    let options_struct_path = quote!(telexide::framework::types::CommandOptions);
+    let default_command_type_path = quote!(telexide::raw_cmd::RawCommandTypes::Default);
 
     (quote!{
         #(#options_cooked)*

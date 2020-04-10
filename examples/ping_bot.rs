@@ -1,6 +1,6 @@
 #![allow(where_clauses_object_safety)]
 use std::env;
-use telegram_botoxide::{api::types::{SendMessage, UpdateType}, prelude::*};
+use telexide::{api::types::{SendMessage, UpdateType}, prelude::*};
 
 #[command(description = "just a ping-pong command")]
 async fn ping(context: Context, message: Message) {
@@ -16,7 +16,7 @@ async fn ping(context: Context, message: Message) {
 }
 
 #[tokio::main]
-async fn main() -> telegram_botoxide::Result<()> {
+async fn main() -> telexide::Result<()> {
     let token = env::var("BOT_TOKEN").expect("no token environment variable set");
     let bot_name = env::var("BOT_NAME").expect("no bot name env variable set");
 

@@ -1,7 +1,7 @@
 use super::{api::API, endpoints::APIEndpoint, response::Response};
 use crate::utils::result::{Result, TelegramError};
 use async_trait::async_trait;
-use hyper::{body::HttpBody, client::HttpConnector, Body, Client, Method, Request, StatusCode};
+use hyper::{body::HttpBody, client::HttpConnector, Body, Client, Method, Request};
 use std::io::Write;
 
 static TELEGRAM_API: &'static str = "https://api.telegram.org/bot";
