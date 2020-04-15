@@ -245,7 +245,8 @@ pub trait API {
                 _ => {}
             }
         }
-        files.dedup_by_key(|f| f.file_name.clone());
+        files.dedup_by(|f1, f2| f1 == f2);
+        println!("{}", files.len());
 
         self.
             post_file(

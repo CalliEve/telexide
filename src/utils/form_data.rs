@@ -116,7 +116,7 @@ impl AsFormData for Value {
                     FormDataFile {
                         name: key,
                         file_name: None,
-                        media_type,
+                        media_type: None,
                         bytes: serde_json::to_string(&value)?.trim_matches('"').as_bytes().to_vec()
                     }
                 )
