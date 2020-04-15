@@ -11,7 +11,7 @@ use super::{
 };
 use serde::{Deserialize, Deserializer, Serialize, Serializer};
 
-#[derive(Serialize, Deserialize, Debug, Clone, PartialEq, PartialOrd)]
+#[derive(Serialize, Deserialize, Debug, Clone, PartialEq)]
 pub struct RawUpdate {
     pub update_id: i64,
     pub message: Option<RawMessage>,
@@ -27,13 +27,14 @@ pub struct RawUpdate {
     pub poll_answer: Option<PollAnswer>,
 }
 
-#[derive(Debug, Clone, PartialEq, PartialOrd)]
+#[derive(Debug, Clone, PartialEq)]
 pub struct Update {
     pub update_id: i64,
     pub content: UpdateContent,
 }
 
-#[derive(Debug, Clone, PartialEq, PartialOrd)]
+#[allow(clippy::large_enum_variant)]
+#[derive(Debug, Clone, PartialEq)]
 pub enum UpdateContent {
     Message(Message),
     EditedMessage(Message),
@@ -53,10 +54,10 @@ impl From<RawUpdate> for Update {
     fn from(raw: RawUpdate) -> Update {
         let update_id = raw.update_id;
         let make_update = |content: UpdateContent| {
-            return Self {
+            Self {
                 update_id,
                 content,
-            };
+            }
         };
 
         macro_rules! set_content {

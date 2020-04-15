@@ -10,18 +10,23 @@ use parking_lot::RwLock;
 use std::sync::Arc;
 use typemap::ShareMap;
 
+/// The main object to manage your interaction with telegram
 #[derive(Clone)]
 pub struct Client {
-    pub(super) api_client: Arc<Box<APIConnector>>,
+    /// The API client, it contains all the methods to talk to the telegram api
+    pub api_client: Arc<Box<APIConnector>>,
+    /// Your custom data that you want to be shared amongst event handlers and commands
     pub data: Arc<RwLock<ShareMap>>,
     pub(super) event_handlers: Vec<EventHandler>,
     pub(super) raw_event_handlers: Vec<RawEventHandler>,
     pub(super) framework: Option<Arc<Framework>>,
+    /// The update types that you want to receive
     pub allowed_updates: Vec<UpdateType>
 }
 
 impl Client {
-    pub fn new_default_without_framework(token: String) -> Self {
+    /// Creates a Client object with default values and no framework
+    pub fn new(token: String) -> Self {
         Self {
             api_client: Arc::new(Box::new(APIClient::new(None, token))),
             event_handlers: Vec::new(),
@@ -32,7 +37,8 @@ impl Client {
         }
     }
 
-    pub fn new_default(fr: Arc<Framework>, token: String) -> Self {
+    /// Creates a Client object with default values, but with a framework
+    pub fn with_framework(fr: Arc<Framework>, token: String) -> Self {
         Self {
             api_client: Arc::new(Box::new(APIClient::new(None, token))),
             event_handlers: Vec::new(),
@@ -43,6 +49,9 @@ impl Client {
         }
     }
 
+    /// Starts the client and blocks until an error happens in the updates stream or the program exits (for example due to a panic).
+    /// If using the framework, it will update your commands in telegram
+    /// This uses a default UpdatesStream object
     pub async fn start(&self) -> Result<()> {
         if let Some(fr) = self.framework.clone() {
             self.api_client
@@ -65,6 +74,9 @@ impl Client {
         Ok(())
     }
 
+    /// Starts the client and blocks until an error happens in the updates stream or the program exits (for example due to a panic).
+    /// If using the framework, it will update your commands in telegram
+    /// You have to provide your own UpdatesStream object
     pub async fn start_with_stream(&self, stream: &mut UpdatesStream) -> Result<()> {
         if let Some(fr) = self.framework.clone() {
             self.api_client
@@ -84,18 +96,22 @@ impl Client {
         Ok(())
     }
 
+    /// Subscribes an update event handler to the client and will be ran when a new update is received
     pub fn subscribe_handler(&mut self, handler: EventHandlerFunc)
     {
         self.event_handlers
             .push(EventHandler::new(handler));
     }
 
-    pub fn subscribe_raw_handler(&mut self, handler: RawEventHandlerFunc)
-    {
-        self.raw_event_handlers
-            .push(RawEventHandler::new(handler));
-    }
+//    /// Subscribes a raw update event handler to the client and will be ran when a new update is received
+//    pub fn subscribe_raw_handler(&mut self, handler: RawEventHandlerFunc)
+//    {
+//        self.raw_event_handlers
+//            .push(RawEventHandler::new(handler));
+//    }
 
+    /// for testing purposes
+    #[doc(hidden)]
     pub fn fire_handlers(&self, update: Update) {
         for h in self.event_handlers.clone() {
             let ctx = Context::new(self.api_client.clone(), self.data.clone());

@@ -1,7 +1,7 @@
 use super::PhotoSize;
 use serde::{Deserialize, Serialize};
 
-#[derive(Serialize, Deserialize, Debug, Clone, PartialEq, PartialOrd)]
+#[derive(Serialize, Deserialize, Debug, Clone, PartialEq)]
 pub struct Sticker {
     pub file_id: String,
     pub file_unique_id: String,
@@ -16,7 +16,7 @@ pub struct Sticker {
     pub file_size: Option<usize>,
 }
 
-#[derive(Serialize, Deserialize, Debug, Clone, PartialEq, PartialOrd)]
+#[derive(Serialize, Deserialize, Debug, Clone, PartialEq)]
 pub struct StickerSet {
     pub name: String,
     pub title: String,
@@ -26,7 +26,7 @@ pub struct StickerSet {
     pub thumb: Option<PhotoSize>,
 }
 
-#[derive(Serialize, Deserialize, Debug, Clone, PartialEq, PartialOrd)]
+#[derive(Serialize, Deserialize, Debug, Clone, PartialEq)]
 pub struct MaskPosition {
     pub point: MaskPoint,
     pub x_shift: f64,
@@ -34,7 +34,7 @@ pub struct MaskPosition {
     pub scale: f64,
 }
 
-#[derive(Serialize, Deserialize, Debug, Clone, PartialEq, PartialOrd)]
+#[derive(Serialize, Deserialize, Debug, Clone, PartialEq)]
 pub enum MaskPoint {
     #[serde(rename = "forehead")]
     Forehead,

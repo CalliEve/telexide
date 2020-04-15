@@ -1,7 +1,7 @@
 use super::User;
 use serde::{Deserialize, Serialize};
 
-#[derive(Serialize, Deserialize, Debug, Clone, PartialEq, PartialOrd)]
+#[derive(Serialize, Deserialize, Debug, Clone, PartialEq)]
 pub struct Audio {
     pub file_id: String,
     pub file_unique_id: String,
@@ -13,7 +13,7 @@ pub struct Audio {
     pub thumb: Option<PhotoSize>,
 }
 
-#[derive(Serialize, Deserialize, Debug, Clone, PartialEq, PartialOrd)]
+#[derive(Serialize, Deserialize, Debug, Clone, PartialEq)]
 pub struct Document {
     pub file_id: String,
     pub file_unique_id: String,
@@ -23,7 +23,7 @@ pub struct Document {
     pub file_size: Option<usize>,
 }
 
-#[derive(Serialize, Deserialize, Debug, Clone, PartialEq, PartialOrd)]
+#[derive(Serialize, Deserialize, Debug, Clone, PartialEq)]
 pub struct Animation {
     pub file_id: String,
     pub file_unique_id: String,
@@ -36,7 +36,7 @@ pub struct Animation {
     pub file_name: Option<String>,
 }
 
-#[derive(Serialize, Deserialize, Debug, Clone, PartialEq, PartialOrd)]
+#[derive(Serialize, Deserialize, Debug, Clone, PartialEq)]
 pub struct PhotoSize {
     pub file_id: String,
     pub file_unique_id: String,
@@ -45,7 +45,7 @@ pub struct PhotoSize {
     pub file_size: Option<usize>,
 }
 
-#[derive(Serialize, Deserialize, Debug, Clone, PartialEq, PartialOrd)]
+#[derive(Serialize, Deserialize, Debug, Clone, PartialEq)]
 pub struct Video {
     pub file_id: String,
     pub file_unique_id: String,
@@ -57,7 +57,7 @@ pub struct Video {
     pub file_size: Option<usize>,
 }
 
-#[derive(Serialize, Deserialize, Debug, Clone, PartialEq, PartialOrd)]
+#[derive(Serialize, Deserialize, Debug, Clone, PartialEq)]
 pub struct Voice {
     pub file_id: String,
     pub file_unique_id: String,
@@ -66,7 +66,7 @@ pub struct Voice {
     pub file_size: Option<usize>,
 }
 
-#[derive(Serialize, Deserialize, Debug, Clone, PartialEq, PartialOrd)]
+#[derive(Serialize, Deserialize, Debug, Clone, PartialEq)]
 pub struct VideoNote {
     pub file_id: String,
     pub file_unique_id: String,
@@ -76,7 +76,7 @@ pub struct VideoNote {
     pub file_size: Option<usize>,
 }
 
-#[derive(Serialize, Deserialize, Debug, Clone, PartialEq, PartialOrd)]
+#[derive(Serialize, Deserialize, Debug, Clone, PartialEq)]
 pub struct Contact {
     pub phone_number: String,
     pub first_name: String,
@@ -85,13 +85,13 @@ pub struct Contact {
     pub vcard: Option<String>,
 }
 
-#[derive(Serialize, Deserialize, Debug, Clone, PartialEq, PartialOrd)]
+#[derive(Serialize, Deserialize, Debug, Clone, PartialEq)]
 pub struct Location {
     pub longitude: f64,
     pub latitude: f64,
 }
 
-#[derive(Serialize, Deserialize, Debug, Clone, PartialEq, PartialOrd)]
+#[derive(Serialize, Deserialize, Debug, Clone, PartialEq)]
 pub struct Venue {
     pub location: Location,
     pub title: String,
@@ -100,7 +100,7 @@ pub struct Venue {
     pub foursquare_type: Option<String>,
 }
 
-#[derive(Serialize, Deserialize, Debug, Clone, PartialEq, PartialOrd)]
+#[derive(Serialize, Deserialize, Debug, Clone, PartialEq)]
 pub struct Poll {
     pub id: String,
     pub question: String,
@@ -117,25 +117,25 @@ pub struct Poll {
     pub correct_option_id: Option<usize>,
 }
 
-#[derive(Serialize, Deserialize, Debug, Clone, PartialEq, PartialOrd)]
+#[derive(Serialize, Deserialize, Debug, Clone, PartialEq)]
 pub struct Dice {
     pub value: u8,
 }
 
-#[derive(Serialize, Deserialize, Debug, Clone, PartialEq, PartialOrd)]
+#[derive(Serialize, Deserialize, Debug, Clone, PartialEq)]
 pub struct PollOption {
     pub text: String,
     pub voter_count: usize,
 }
 
-#[derive(Serialize, Deserialize, Debug, Clone, PartialEq, PartialOrd)]
+#[derive(Serialize, Deserialize, Debug, Clone, PartialEq)]
 pub struct PollAnswer {
     pub poll_id: String,
     pub user: User,
     pub option_ids: Vec<usize>,
 }
 
-#[derive(Serialize, Deserialize, Debug, Clone, PartialEq, PartialOrd)]
+#[derive(Serialize, Deserialize, Debug, Clone, PartialEq)]
 pub enum PollType {
     #[serde(rename = "regular")]
     Regular,
@@ -143,7 +143,7 @@ pub enum PollType {
     Quiz,
 }
 
-#[derive(Serialize, Deserialize, Debug, Clone, PartialEq, PartialOrd)]
+#[derive(Serialize, Deserialize, Debug, Clone, PartialEq)]
 pub struct LoginUrl {
     pub url: String,
     pub forward_text: Option<String>,

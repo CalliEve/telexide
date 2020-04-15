@@ -1,7 +1,7 @@
 use super::{CallbackGame, LoginUrl};
 use serde::{Deserialize, Serialize};
 
-#[derive(Serialize, Deserialize, Debug, Clone, PartialEq, PartialOrd)]
+#[derive(Serialize, Deserialize, Debug, Clone, PartialEq)]
 pub struct InlineKeyboardMarkup {
     pub text: String,
     pub url: Option<String>,
@@ -14,7 +14,7 @@ pub struct InlineKeyboardMarkup {
     pub pay: bool,
 }
 
-#[derive(Serialize, Deserialize, Debug, Clone, PartialEq, PartialOrd)]
+#[derive(Serialize, Deserialize, Debug, Clone, PartialEq)]
 pub struct ReplyKeyboardMarkup {
     pub keyboard: Vec<KeyboardButton>,
     #[serde(default)]
@@ -25,7 +25,7 @@ pub struct ReplyKeyboardMarkup {
     pub selective: bool,
 }
 
-#[derive(Serialize, Deserialize, Debug, Clone, PartialEq, PartialOrd)]
+#[derive(Serialize, Deserialize, Debug, Clone, PartialEq)]
 pub struct ReplyKeyboardRemove {
     // warning: this field always has to be true
     pub remove_keyboard: bool,
@@ -33,7 +33,7 @@ pub struct ReplyKeyboardRemove {
     pub selective: bool,
 }
 
-#[derive(Serialize, Deserialize, Debug, Clone, PartialEq, PartialOrd)]
+#[derive(Serialize, Deserialize, Debug, Clone, PartialEq)]
 pub struct ForceReply {
     // warning: this field always has to be true
     pub force_reply: bool,
@@ -41,7 +41,7 @@ pub struct ForceReply {
     pub selective: bool,
 }
 
-#[derive(Serialize, Deserialize, Debug, Clone, PartialEq, PartialOrd)]
+#[derive(Serialize, Deserialize, Debug, Clone, PartialEq)]
 pub struct KeyboardButton {
     pub text: String,
     pub request_contact: bool,
@@ -49,7 +49,7 @@ pub struct KeyboardButton {
     pub request_poll: Option<KeyboardButtonPollType>,
 }
 
-#[derive(Serialize, Deserialize, Debug, Clone, PartialEq, PartialOrd)]
+#[derive(Serialize, Deserialize, Debug, Clone, PartialEq)]
 pub struct KeyboardButtonPollType {
     #[serde(rename = "type")]
     pub poll_type: super::PollType,

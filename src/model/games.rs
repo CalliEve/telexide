@@ -1,7 +1,7 @@
 use super::{Animation, MessageEntity, PhotoSize};
 use serde::{Deserialize, Serialize};
 
-#[derive(Serialize, Deserialize, Debug, Clone, PartialEq, PartialOrd)]
+#[derive(Serialize, Deserialize, Debug, Clone, PartialEq)]
 pub struct Game {
     pub title: String,
     pub description: String,
@@ -12,5 +12,5 @@ pub struct Game {
 }
 
 // A placeholder, currently holds no information.
-#[derive(Serialize, Deserialize, Debug, Clone, PartialEq, PartialOrd)]
+#[derive(Serialize, Deserialize, Debug, Clone, PartialEq)]
 pub struct CallbackGame {}

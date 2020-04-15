@@ -1,7 +1,7 @@
 use super::User;
 use serde::{Deserialize, Serialize};
 
-#[derive(Serialize, Deserialize, Debug, Clone, PartialEq, PartialOrd)]
+#[derive(Serialize, Deserialize, Debug, Clone, PartialEq)]
 pub struct Invoice {
     pub title: String,
     pub description: String,
@@ -10,7 +10,7 @@ pub struct Invoice {
     pub total_amount: usize,
 }
 
-#[derive(Serialize, Deserialize, Debug, Clone, PartialEq, PartialOrd)]
+#[derive(Serialize, Deserialize, Debug, Clone, PartialEq)]
 pub struct SuccessfulPayment {
     pub currency: String,
     pub total_amount: usize,
@@ -21,7 +21,7 @@ pub struct SuccessfulPayment {
     pub provider_payment_charge_id: String,
 }
 
-#[derive(Serialize, Deserialize, Debug, Clone, PartialEq, PartialOrd)]
+#[derive(Serialize, Deserialize, Debug, Clone, PartialEq)]
 pub struct OrderInfo {
     pub name: Option<String>,
     pub phone_number: Option<String>,
@@ -29,7 +29,7 @@ pub struct OrderInfo {
     pub shipping_address: Option<ShippingAddress>,
 }
 
-#[derive(Serialize, Deserialize, Debug, Clone, PartialEq, PartialOrd)]
+#[derive(Serialize, Deserialize, Debug, Clone, PartialEq)]
 pub struct ShippingAddress {
     pub country_code: String,
     pub state: String,
@@ -39,7 +39,7 @@ pub struct ShippingAddress {
     pub post_code: String,
 }
 
-#[derive(Serialize, Deserialize, Debug, Clone, PartialEq, PartialOrd)]
+#[derive(Serialize, Deserialize, Debug, Clone, PartialEq)]
 pub struct ShippingQuery {
     pub id: String,
     pub from: User,
@@ -47,7 +47,7 @@ pub struct ShippingQuery {
     pub shipping_address: ShippingAddress,
 }
 
-#[derive(Serialize, Deserialize, Debug, Clone, PartialEq, PartialOrd)]
+#[derive(Serialize, Deserialize, Debug, Clone, PartialEq)]
 pub struct PreCheckoutQuery {
     pub id: String,
     pub from: User,

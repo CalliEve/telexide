@@ -1,7 +1,7 @@
 use super::{Location, User};
 use serde::{Deserialize, Serialize};
 
-#[derive(Serialize, Deserialize, Debug, Clone, PartialEq, PartialOrd)]
+#[derive(Serialize, Deserialize, Debug, Clone, PartialEq)]
 pub struct InlineQuery {
     pub id: String,
     pub from: User,
@@ -10,7 +10,7 @@ pub struct InlineQuery {
     pub offset: String,
 }
 
-#[derive(Serialize, Deserialize, Debug, Clone, PartialEq, PartialOrd)]
+#[derive(Serialize, Deserialize, Debug, Clone, PartialEq)]
 pub struct ChosenInlineResult {
     pub result_id: String,
     pub from: User,

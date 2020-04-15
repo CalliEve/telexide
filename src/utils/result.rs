@@ -1,13 +1,21 @@
+/// The common result type between most library functions.
 pub type Result<T> = std::result::Result<T, Error>;
 
+/// A common error enum returned by most of the library's functionality
 pub enum Error {
+    /// An error generated within this library
     TelegramError(TelegramError),
+    /// An error from the `hyper` crate.
     HyperError(hyper::Error),
+    /// An std::io error.
     IOError(std::io::Error),
+    /// An error from the `http` crate.
     HTTPError(http::Error),
+    /// An error from the `serde_json` crate.
     JSONError(serde_json::Error),
 }
 
+/// An error enum returned by errors generated within the library itself
 pub enum TelegramError {
     NoToken,
     InvalidToken,
@@ -16,6 +24,7 @@ pub enum TelegramError {
     ServerError,
     InvalidEndpoint,
     InvalidCommandType,
+    InvalidArgument(String),
     APIResponseError(String),
     Unknown(String),
 }
@@ -30,6 +39,7 @@ impl TelegramError {
             TelegramError::ServerError => "The telegram server returned a 500 status code".to_owned(),
             TelegramError::InvalidEndpoint => "The requested endpoint does not exist".to_owned(),
             TelegramError::InvalidCommandType => "This action cannot be done on this command type".to_owned(),
+            TelegramError::InvalidArgument(ref e) => format!("Invalid argument provided: {}", e),
             TelegramError::APIResponseError(ref e) => format!("the telegram api returned an error: {}", e),
             TelegramError::Unknown(ref e) => format!("unknown error occurred: {}", e),
         }
@@ -57,7 +67,7 @@ impl std::fmt::Display for Error {
 impl std::fmt::Debug for TelegramError {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         f.debug_tuple("telegram::Error")
-            .field(&self.description().to_owned())
+            .field(&self.description())
             .finish()
     }
 }

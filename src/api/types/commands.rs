@@ -1,7 +1,7 @@
 use crate::{framework::types::TelegramCommand, model::BotCommand};
 use serde::{Deserialize, Serialize};
 
-#[derive(Serialize, Deserialize, Debug, Clone, PartialEq, PartialOrd)]
+#[derive(Serialize, Deserialize, Debug, Clone, PartialEq)]
 pub struct SetMyCommands {
     pub commands: Vec<BotCommand>,
 }

@@ -6,7 +6,7 @@ use super::{Game, Invoice, PassportData, Sticker, SuccessfulPayment, User};
 
 pub use super::{message_contents::*, message_entity::*, InlineKeyboardMarkup};
 
-#[derive(Serialize, Deserialize, Debug, Clone, PartialEq, PartialOrd)]
+#[derive(Serialize, Deserialize, Debug, Clone, PartialEq)]
 pub struct RawMessage {
     pub message_id: i64,
     pub from: Option<super::User>,
@@ -76,7 +76,7 @@ pub struct RawMessage {
     pub reply_markup: Option<InlineKeyboardMarkup>,
 }
 
-#[derive(Debug, Clone, PartialEq, PartialOrd)]
+#[derive(Debug, Clone, PartialEq)]
 pub struct Message {
     pub message_id: i64,
     pub from: Option<super::User>,
@@ -96,7 +96,8 @@ pub struct Message {
     pub reply_markup: Option<InlineKeyboardMarkup>,
 }
 
-#[derive(Debug, Clone, PartialEq, PartialOrd)]
+#[allow(clippy::large_enum_variant)]
+#[derive(Debug, Clone, PartialEq)]
 pub enum MessageContent {
     Text {
         content: String,
@@ -195,7 +196,7 @@ pub enum MessageContent {
     Unknown,
 }
 
-#[derive(Debug, Clone, PartialEq, PartialOrd)]
+#[derive(Debug, Clone, PartialEq)]
 pub struct ForwardData {
     pub from: Option<super::User>,
     pub from_chat: Option<super::Chat>,
@@ -213,20 +214,15 @@ impl Message {
             } => Some(content.clone()),
             MessageContent::Audio {
                 ref caption, ..
-            } => caption.clone(),
-            MessageContent::Document {
+            } | MessageContent::Document {
                 ref caption, ..
-            } => caption.clone(),
-            MessageContent::Animation {
+            } | MessageContent::Animation {
                 ref caption, ..
-            } => caption.clone(),
-            MessageContent::Video {
+            } | MessageContent::Video {
                 ref caption, ..
-            } => caption.clone(),
-            MessageContent::Voice {
+            } | MessageContent::Voice {
                 ref caption, ..
-            } => caption.clone(),
-            MessageContent::Photo {
+            } | MessageContent::Photo {
                 ref caption, ..
             } => caption.clone(),
             _ => None,
@@ -235,6 +231,7 @@ impl Message {
 }
 
 impl From<RawMessage> for Message {
+    #[allow(clippy::too_many_lines)]
     fn from(raw: RawMessage) -> Message {
         let message_id = raw.message_id;
         let from = raw.from;
@@ -247,7 +244,7 @@ impl From<RawMessage> for Message {
         let passport_data = raw.passport_data;
         let reply_markup = raw.reply_markup;
 
-        let forward_data = if let Some(d) = raw.forward_date.clone() {
+        let forward_data = if let Some(d) = raw.forward_date {
             Some(ForwardData {
                 from: raw.forward_from,
                 from_chat: raw.forward_from_chat.map(|c| c.into()),
@@ -261,7 +258,7 @@ impl From<RawMessage> for Message {
         };
 
         let fill_in_content = |content: MessageContent| {
-            return Self {
+            Self {
                 message_id,
                 from,
                 date,
@@ -274,7 +271,7 @@ impl From<RawMessage> for Message {
                 connected_website,
                 passport_data,
                 reply_markup,
-            };
+            }
         };
 
         if let Some(c) = raw.text {
@@ -364,6 +361,7 @@ impl From<RawMessage> for Message {
 }
 
 impl From<Message> for RawMessage {
+    #[allow(clippy::too_many_lines)]
     fn from(message: Message) -> RawMessage {
         let mut ret = Self {
             message_id: message.message_id,

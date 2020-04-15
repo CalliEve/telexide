@@ -1,7 +1,7 @@
 use super::types::{CommandTypes, TelegramCommand};
 use crate::{
     client::Context,
-    model::{ChosenInlineResult, InlineQuery, Message, MessageContent, Update, UpdateContent},
+    model::{ChosenInlineResult, InlineQuery, Message, MessageContent, Update, UpdateContent, MessageEntity},
 };
 use std::sync::Arc;
 
@@ -20,16 +20,17 @@ impl Framework {
 
     fn match_command(&self, message: &Message, name: &str) -> bool {
         if let MessageContent::Text {
-            content, ..
+            entities, content
         } = &message.content
         {
-            println!("seeing if message matches command, message: \"{}\", command: \"/{}\"", content, name);
-            content == &format!("/{}", name)
-                || content.starts_with(&format!("/{} ", name))
-                || content.starts_with(&format!("/{}@{} ", name, &self.bot_name))
-        } else {
-            false
+            for entity in entities {
+                if let MessageEntity::BotCommand(ref t) = entity {
+                    let t = t.get_text(content);
+                    return t == format!("/{}", name) || t == format!("/{}@{} ", name, &self.bot_name);
+                }
+            }
         }
+        false
     }
 
     fn fire_message_commands(&self, context: Context, message: Message) {

@@ -1,4 +1,4 @@
-use super::{APIConnector, Client};
+use super::{APIConnector, Client, EventHandler, event_handlers::EventHandlerFunc};
 use crate::{api::{APIClient, types::UpdateType}, framework::Framework};
 
 use parking_lot::RwLock;
@@ -12,9 +12,11 @@ pub struct ClientBuilder {
     framework: Option<Arc<Framework>>,
     token: Option<String>,
     allowed_updates: Vec<UpdateType>,
+    event_handlers: Vec<EventHandler>,
 }
 
 impl ClientBuilder {
+    #[allow(clippy::new_without_default)]
     pub fn new() -> Self {
         Self {
             api_client: None,
@@ -22,7 +24,8 @@ impl ClientBuilder {
             webhook: None,
             framework: None,
             token: None,
-            allowed_updates: Vec::new()
+            allowed_updates: Vec::new(),
+            event_handlers: Vec::new()
         }
     }
 
@@ -69,11 +72,16 @@ impl ClientBuilder {
         self
     }
 
+    pub fn add_handler(&mut self, handler: EventHandlerFunc) -> &mut Self {
+        self.event_handlers.push(EventHandler::new(handler));
+        self
+    }
+
     pub fn build(&self) -> Client {
         if let Some(c) = self.api_client.clone() {
             Client {
                 api_client: c,
-                event_handlers: Vec::new(),
+                event_handlers: self.event_handlers.clone(),
                 raw_event_handlers: Vec::new(),
                 data: Arc::new(RwLock::new(ShareMap::custom())),
                 framework: self.framework.clone(),
@@ -87,7 +95,7 @@ impl ClientBuilder {
                         .clone()
                         .expect("A token must be provided for the telegram bot to work"),
                 ))),
-                event_handlers: Vec::new(),
+                event_handlers: self.event_handlers.clone(),
                 raw_event_handlers: Vec::new(),
                 data: Arc::new(RwLock::new(ShareMap::custom())),
                 framework: self.framework.clone(),

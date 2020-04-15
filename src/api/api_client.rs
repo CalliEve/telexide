@@ -1,10 +1,11 @@
 use super::{api::API, endpoints::APIEndpoint, response::Response};
 use crate::utils::result::{Result, TelegramError};
+use crate::utils::{encode_multipart_form_data, BOUNDARY, FormDataFile, AsFormData};
 use async_trait::async_trait;
 use hyper::{body::HttpBody, client::HttpConnector, Body, Client, Method, Request};
 use std::io::Write;
 
-static TELEGRAM_API: &'static str = "https://api.telegram.org/bot";
+static TELEGRAM_API: &str = "https://api.telegram.org/bot";
 
 pub struct APIClient {
     hyper_client: Client<hyper_tls::HttpsConnector<HttpConnector>>,
@@ -45,7 +46,7 @@ impl APIClient {
         match endpoint {
             e if e.get_method() == Method::GET => self.get(e, data).await,
             e if e.get_method() == Method::POST => self.post(e, data).await,
-            _ => Err(TelegramError::InvalidEndpoint)?,
+            _ => Err(TelegramError::InvalidEndpoint.into()),
         }
     }
 }
@@ -87,6 +88,39 @@ impl API for APIClient {
         } else {
             req_builder.body(Body::empty())?
         };
+
+        let mut resp = self.hyper_client.request(req).await?;
+
+        let mut res: Vec<u8> = Vec::new();
+        while let Some(chunk) = resp.body_mut().data().await {
+            res.write_all(&chunk?)?
+        }
+
+        Ok(serde_json::from_slice(&res)?)
+    }
+
+    async fn post_file(&self, endpoint: APIEndpoint, data: Option<serde_json::Value>, files: Option<Vec<FormDataFile>>) -> Result<Response> {
+        if files.is_none() {
+            return self.post(endpoint, data).await
+        }
+
+        let mut files = files.expect("no files");
+        if files.is_empty() {
+            return self.post(endpoint, data).await
+        }
+
+        let req_builder = Request::post(self.parse_endpoint(endpoint))
+            .header("content-type", format!("multipart/form-data; boundary={}", BOUNDARY))
+            .header("accept", "application/json");
+
+        //files = Vec::new();
+        if data.is_some() {
+            files.append(&mut data.expect("no data").as_form_data()?)
+        }
+
+        let bytes = encode_multipart_form_data(&files)?;
+        //println!("data sent: {}", String::from_utf8_lossy(&bytes));
+        let req = req_builder.body(Body::from(bytes))?;
 
         let mut resp = self.hyper_client.request(req).await?;
 

@@ -1,6 +1,6 @@
 use serde::{Deserialize, Serialize};
 
-#[derive(Serialize, Deserialize, Debug, Clone, PartialEq, PartialOrd)]
+#[derive(Serialize, Deserialize, Debug, Clone, PartialEq)]
 pub struct GetUpdates {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub offset: Option<i64>,
@@ -61,7 +61,7 @@ impl std::default::Default for GetUpdates {
     }
 }
 
-#[derive(Serialize, Deserialize, Debug, Clone, PartialEq, PartialOrd)]
+#[derive(Serialize, Deserialize, Debug, Clone, PartialEq)]
 pub enum UpdateType {
     #[serde(rename = "message")]
     Message,

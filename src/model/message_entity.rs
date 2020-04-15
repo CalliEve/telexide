@@ -2,7 +2,7 @@ pub use super::utils::TextBlock;
 use super::User;
 use serde::{Deserialize, Serialize};
 
-#[derive(Serialize, Deserialize, Debug, Clone, PartialEq, PartialOrd)]
+#[derive(Serialize, Deserialize, Debug, Clone, PartialEq)]
 #[serde(tag = "type")]
 pub enum MessageEntity {
     #[serde(rename = "mention")]
@@ -37,21 +37,21 @@ pub enum MessageEntity {
     TextMention(TextMention),
 }
 
-#[derive(Serialize, Deserialize, Debug, Clone, PartialEq, PartialOrd)]
+#[derive(Serialize, Deserialize, Debug, Clone, PartialEq)]
 pub struct Pre {
     #[serde(flatten)]
     pub text_block: TextBlock,
     pub language: String,
 }
 
-#[derive(Serialize, Deserialize, Debug, Clone, PartialEq, PartialOrd)]
+#[derive(Serialize, Deserialize, Debug, Clone, PartialEq)]
 pub struct TextLink {
     #[serde(flatten)]
     pub text_block: TextBlock,
     pub url: String,
 }
 
-#[derive(Serialize, Deserialize, Debug, Clone, PartialEq, PartialOrd)]
+#[derive(Serialize, Deserialize, Debug, Clone, PartialEq)]
 pub struct TextMention {
     #[serde(flatten)]
     pub text_block: TextBlock,

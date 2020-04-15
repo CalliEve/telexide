@@ -14,6 +14,8 @@ use crate::{
     Result,
 };
 
+type FutureUpdate = Pin<Box<dyn Future<Output = Result<Vec<Update>>>>>;
+
 #[must_use = "streams do nothing unless polled"]
 pub struct UpdatesStream {
     api: Arc<Box<APIConnector>>,
@@ -22,7 +24,7 @@ pub struct UpdatesStream {
     offset: i64,
     limit: usize,
     timeout: usize,
-    current_request: Option<Pin<Box<dyn Future<Output = Result<Vec<Update>>>>>>,
+    current_request: Option<FutureUpdate>,
 }
 
 impl Stream for UpdatesStream {
