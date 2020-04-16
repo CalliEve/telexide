@@ -250,7 +250,7 @@ pub trait API {
 
         self.
             post_file(
-                APIEndpoint::SendDocument,
+                APIEndpoint::SendMediaGroup,
                 Some(serde_json::to_value(&data)?),
                 Some(files)
             )
