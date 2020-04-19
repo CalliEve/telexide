@@ -1,4 +1,6 @@
-use super::{Message, User, InlineKeyboardMarkup, ReplyKeyboardRemove, ReplyKeyboardMarkup, ForceReply};
+use super::{Message, User, InlineKeyboardMarkup, ReplyKeyboardRemove, ReplyKeyboardMarkup, ForceReply, utils::unix_date_formatting};
+use crate::api::types::UpdateType;
+use chrono::{DateTime, Utc};
 use serde::{Deserialize, Serialize};
 
 #[derive(Serialize, Deserialize, Debug, Clone, PartialEq)]
@@ -81,4 +83,24 @@ pub struct File {
     /// It is guaranteed that the link will be valid for at least 1 hour. When the link expires,
     /// a new one can be requested by calling getFile again.
     pub file_path: Option<String>,
+}
+
+/// Contains information about the current status of a webhook.
+#[derive(Serialize, Deserialize, Debug, Clone, PartialEq)]
+pub struct WebhookInfo {
+    /// Webhook URL, may be empty if webhook is not set up
+    pub url: String,
+    /// True, if a custom certificate was provided for webhook certificate checks
+    pub has_custom_certificate: bool,
+    /// Number of updates awaiting delivery
+    pub pending_update_count: i64,
+    /// Unix time for the most recent error that happened when trying to deliver an update via webhook
+    #[serde(with = "unix_date_formatting::optional")]
+    pub last_error_date: Option<DateTime<Utc>>,
+    /// Error message in human-readable format for the most recent error that happened when trying to deliver an update via webhook
+    pub last_error_message: Option<String>,
+    /// Maximum allowed number of simultaneous HTTPS connections to the webhook for update delivery
+    pub max_connections: Option<i64>,
+    /// A list of update types the bot is subscribed to. Defaults to all update types
+    pub allowed_updates: Option<Vec<UpdateType>>
 }

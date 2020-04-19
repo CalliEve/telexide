@@ -38,6 +38,35 @@ pub trait API {
             .into()
     }
 
+    /// Use this method to specify a url and receive incoming updates via an outgoing webhook.
+    /// Whenever there is an update for the bot, we will send an HTTPS POST request to the specified url,
+    /// containing a JSON-serialized [Update]. In case of an unsuccessful request,
+    /// we will give up after a reasonable amount of attempts. Returns True on success.
+    async fn set_webhook(&self, data: SetWebhook) -> Result<bool> {
+        self
+            .post(APIEndpoint::SetWebhook, Some(serde_json::to_value(data)?))
+            .await?
+            .into()
+    }
+
+    /// Use this method to remove webhook integration if you decide to switch back to using [API::get_updates].
+    /// Returns True on success.
+    async fn delete_webhook(&self) -> Result<bool> {
+        self
+            .get(APIEndpoint::DeleteWebhook, None)
+            .await?
+            .into()
+    }
+
+    /// Use this method to get current webhook status. On success, returns a [WebhookInfo] object.
+    /// If the bot is using [API::get_updates], will return a [WebhookInfo] object with the url field empty.
+    async fn get_webhook_info(&self) -> Result<WebhookInfo> {
+        self
+            .get(APIEndpoint::GetWebhookInfo, None)
+            .await?
+            .into()
+    }
+
     /// Use this method to send text messages. On success, the sent [`Message`] is returned.
     async fn send_message(&self, data: SendMessage) -> Result<Message> {
         self
@@ -629,6 +658,242 @@ pub trait API {
     async fn answer_callback_query(&self, data: AnswerCallbackQuery) -> Result<bool> {
         self
             .post(APIEndpoint::AnswerCallbackQuery, Some(serde_json::to_value(data)?))
+            .await?
+            .into()
+    }
+
+    /// Use this method to send static .WEBP or animated .TGS stickers. On success, the sent [Message] is returned.
+    async fn send_sticker(&self, data: SendSticker) -> Result<Message> {
+        match &data.sticker {
+            InputFile::String(_) => self
+                .post(APIEndpoint::SendSticker, Some(serde_json::to_value(&data)?))
+                .await?
+                .into(),
+            InputFile::File(f) => {
+                self.
+                    post_file(
+                        APIEndpoint::SendSticker,
+                        Some(serde_json::to_value(&data)?),
+                        Some(vec![f.clone()])
+                    )
+                    .await?
+                    .into()
+            }
+        }
+    }
+
+    /// Use this method to get a sticker set. On success, a [StickerSet] object is returned.
+    async fn get_sticker_set(&self, data: GetStickerSet) -> Result<StickerSet> {
+        self
+            .post(APIEndpoint::GetStickerSet, Some(serde_json::to_value(data)?))
+            .await?
+            .into()
+    }
+
+    /// Use this method to upload a .PNG file with a sticker for later use in createNewStickerSet and addStickerToSet methods
+    /// (can be used multiple times). Returns the uploaded [File] on success.
+    async fn upload_sticker_file(&self, data: UploadStickerFile) -> Result<File> {
+        match &data.png_sticker {
+            InputFile::File(f) => {
+                self.
+                    post_file(
+                        APIEndpoint::UploadStickerFile,
+                        Some(serde_json::to_value(&data)?),
+                        Some(vec![f.clone()])
+                    )
+                    .await?
+                    .into()
+            },
+            _ => return Err(TelegramError::InvalidArgument("upload_sticker_file only accepts files, not urls/ids".to_owned()).into()),
+        }
+    }
+
+    /// Use this method to create a new sticker set owned by a user.
+    /// The bot will be able to edit the sticker set thus created.
+    /// You must use exactly one of the fields png_sticker or tgs_sticker. Returns True on success.
+    async fn create_new_sticker_set(&self, data:CreateNewStickerSet) -> Result<bool> {
+        if (data.png_sticker.is_some() && data.tgs_sticker.is_some()) || (data.png_sticker.is_none() && data.tgs_sticker.is_none()) {
+            return Err(TelegramError::InvalidArgument("You must use exactly one of the fields png_sticker or tgs_sticker".to_owned()).into())
+        }
+
+        let mut files = Vec::new();
+
+        if data.png_sticker.is_some() {
+            match data.png_sticker.as_ref().unwrap() {
+                InputFile::File(f) => files.push(f.clone()),
+                _ => {}
+            }
+        }
+
+        if data.tgs_sticker.is_some() {
+            match data.tgs_sticker.as_ref().unwrap() {
+                InputFile::File(f) => files.push(f.clone()),
+                _ => return Err(TelegramError::InvalidArgument("tgs_sticker only accepts files, not urls/ids".to_owned()).into())
+            }
+        }
+
+        self.
+            post_file(
+                APIEndpoint::CreateNewStickerSet,
+                Some(serde_json::to_value(&data)?),
+                Some(files)
+            )
+            .await?
+            .into()
+    }
+
+    /// Use this method to add a new sticker to a set created by the bot.
+    /// You must use exactly one of the fields png_sticker or tgs_sticker.
+    /// Animated stickers can be added to animated sticker sets and only to them.
+    /// Animated sticker sets can have up to 50 stickers. Static sticker sets can have up to 120 stickers.
+    /// Returns True on success.
+    async fn add_sticker_to_set(&self, data: AddStickerToSet) -> Result<bool> {
+        if (data.png_sticker.is_some() && data.tgs_sticker.is_some()) || (data.png_sticker.is_none() && data.tgs_sticker.is_none()) {
+            return Err(TelegramError::InvalidArgument("You must use exactly one of the fields png_sticker or tgs_sticker.".to_owned()).into())
+        }
+
+        let mut files = Vec::new();
+
+        if data.png_sticker.is_some() {
+            match data.png_sticker.as_ref().unwrap() {
+                InputFile::File(f) => files.push(f.clone()),
+                _ => {}
+            }
+        }
+
+        if data.tgs_sticker.is_some() {
+            match data.tgs_sticker.as_ref().unwrap() {
+                InputFile::File(f) => files.push(f.clone()),
+                _ => return Err(TelegramError::InvalidArgument("tgs_sticker only accepts files, not urls/ids.".to_owned()).into())
+            }
+        }
+
+        self.
+            post_file(
+                APIEndpoint::AddStickerToSet,
+                Some(serde_json::to_value(&data)?),
+                Some(files)
+            )
+            .await?
+            .into()
+    }
+
+    /// Use this method to move a sticker in a set created by the bot to a specific position. Returns True on success.
+    async fn set_sticker_position_in_set(&self, data: SetStickerPositionInSet) -> Result<bool> {
+        self
+            .post(APIEndpoint::SetStickerPositionInSet, Some(serde_json::to_value(data)?))
+            .await?
+            .into()
+    }
+
+    /// Use this method to delete a sticker from a set created by the bot. Returns True on success.
+    async fn delete_sticker_from_set(&self, data: DeleteStickerFromSet) -> Result<bool> {
+        self
+            .post(APIEndpoint::DeleteStickerFromSet, Some(serde_json::to_value(data)?))
+            .await?
+            .into()
+    }
+
+    /// Use this method to set the thumbnail of a sticker set.
+    /// Animated thumbnails can be set for animated sticker sets only. Returns True on success.
+    async fn set_sticker_set_thumb(&self, data: SetStickerSetThumb) -> Result<bool> {
+        match &data.thumb {
+            Some(InputFile::String(_)) | None => self
+                .post(APIEndpoint::SetStickerSetThumb, Some(serde_json::to_value(&data)?))
+                .await?
+                .into(),
+            Some(InputFile::File(f)) => {
+                self.
+                    post_file(
+                        APIEndpoint::SetStickerSetThumb,
+                        Some(serde_json::to_value(&data)?),
+                        Some(vec![f.clone()])
+                    )
+                    .await?
+                    .into()
+            }
+        }
+    }
+
+    /// Use this method to send answers to an inline query. On success, True is returned.
+    /// No more than 50 results per query are allowed.
+    async fn answer_inline_query(&self, data: AnswerInlineQuery) -> Result<bool> {
+        if data.results.len() > 50 {
+            return Err(TelegramError::InvalidArgument("No more than 50 results per query are allowed.".to_owned()).into())
+        }
+
+        self
+            .post(APIEndpoint::AnswerInlineQuery, Some(serde_json::to_value(data)?))
+            .await?
+            .into()
+    }
+
+    /// Use this method to send invoices. On success, the sent [Message] is returned.
+    async fn send_invoice(&self, data: SendInvoice) -> Result<Message> {
+        self
+            .post(APIEndpoint::SendInvoice, Some(serde_json::to_value(data)?))
+            .await?
+            .into()
+    }
+
+    /// If you sent an invoice requesting a shipping address and the parameter is_flexible was specified,
+    /// the Bot API will send an [Update] with a shipping_query field to the bot.
+    /// Use this method to reply to shipping queries. On success, True is returned.
+    async fn answer_shipping_query(&self, data: AnswerShippingQuery) -> Result<bool> {
+        self
+            .post(APIEndpoint::AnswerShippingQuery, Some(serde_json::to_value(data)?))
+            .await?
+            .into()
+    }
+
+    /// Once the user has confirmed their payment and shipping details, the Bot API sends the final confirmation
+    /// in the form of an [Update] with the field pre_checkout_query. Use this method to respond to such pre-checkout queries.
+    /// On success, True is returned.
+    /// **Note:** The Bot API must receive an answer within 10 seconds after the pre-checkout query was sent.
+    async fn answer_pre_checkout_query(&self, data: AnswerPreCheckoutQuery) -> Result<bool> {
+        self
+            .post(APIEndpoint::AnswerPreCheckoutQuery, Some(serde_json::to_value(data)?))
+            .await?
+            .into()
+    }
+
+    /// Use this method to send a game. On success, the sent [Message] is returned.
+    async fn send_game(&self, data: SendGame) -> Result<Message> {
+        self
+            .post(APIEndpoint::SendGame, Some(serde_json::to_value(data)?))
+            .await?
+            .into()
+    }
+
+    /// Use this method to set the score of the specified user in a game.
+    /// On success, if the message was sent by the bot, returns the edited Message, otherwise returns True.
+    /// Returns an error, if the new score is not greater than the user's current score in the chat and force is False.
+    async fn set_game_score(&self, data: SetGameScore) -> Result<TrueOrObject<Message>> {
+        self
+            .post(APIEndpoint::SetGameScore, Some(serde_json::to_value(data)?))
+            .await?
+            .into()
+    }
+
+    /// Use this method to get data for high score tables. Will return the score of the specified user and several of his neighbors in a game.
+    /// On success, returns a Vec of [GameHighScore] objects.
+    async fn get_game_high_scores(&self, data: GetGameHighScores) -> Result<Vec<GameHighScore>> {
+        self
+            .post(APIEndpoint::GetGameHighScores, Some(serde_json::to_value(data)?))
+            .await?
+            .into()
+    }
+
+    /// Informs a user that some of the Telegram Passport elements they provided contains errors.
+    /// The user will not be able to re-submit their Passport to you until the errors are fixed
+    /// (the contents of the field for which you returned the error must change). Returns True on success.
+    ///
+    /// Use this if the data submitted by the user doesn't satisfy the standards your service requires for any reason.
+    /// For example, if a birthday date seems invalid, a submitted document is blurry, a scan shows evidence of tampering, etc.
+    /// Supply some details in the error message to make sure the user knows how to correct the issues.
+    async fn set_passport_data_errors(&self, data: SetPassportDataErrors) -> Result<bool> {
+        self
+            .post(APIEndpoint::SetPassportDataErrors, Some(serde_json::to_value(data)?))
             .await?
             .into()
     }

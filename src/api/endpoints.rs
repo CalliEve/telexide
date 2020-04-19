@@ -67,6 +67,10 @@ pub enum APIEndpoint {
     SendGame,
     SetGameScore,
     GetGameHighScores,
+    SetWebhook,
+    SetPassportDataErrors,
+    DeleteWebhook,
+    GetWebhookInfo,
 }
 
 impl APIEndpoint {
@@ -138,6 +142,10 @@ impl APIEndpoint {
             Self::SendInvoice => "sendInvoice",
             Self::AnswerShippingQuery => "answerShippingQuery",
             Self::AnswerPreCheckoutQuery => "answerPreCheckoutQuery",
+            Self::SetWebhook => "setWebHook",
+            Self::SetPassportDataErrors => "setPassportDataErrors",
+            Self::DeleteWebhook => "deleteWebhook",
+            Self::GetWebhookInfo => "getWebhookInfo"
         }
     }
 
@@ -209,6 +217,10 @@ impl APIEndpoint {
             Self::SendInvoice => Method::POST,
             Self::AnswerShippingQuery => Method::POST,
             Self::AnswerPreCheckoutQuery => Method::POST,
+            Self::SetWebhook => Method::POST,
+            Self::SetPassportDataErrors => Method::POST,
+            Self::DeleteWebhook => Method::POST,
+            Self::GetWebhookInfo => Method::GET
         }
     }
 }

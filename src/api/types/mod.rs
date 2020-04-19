@@ -24,4 +24,4 @@ pub use games::*;
 pub use payments::*;
 pub use inline::*;
 pub use passport::*;
-pub use webhooks::SetWebHook;
+pub use webhooks::SetWebhook;

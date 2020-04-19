@@ -9,15 +9,15 @@ This is a WIP easy to use library for making a telegram bot, built on tokio and 
     - [X] set your own timeout
     - [X] set your own limit for updates gotten at once
 - [X] easy to use, macro-based command framework
-- [ ] easy to use and heavily customisable api client
+- [X] easy to use and heavily customisable api client
     - [X] use your own hyper client
     - [X] use your own api struct so you control the get and post methods
-    - [ ] includes all telegram api endpoints
+    - [X] includes all telegram api endpoints
+- [ ] webhook based update handling
 - [ ] clear documentation
-- [ ] subscribe to non-message events using command framework
+- [ ] subscribe to non-message events using command (or similar) framework
     - [ ] run command on receiving an inline query or answer to one
     - [ ] run command on receiving a poll that matches your requirements
-- [ ] webhook based update handling
 
 ## Examples
 

@@ -2,7 +2,7 @@ use serde::{Deserialize, Serialize};
 use super::{InputFile, UpdateType};
 
 #[derive(Serialize, Deserialize, Debug, Clone, PartialEq)]
-pub struct SetWebHook {
+pub struct SetWebhook {
     /// HTTPS url to send updates to. Use an empty string to remove webhook integration
     pub url: String,
     /// Upload your public key certificate so that the root certificate in use can be checked.

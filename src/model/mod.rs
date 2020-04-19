@@ -39,7 +39,7 @@ pub use markup::{
 pub use message::{Message, MessageContent};
 pub use message_contents::*;
 pub use message_entity::*;
-pub use other::{BotCommand, CallbackQuery, ParseMode, ChatAction, ReplyMarkup, File};
+pub use other::{BotCommand, CallbackQuery, ParseMode, ChatAction, ReplyMarkup, File, WebhookInfo};
 pub use payments::*;
 pub use stickers::*;
 pub use telegram_passport::*;
