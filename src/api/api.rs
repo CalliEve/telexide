@@ -2,6 +2,7 @@ use super::{types::*, APIEndpoint, response::Response};
 use crate::{model::*, utils::result::Result, utils::FormDataFile};
 use std::vec::Vec;
 use async_trait::async_trait;
+use crate::utils::result::TelegramError;
 
 #[async_trait]
 pub trait API {
@@ -24,9 +25,12 @@ pub trait API {
             .into()
     }
 
-    /// (**WARNING:** this method should not be used by the library user themselves as this gets handled by the [`crate::client::Client`] object,
-    /// to handle an update event, please subscribe to those using [`crate::client::Client::subscribe_handler`])
+    /// (**WARNING:** this method should not be used by the library user themselves as this gets handled by the [`Client`] object,
+    /// to handle an update event, please subscribe to those using [`subscribe_handler`])
     /// Use this method to receive incoming updates using long polling. A `Vec<`[`Update`]`>` is returned.
+    ///
+    /// [`Client`]: ../client/struct.Client.html
+    /// [`subscribe_handler`]: ../client/struct.Client.html#method.subscribe_handler
     async fn get_updates(&self, data: GetUpdates) -> Result<Vec<Update>> {
         self
             .get(APIEndpoint::GetUpdates, Some(serde_json::to_value(data)?))
@@ -487,8 +491,18 @@ pub trait API {
     /// The bot must be an administrator in the chat for this to work and must have the appropriate admin rights.
     /// Returns True on success.
     async fn set_chat_photo(&self, data: SetChatPhoto) -> Result<bool> {
-        self
-            .post(APIEndpoint::SetChatPhoto, Some(serde_json::to_value(data)?))
+        let mut files = Vec::new();
+        match &data.photo {
+            InputFile::File(f) => files.push(f.clone()),
+            _ => return Err(TelegramError::InvalidArgument("this endpoint only accepts files to be uploaded".to_owned()).into())
+        }
+
+        self.
+            post_file(
+                APIEndpoint::SetChatPhoto,
+                Some(serde_json::to_value(&data)?),
+                Some(files)
+            )
             .await?
             .into()
     }

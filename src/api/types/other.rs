@@ -42,6 +42,7 @@ pub struct AnswerCallbackQuery {
     pub cache_time: Option<i64>
 }
 
+/// Is either true (the bool), or is object T
 #[derive(Serialize, Deserialize, Debug, Clone, PartialEq)]
 #[serde(untagged)]
 pub enum TrueOrObject<T>

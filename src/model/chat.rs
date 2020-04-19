@@ -18,20 +18,32 @@ pub struct RawChat {
     pub last_name: Option<String>,
     /// Chat photo. Returned only in getChat.
     pub photo: Option<ChatPhoto>,
-    /// Description, for groups, supergroups and channel chats. Returned only in getChat.
+    /// Description, for groups, supergroups and channel chats. Returned only in [`get_chat`].
+    ///
+    /// [`get_chat`]: ../../api/trait.API.html#method.get_chat
     pub description: Option<String>,
     /// Chat invite link, for groups, supergroups and channel chats.
     pub invite_link: Option<String>,
-    /// Pinned message, for groups, supergroups and channels. Returned only in getChat.
+    /// Pinned message, for groups, supergroups and channels. Returned only in [`get_chat`].
+    ///
+    /// [`get_chat`]: ../../api/trait.API.html#method.get_chat
     pub pinned_message: Option<Box<super::message::RawMessage>>,
-    /// Default chat member permissions, for groups and supergroups. Returned only in getChat.
+    /// Default chat member permissions, for groups and supergroups. Returned only in [`get_chat`].
+    ///
+    /// [`get_chat`]: ../../api/trait.API.html#method.get_chat
     pub permissions: Option<super::ChatPermissions>,
     /// For supergroups, the minimum allowed delay between consecutive messages sent by each
-    /// unpriviledged user. Returned only in getChat.
+    /// unpriviledged user. Returned only in [`get_chat`].
+    ///
+    /// [`get_chat`]: ../../api/trait.API.html#method.get_chat
     pub slow_mode_delay: Option<usize>,
-    /// For supergroups, name of group sticker set. Returned only in getChat.
+    /// For supergroups, name of group sticker set. Returned only in [`get_chat`].
+    ///
+    /// [`get_chat`]: ../../api/trait.API.html#method.get_chat
     pub sticker_set_name: Option<String>,
-    /// True, if the bot can change the group sticker set. Returned only in getChat.
+    /// True, if the bot can change the group sticker set. Returned only in [`get_chat`].
+    ///
+    /// [`get_chat`]: ../../api/trait.API.html#method.get_chat
     pub can_set_sticker_set: Option<bool>,
 }
 
@@ -56,7 +68,9 @@ pub struct PrivateChat {
     pub first_name: Option<String>,
     /// Last name of the other party
     pub last_name: Option<String>,
-    /// Chat photo. Returned only in getChat.
+    /// Chat photo. Returned only in [`get_chat`].
+    ///
+    /// [`get_chat`]: ../../api/trait.API.html#method.get_chat
     pub photo: Option<ChatPhoto>,
 }
 
@@ -65,15 +79,23 @@ pub struct GroupChat {
     pub id: i64,
     /// Title
     pub title: String,
-    /// Chat photo. Returned only in getChat.
+    /// Chat photo. Returned only in [`get_chat`].
+    ///
+    /// [`get_chat`]: ../../api/trait.API.html#method.get_chat
     pub photo: Option<ChatPhoto>,
-    /// Description. Returned only in getChat.
+    /// Description. Returned only in [`get_chat`].
+    ///
+    /// [`get_chat`]: ../../api/trait.API.html#method.get_chat
     pub description: Option<String>,
     /// Chat invite link
     pub invite_link: Option<String>,
-    /// Pinned message. Returned only in getChat.
+    /// Pinned message. Returned only in [`get_chat`].
+    ///
+    /// [`get_chat`]: ../../api/trait.API.html#method.get_chat
     pub pinned_message: Option<Box<super::Message>>,
-    /// Default chat member permissions. Returned only in getChat.
+    /// Default chat member permissions. Returned only in [`get_chat`].
+    ///
+    /// [`get_chat`]: ../../api/trait.API.html#method.get_chat
     pub permissions: Option<super::ChatPermissions>,
 }
 
@@ -84,22 +106,36 @@ pub struct SuperGroupChat {
     pub title: String,
     /// Username if available
     pub username: Option<String>,
-    // Chat photo. Returned only in getChat.
+    /// Chat photo. Returned only in [`get_chat`].
+    ///
+    /// [`get_chat`]: ../../api/trait.API.html#method.get_chat
     pub photo: Option<ChatPhoto>,
-    /// Description. Returned only in getChat.
+    /// Description. Returned only in [`get_chat`].
+    ///
+    /// [`get_chat`]: ../../api/trait.API.html#method.get_chat
     pub description: Option<String>,
     /// Chat invite link
     pub invite_link: Option<String>,
-    /// Pinned message. Returned only in getChat.
+    /// Pinned message. Returned only in [`get_chat`].
+    ///
+    /// [`get_chat`]: ../../api/trait.API.html#method.get_chat
     pub pinned_message: Option<Box<super::Message>>,
-    /// Default chat member permissions. Returned only in getChat.
+    /// Default chat member permissions. Returned only in [`get_chat`].
+    ///
+    /// [`get_chat`]: ../../api/trait.API.html#method.get_chat
     pub permissions: Option<super::ChatPermissions>,
-    /// The minimum allowed delay between consecutive messages sent by each unpriviledged user.
-    /// Returned only in getChat.
+    /// The minimum allowed delay between consecutive messages sent by each unprivileged user.
+    /// Returned only in [`get_chat`].
+    ///
+    /// [`get_chat`]: ../../api/trait.API.html#method.get_chat
     pub slow_mode_delay: Option<usize>,
-    /// Name of group sticker set. Returned only in getChat.
+    /// Name of group sticker set. Returned only in [`get_chat`].
+    ///
+    /// [`get_chat`]: ../../api/trait.API.html#method.get_chat
     pub sticker_set_name: Option<String>,
-    /// True, if the bot can change the group sticker set. Returned only in getChat.
+    /// True, if the bot can change the group sticker set. Returned only in [`get_chat`].
+    ///
+    /// [`get_chat`]: ../../api/trait.API.html#method.get_chat
     pub can_set_sticker_set: Option<bool>,
 }
 
@@ -110,13 +146,19 @@ pub struct ChannelChat {
     pub title: String,
     /// Username if available
     pub username: Option<String>,
-    /// Chat photo. Returned only in getChat.
+    /// Chat photo. Returned only in [`get_chat`].
+    ///
+    /// [`get_chat`]: ../../api/trait.API.html#method.get_chat
     pub photo: Option<ChatPhoto>,
-    /// Description. Returned only in getChat.
+    /// Description. Returned only in [`get_chat`].
+    ///
+    /// [`get_chat`]: ../../api/trait.API.html#method.get_chat
     pub description: Option<String>,
     /// Chat invite link
     pub invite_link: Option<String>,
-    /// Pinned message. Returned only in getChat.
+    /// Pinned message. Returned only in [`get_chat`].
+    ///
+    /// [`get_chat`]: ../../api/trait.API.html#method.get_chat
     pub pinned_message: Option<Box<super::Message>>,
 }
 

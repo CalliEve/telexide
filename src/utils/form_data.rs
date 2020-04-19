@@ -88,7 +88,9 @@ fn get_media_type(file_name: &str) -> Result<&str> {
         "zip" => "application/zip",
         "m4a" => "audio/mp4",
         "mp3" => "audio/mpeg",
-        ".ogg" => "audio/ogg",
+        "ogg" => "audio/ogg",
+        "webp" => "image/webp",
+        "tgs" => "application/gzip",
         _ => "text/plain"
     })
 }

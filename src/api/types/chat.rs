@@ -1,4 +1,5 @@
 use chrono::{DateTime, Utc};
+use super::InputFile;
 use crate::model::{ChatPermissions, Chat, utils::unix_date_formatting};
 use serde::{Deserialize, Serialize};
 
@@ -116,7 +117,8 @@ pub struct ExportChatInviteLink {
 pub struct SetChatPhoto {
     /// Unique identifier for the target chat
     pub chat_id: i64,
-    // TODO: support file uploading
+    /// New chat photo
+    pub photo: InputFile
 }
 
 #[derive(Serialize, Deserialize, Debug, Clone, PartialEq)]

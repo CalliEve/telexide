@@ -2,7 +2,7 @@ pub(crate) mod utils;
 
 mod chat;
 mod games;
-mod inline_mode;
+mod inline;
 mod markup;
 mod message;
 mod message_contents;
@@ -27,7 +27,7 @@ pub use chat::{
     MemberMemberStatus
 };
 pub use games::*;
-pub use inline_mode::*;
+pub use inline::*;
 pub use markup::{
     ForceReply,
     InlineKeyboardMarkup,
