@@ -3,8 +3,10 @@ use chrono::{DateTime, Utc};
 use serde::{Deserialize, Serialize};
 use super::User;
 
+/// The raw chat, for most usages the [`Chat`] object is easier to use
 #[derive(Serialize, Deserialize, Debug, Clone, PartialEq)]
 pub struct RawChat {
+    /// Unique identifier for this chat
     pub id: i64,
     #[serde(rename = "type")]
     pub chat_type: ChatType,
@@ -47,6 +49,7 @@ pub struct RawChat {
     pub can_set_sticker_set: Option<bool>,
 }
 
+/// The type of chat for use in [`RawChat`]
 #[derive(Serialize, Deserialize, Debug, Clone, PartialEq)]
 pub enum ChatType {
     #[serde(rename = "private")]
@@ -59,8 +62,10 @@ pub enum ChatType {
     Channel,
 }
 
+/// A private chat object, also known as a DM, between the bot and an user
 #[derive(Serialize, Deserialize, Debug, Clone, PartialEq)]
 pub struct PrivateChat {
+    /// Unique identifier for this chat
     pub id: i64,
     /// Username if available
     pub username: Option<String>,
@@ -74,6 +79,7 @@ pub struct PrivateChat {
     pub photo: Option<ChatPhoto>,
 }
 
+/// A Group chat object
 #[derive(Serialize, Deserialize, Debug, Clone, PartialEq)]
 pub struct GroupChat {
     pub id: i64,
@@ -99,6 +105,7 @@ pub struct GroupChat {
     pub permissions: Option<super::ChatPermissions>,
 }
 
+/// A supergroup object (a group with more than 200 members)
 #[derive(Serialize, Deserialize, Debug, Clone, PartialEq)]
 pub struct SuperGroupChat {
     pub id: i64,
@@ -139,6 +146,7 @@ pub struct SuperGroupChat {
     pub can_set_sticker_set: Option<bool>,
 }
 
+/// A Channel object
 #[derive(Serialize, Deserialize, Debug, Clone, PartialEq)]
 pub struct ChannelChat {
     pub id: i64,
@@ -176,26 +184,40 @@ pub enum Chat {
     Channel(ChannelChat),
 }
 
+/// Describes actions that a non-administrator user is allowed to take in a chat.
 #[derive(Serialize, Deserialize, Debug, Clone, PartialEq)]
 pub struct ChatPermissions {
+    /// True, if the user is allowed to send text messages, contacts, locations and venues.
     #[serde(default)]
     pub can_send_messages: bool,
+    /// True, if the user is allowed to send audios, documents, photos, videos, video notes and voice notes,
+    /// implies can_send_messages to be true.
     #[serde(default)]
     pub can_send_media_messages: bool,
+    /// True, if the user is allowed to send polls, implies can_send_messages to be true.
     #[serde(default)]
     pub can_send_polls: bool,
+    /// True, if the user is allowed to send animations, games, stickers and use inline bots,
+    /// implies can_send_media_messages to be true.
     #[serde(default)]
     pub can_send_other_messages: bool,
+    /// True, if the user is allowed to add web page previews to their messages,
+    /// implies can_send_media_messages to be true.
     #[serde(default)]
     pub can_add_web_page_previews: bool,
+    /// True, if the user is allowed to change the chat title, photo and other settings.
+    /// Ignored in public supergroups.
     #[serde(default)]
     pub can_change_info: bool,
+    /// True, if the user is allowed to invite new users to the chat.
     #[serde(default)]
     pub can_invite_users: bool,
+    /// True, if the user is allowed to pin messages. Ignored in public supergroups.
     #[serde(default)]
     pub can_pin_messages: bool,
 }
 
+/// This object represents a chat photo.
 #[derive(Serialize, Deserialize, Debug, Clone, PartialEq)]
 pub struct ChatPhoto {
     /// File identifier of small (160x160) chat photo.
@@ -213,6 +235,7 @@ pub struct ChatPhoto {
 }
 
 impl Chat {
+    /// Gets the id of the chat
     pub fn get_id(&self) -> i64 {
         match self {
             Chat::Private(c) => c.id,
@@ -339,6 +362,7 @@ impl From<Chat> for RawChat {
     }
 }
 
+/// This object contains information about one member of a chat.
 #[derive(Serialize, Deserialize, Debug, Clone, PartialEq)]
 #[serde(tag = "status")]
 pub enum ChatMember {
@@ -356,6 +380,7 @@ pub enum ChatMember {
     Kicked(KickedMemberStatus)
 }
 
+/// Represents a [`ChatMember`] who is the creator of the [`Chat`].
 #[derive(Serialize, Deserialize, Debug, Clone, PartialEq)]
 pub struct CreatorMemberStatus {
     /// Information about the user
@@ -364,6 +389,7 @@ pub struct CreatorMemberStatus {
     pub custom_title: Option<String>,
 }
 
+/// Represents a [`ChatMember`] who is an Admin of the [`Chat`].
 #[derive(Serialize, Deserialize, Debug, Clone, PartialEq)]
 pub struct AdministratorMemberStatus {
     /// Information about the user
@@ -401,12 +427,14 @@ pub struct AdministratorMemberStatus {
     pub can_pin_messages: bool,
 }
 
+/// Represents a [`ChatMember`] who is a normal member of the [`Chat`] without any special powers.
 #[derive(Serialize, Deserialize, Debug, Clone, PartialEq)]
 pub struct MemberMemberStatus {
     /// Information about the user
     pub user: User,
 }
 
+/// Represents a restricted [`ChatMember`] of a [`Chat`].
 #[derive(Serialize, Deserialize, Debug, Clone, PartialEq)]
 pub struct RestrictedMemberStatus {
     /// Information about the user
@@ -443,12 +471,14 @@ pub struct RestrictedMemberStatus {
     pub can_add_web_page_previews: bool,
 }
 
+/// Represents a [`ChatMember`] who left the [`Chat`].
 #[derive(Serialize, Deserialize, Debug, Clone, PartialEq)]
 pub struct LeftMemberStatus {
     /// Information about the user
     pub user: User,
 }
 
+/// Represents a [`ChatMember`] who has been kicked from the [`Chat`].
 #[derive(Serialize, Deserialize, Debug, Clone, PartialEq)]
 pub struct KickedMemberStatus {
     /// Information about the user
@@ -459,7 +489,8 @@ pub struct KickedMemberStatus {
 }
 
 impl ChatMember {
-    fn get_user(&self) -> &User {
+    /// Retrieves the underlying [`User`] of the [`ChatMember`].
+    pub fn get_user(&self) -> &User {
         match self {
             ChatMember::Administrator(m) => &m.user,
             ChatMember::Creator(m) => &m.user,

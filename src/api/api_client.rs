@@ -7,12 +7,32 @@ use std::io::Write;
 
 static TELEGRAM_API: &str = "https://api.telegram.org/bot";
 
+/// A default implementation of the [`API`] trait.
+///
+/// It requires your bot token in order to interact with the telegram API and
+/// also allows you to configure your own [`hyper::Client`] for it to use.
+///
+/// Using the default APIClient is as easy as:
+/// ```no_run
+///
+/// use telexide::api::{APIClient};
+///
+/// let client = APIClient::new_default(token);
+/// client.send_message(&message)
+///
+/// ```
+///
+/// In most cases you would want to get updates though and the [`Client`] is best suited for that,
+/// as it allows for easier handling of those updates
+///
+/// [`Client`]: ../client/struct.Client.html
 pub struct APIClient {
     hyper_client: Client<hyper_tls::HttpsConnector<HttpConnector>>,
     token: String,
 }
 
 impl APIClient {
+    /// Creates a new APIClient with the provided token and hyper client (if it is Some).
     pub fn new(
         hyper_client: Option<Client<hyper_tls::HttpsConnector<HttpConnector>>>,
         token: String,
@@ -29,10 +49,19 @@ impl APIClient {
         }
     }
 
+    /// Creates a new APIClient with the provided token and the default hyper client.
+    pub fn new_default(token: String) -> Self {
+        Self {
+            hyper_client: hyper::Client::builder().build(hyper_tls::HttpsConnector::new()),
+            token,
+        }
+    }
+
     fn parse_endpoint(&self, endpoint: APIEndpoint) -> String {
         format!("{}{}/{}", TELEGRAM_API, self.token, endpoint)
     }
 
+    /// Sends a request to the provided APIEndpoint with the data provided (does not support files)
     pub async fn request<D>(&self, endpoint: APIEndpoint, data: Option<&D>) -> Result<Response>
     where
         D: ?Sized + serde::Serialize,

@@ -14,7 +14,6 @@ This is a WIP easy to use library for making a telegram bot, built on tokio and 
     - [X] use your own api struct so you control the get and post methods
     - [X] includes all telegram api endpoints
 - [ ] webhook based update handling
-- [ ] clear documentation
 - [ ] subscribe to non-message events using command (or similar) framework
     - [ ] run command on receiving an inline query or answer to one
     - [ ] run command on receiving a poll that matches your requirements

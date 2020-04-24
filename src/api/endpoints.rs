@@ -1,5 +1,8 @@
 use http::Method;
 
+/// This enum represents all the telegram API endpoints.
+///
+/// It is mostly used for letting the get and post methods in the API trait know how to form the endpoint path
 pub enum APIEndpoint {
     GetUpdates,
     GetMe,
@@ -71,6 +74,7 @@ pub enum APIEndpoint {
     SetPassportDataErrors,
     DeleteWebhook,
     GetWebhookInfo,
+    Other(String)
 }
 
 impl APIEndpoint {
@@ -145,7 +149,8 @@ impl APIEndpoint {
             Self::SetWebhook => "setWebHook",
             Self::SetPassportDataErrors => "setPassportDataErrors",
             Self::DeleteWebhook => "deleteWebhook",
-            Self::GetWebhookInfo => "getWebhookInfo"
+            Self::GetWebhookInfo => "getWebhookInfo",
+            Self::Other(ref e) => e
         }
     }
 
@@ -220,7 +225,8 @@ impl APIEndpoint {
             Self::SetWebhook => Method::POST,
             Self::SetPassportDataErrors => Method::POST,
             Self::DeleteWebhook => Method::POST,
-            Self::GetWebhookInfo => Method::GET
+            Self::GetWebhookInfo => Method::GET,
+            Self::Other(_) => Method::POST
         }
     }
 }
@@ -236,5 +242,11 @@ impl std::fmt::Debug for APIEndpoint {
         f.debug_tuple("telegram::APIEndpoint")
             .field(&self.as_str().to_owned())
             .finish()
+    }
+}
+
+impl From<String> for APIEndpoint {
+    fn from(string: String) -> APIEndpoint {
+        APIEndpoint::Other(string)
     }
 }

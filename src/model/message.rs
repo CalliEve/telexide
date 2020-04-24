@@ -6,6 +6,7 @@ use super::{Game, Invoice, PassportData, Sticker, SuccessfulPayment, User};
 
 pub use super::{message_contents::*, message_entity::*, InlineKeyboardMarkup};
 
+/// The raw message, for most usages the [`Message`] object is easier to use
 #[derive(Serialize, Deserialize, Debug, Clone, PartialEq)]
 pub struct RawMessage {
     pub message_id: i64,
@@ -76,133 +77,209 @@ pub struct RawMessage {
     pub reply_markup: Option<InlineKeyboardMarkup>,
 }
 
+/// This object represents a message.
 #[derive(Debug, Clone, PartialEq)]
 pub struct Message {
+    /// Unique message identifier inside this chat
     pub message_id: i64,
+    /// Sender, empty for messages sent to channels
     pub from: Option<super::User>,
+    /// Date the message was sent
     pub date: DateTime<Utc>,
+    /// Conversation the message belongs to
     pub chat: super::Chat,
 
+    /// Data about what message it was forwarded from
     pub forward_data: Option<ForwardData>,
 
+    /// For replies, the original message.
+    /// Note that the Message object in this field will not contain further reply_to_message fields even if it itself is a reply.
     pub reply_to_message: Option<Box<Message>>,
+    /// Date the message was last edited in Unix time
     pub edit_date: Option<DateTime<Utc>>,
+    /// Signature of the post author for messages in channels
     pub author_signature: Option<String>,
 
+    /// The content of the message
     pub content: MessageContent,
 
+    /// The domain name of the website on which the user has logged in.
     pub connected_website: Option<String>,
+    /// Telegram Passport data
     pub passport_data: Option<PassportData>,
+    /// Inline keyboard attached to the message. `login_url` buttons are represented as ordinary `url` buttons.
     pub reply_markup: Option<InlineKeyboardMarkup>,
 }
 
+/// The content of a [`Message`]
 #[allow(clippy::large_enum_variant)]
 #[derive(Debug, Clone, PartialEq)]
 pub enum MessageContent {
     Text {
+        /// The actual UTF-8 text of the message, 0-4096 characters
         content: String,
+        /// Special entities like usernames, URLs, bot commands, etc. that appear in the text
         entities: Vec<MessageEntity>,
     },
     Audio {
+        /// Information about the audio file
         content: Audio,
+        /// The caption, 0-1024 characters
         caption: Option<String>,
+        /// Special entities like usernames, URLs, bot commands, etc. that appear in the caption
         caption_entities: Option<Vec<MessageEntity>>,
     },
     Document {
+        /// Information about the file
         content: Document,
+        /// The caption, 0-1024 characters
         caption: Option<String>,
+        /// Special entities like usernames, URLs, bot commands, etc. that appear in the caption
         caption_entities: Option<Vec<MessageEntity>>,
     },
     Animation {
+        /// Information about the animation.
         content: Animation,
+        /// The caption, 0-1024 characters
         caption: Option<String>,
+        /// Special entities like usernames, URLs, bot commands, etc. that appear in the caption
         caption_entities: Option<Vec<MessageEntity>>,
     },
     Video {
+        /// Information about the video
         content: Video,
+        /// The caption, 0-1024 characters
         caption: Option<String>,
+        /// Special entities like usernames, URLs, bot commands, etc. that appear in the caption
         caption_entities: Option<Vec<MessageEntity>>,
+        /// The unique identifier of a media message group this message belongs to
         media_group_id: Option<String>,
     },
     Voice {
+        /// Information about the voice file
         content: Voice,
+        /// The caption, 0-1024 characters
         caption: Option<String>,
+        /// Special entities like usernames, URLs, bot commands, etc. that appear in the caption
         caption_entities: Option<Vec<MessageEntity>>,
     },
     Photo {
+        /// Available sizes of the photo
         content: Vec<PhotoSize>,
+        /// The caption, 0-1024 characters
         caption: Option<String>,
+        /// Special entities like usernames, URLs, bot commands, etc. that appear in the caption
         caption_entities: Option<Vec<MessageEntity>>,
+        /// The unique identifier of a media message group this message belongs to
         media_group_id: Option<String>,
     },
 
     Game {
+        /// Information about the game
         content: Game,
     },
     Sticker {
+        /// Information about the sticker
         content: Sticker,
     },
     VideoNote {
+        /// Information about the video message
         content: VideoNote,
     },
     Contact {
+        /// Information about the shared contact
         content: Contact,
     },
     Location {
+        /// Information about the shared location
         content: Location,
     },
     Venue {
+        /// Information about the venue
         content: Venue,
     },
     Poll {
+        /// Information about the native poll
         content: Poll,
     },
     Dice {
+        /// a dice with a random value from 1 to 6
         content: Dice,
     },
     NewChatMembers {
+        /// New members that were added to the group or supergroup and information about them
+        /// (the bot itself may be one of these members)
         content: Vec<User>,
     },
     LeftChatMember {
+        /// A member was removed from the group, information about them
+        /// (this member may be the bot itself)
         content: User,
     },
     NewChatTitle {
+        /// A chat title was changed to this value
         content: String,
     },
     NewChatPhoto {
+        /// A chat photo was change to this value
         content: Vec<PhotoSize>,
     },
     MigrateToChatID {
+        /// The group has been migrated to a supergroup with the specified identifier.
         content: i64,
     },
     MigrateFromChatID {
+        /// The supergroup has been migrated from a group with the specified identifier.
         content: i64,
     },
     PinnedMessage {
+        /// Specified message was pinned. Note that the Message object in this field will not contain
+        /// further reply_to_message fields even if it is itself a reply.
         content: Box<Message>,
     },
     Invoice {
+        /// Message is an invoice for a [payment], information about the invoice.
+        ///
+        /// [payment]: https://core.telegram.org/bots/api#payments
         content: Invoice,
     },
     SuccessfulPayment {
+        /// Message is a service message about a successful payment, information about the payment.
         content: SuccessfulPayment,
     },
 
+    /// Service message: the chat photo was deleted
     DeleteChatPhoto,
+    /// Service message: the group has been created
     GroupChatCreated,
+    /// Service message: the supergroup has been created.
+    /// This field can‘t be received in a message coming through updates,
+    /// because bot can’t be a member of a supergroup when it is created.
+    /// It can only be found in reply_to_message if someone replies to a very first message in a directly created supergroup.
     SupergroupChatCreated,
+    /// Service message: the channel has been created.
+    /// This field can‘t be received in a message coming through updates,
+    /// because bot can’t be a member of a channel when it is created.
+    /// It can only be found in reply_to_message if someone replies to the very first message in a channel.
     ChannelChatCreated,
-
+    /// Received a message with an unknown content
     Unknown,
 }
 
+/// Holds information about the forwarded message
 #[derive(Debug, Clone, PartialEq)]
 pub struct ForwardData {
+    /// For forwarded messages, sender of the original message
     pub from: Option<super::User>,
+    /// For messages forwarded from channels, information about the original channel
     pub from_chat: Option<super::Chat>,
+    /// For messages forwarded from channels, identifier of the original message in the channel
     pub from_message_id: Option<i64>,
+    /// For messages forwarded from channels, signature of the post author if present
     pub signature: Option<String>,
+    /// Sender's name for messages forwarded from users who disallow adding a link to their account in forwarded messages
     pub sender_name: Option<String>,
+    /// For forwarded messages, date the original message was sent in Unix time
     pub date: DateTime<Utc>,
 }
 
@@ -330,8 +407,8 @@ impl From<RawMessage> for Message {
         }
 
         content_with_captions!(raw.audio, Audio);
-        content_with_captions!(raw.document, Document);
         content_with_captions!(raw.animation, Animation);
+        content_with_captions!(raw.document, Document);
         content_with_captions!(raw.voice, Voice);
 
         content!(raw.game, Game);

@@ -12,7 +12,7 @@ pub struct ClientBuilder {
     framework: Option<Arc<Framework>>,
     token: Option<String>,
     allowed_updates: Vec<UpdateType>,
-    event_handlers: Vec<EventHandler>,
+    event_handler_funcs: Vec<EventHandler>,
 }
 
 impl ClientBuilder {
@@ -25,7 +25,7 @@ impl ClientBuilder {
             framework: None,
             token: None,
             allowed_updates: Vec::new(),
-            event_handlers: Vec::new()
+            event_handler_funcs: Vec::new()
         }
     }
 
@@ -72,8 +72,8 @@ impl ClientBuilder {
         self
     }
 
-    pub fn add_handler(&mut self, handler: EventHandlerFunc) -> &mut Self {
-        self.event_handlers.push(EventHandler::new(handler));
+    pub fn add_handler_func(&mut self, handler: EventHandlerFunc) -> &mut Self {
+        self.event_handler_funcs.push(EventHandler::new(handler));
         self
     }
 
@@ -81,7 +81,7 @@ impl ClientBuilder {
         if let Some(c) = self.api_client.clone() {
             Client {
                 api_client: c,
-                event_handlers: self.event_handlers.clone(),
+                event_handlers: self.event_handler_funcs.clone(),
                 raw_event_handlers: Vec::new(),
                 data: Arc::new(RwLock::new(ShareMap::custom())),
                 framework: self.framework.clone(),
@@ -95,7 +95,7 @@ impl ClientBuilder {
                         .clone()
                         .expect("A token must be provided for the telegram bot to work"),
                 ))),
-                event_handlers: self.event_handlers.clone(),
+                event_handlers: self.event_handler_funcs.clone(),
                 raw_event_handlers: Vec::new(),
                 data: Arc::new(RwLock::new(ShareMap::custom())),
                 framework: self.framework.clone(),

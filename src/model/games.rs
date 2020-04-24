@@ -24,7 +24,7 @@ pub struct Game {
     pub animation: Option<Animation>,
 }
 
-// A placeholder, currently holds no information.
+/// A placeholder, currently holds no information.
 #[derive(Serialize, Deserialize, Debug, Clone, PartialEq)]
 pub struct CallbackGame {}
 

@@ -1,12 +1,16 @@
 use serde::{Deserialize, Serialize};
 
+/// An object describing a part of a text
 #[derive(Serialize, Deserialize, Debug, Clone, PartialEq)]
 pub struct TextBlock {
+    /// Offset in UTF-16 code units to the start of the entity
     offset: usize,
+    /// Length of the entity in UTF-16 code units
     length: usize,
 }
 
 impl TextBlock {
+    /// Gets the part of the text described by the TextBlock
     pub fn get_text(&self, text: &str) -> String {
         let mut res: Vec<u16> = Vec::with_capacity(self.length);
 

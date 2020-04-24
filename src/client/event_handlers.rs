@@ -7,10 +7,21 @@ pub(crate) type MessageHandlerFunc = fn(Context, Message) -> FutureOutcome;
 pub(crate) type InlineQueryHandlerFunc = fn(Context, InlineQuery) -> FutureOutcome;
 pub(crate) type InlineResultHandlerFunc = fn(Context, ChosenInlineResult) -> FutureOutcome;
 
+/// A function that handles a new update, it receives a [`Context`] and [`Update`] and returns a pinned future.
+/// Wrap an async function with [`#[prepare_listener]`] for easier development.
+///
+/// [`#[prepare_listener]`]: ../macros/macro.prepare_listener.html
 pub(crate) type EventHandlerFunc = fn(Context, Update) -> FutureOutcome;
+
+/// A function that handles a new raw update, it receives a [`Context`] and [`RawUpdate`] and returns a pinned future.
+/// Wrap an async function with [`#[prepare_listener]`] for easier development.
+///
+/// [`#[prepare_listener]`]: ../macros/macro.prepare_listener.html
 pub(crate) type RawEventHandlerFunc =
     fn(Context, RawUpdate) -> FutureOutcome;
 
+// is public for use with the command framework
+#[doc(hidden)]
 #[derive(Clone)]
 pub struct EventHandler {
     inner: Arc<Mutex<EventHandlerFunc>>,
@@ -34,6 +45,8 @@ impl EventHandler {
     }
 }
 
+// is public for use with the command framework
+#[doc(hidden)]
 #[derive(Clone)]
 pub struct RawEventHandler {
     inner: Arc<Mutex<RawEventHandlerFunc>>,
@@ -57,6 +70,8 @@ impl RawEventHandler {
     }
 }
 
+// is public for use with the command framework
+#[doc(hidden)]
 #[derive(Clone)]
 pub struct MessageHandler {
     inner: Arc<Mutex<MessageHandlerFunc>>,
@@ -86,6 +101,8 @@ impl From<MessageHandlerFunc> for MessageHandler {
     }
 }
 
+// is public for use with the command framework
+#[doc(hidden)]
 #[derive(Clone)]
 pub struct InlineQueryHandler {
     inner: Arc<Mutex<InlineQueryHandlerFunc>>,
@@ -115,6 +132,8 @@ impl From<InlineQueryHandlerFunc> for InlineQueryHandler {
     }
 }
 
+// is public for use with the command framework
+#[doc(hidden)]
 #[derive(Clone)]
 pub struct InlineResultHandler {
     inner: Arc<Mutex<InlineResultHandlerFunc>>,

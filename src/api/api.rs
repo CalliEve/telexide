@@ -4,6 +4,9 @@ use std::vec::Vec;
 use async_trait::async_trait;
 use crate::utils::result::TelegramError;
 
+/// This trait provides methods for interacting with the telegram API.
+///
+///
 #[async_trait]
 pub trait API {
     /// executes a get request to the given telegram api endpoint

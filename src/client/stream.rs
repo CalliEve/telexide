@@ -16,6 +16,8 @@ use crate::{
 
 type FutureUpdate = Pin<Box<dyn Future<Output = Result<Vec<Update>>>>>;
 
+/// The stream of incoming updates, created by long polling the telegram API using their getUpdates endpoint.
+///
 #[must_use = "streams do nothing unless polled"]
 pub struct UpdatesStream {
     api: Arc<Box<APIConnector>>,

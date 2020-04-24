@@ -88,7 +88,7 @@ async fn main() -> telexide::Result<()> {
         .set_token(token)
         .set_framework(create_framework!(&bot_name, repeat))
         .add_allowed_updates(UpdateType::Message)
-        .add_handler(handle_next)
+        .add_handler_func(handle_next)
         .build();
 
     {

@@ -10,17 +10,47 @@ use parking_lot::RwLock;
 use std::sync::Arc;
 use typemap::ShareMap;
 
-/// The main object to manage your interaction with telegram
+/// The Client is the main object to manage your interaction with telegram.
+///
+///
+///
+/// # Event Handlers
+///
+/// Event handlers can be configured to be called upon every update that is received.
+/// (Later on support will be added for subscribing to more specific update events)
+///
+/// Note that you do not need to manually handle retrieving updates,
+/// as they are handled internally and then dispatched to your event handlers.
+///
+/// # Examples
+///
+///
 #[derive(Clone)]
 pub struct Client {
-    /// The API client, it contains all the methods to talk to the telegram api
+    /// The API client, it contains all the methods to talk to the telegram api,
+    /// more documentation can be found over at the [`API`] docs
+    ///
+    /// [`API`]: ../api/trait.API.html
     pub api_client: Arc<Box<APIConnector>>,
-    /// Your custom data that you want to be shared amongst event handlers and commands
+    /// Your custom data that you want to be shared amongst event handlers and commands.
+    ///
+    /// The purpose of the data field is to be accessible and persistent across
+    /// contexts; that is, data can be modified by one context, and will persist
+    /// through the future and be accessible through other contexts. This is
+    /// useful for anything that should "live" through the program: counters,
+    /// database connections, custom user caches, etc.
+    /// Therefore this ShareMap requires all types it will contain to be Send + Sync.
+    ///
+    /// When using a [`Context`], this data will be available as [`Context::data`].
+    ///
+    /// Refer to the [repeat_image_bot] example for an example on using the `data` field
+    ///
+    /// [repeat_image_bot]: https://github.com/Baev1/telexide/tree/master/examples/repeat_image_bot.rs
     pub data: Arc<RwLock<ShareMap>>,
     pub(super) event_handlers: Vec<EventHandler>,
     pub(super) raw_event_handlers: Vec<RawEventHandler>,
     pub(super) framework: Option<Arc<Framework>>,
-    /// The update types that you want to receive
+    /// The update types that you want to receive, see the documentation of [`UpdateType`] for more information
     pub allowed_updates: Vec<UpdateType>
 }
 
@@ -37,7 +67,7 @@ impl Client {
         }
     }
 
-    /// Creates a Client object with default values, but with a framework
+    /// Creates a Client object with default values, but with a [`Framework`]
     pub fn with_framework(fr: Arc<Framework>, token: String) -> Self {
         Self {
             api_client: Arc::new(Box::new(APIClient::new(None, token))),
@@ -51,32 +81,17 @@ impl Client {
 
     /// Starts the client and blocks until an error happens in the updates stream or the program exits (for example due to a panic).
     /// If using the framework, it will update your commands in telegram
-    /// This uses a default UpdatesStream object
+    /// This uses a default [`UpdatesStream`] object
     pub async fn start(&self) -> Result<()> {
-        if let Some(fr) = self.framework.clone() {
-            self.api_client
-                .set_my_commands(fr.get_commands().into())
-                .await?;
-        }
-
         let mut stream = UpdatesStream::new(self.api_client.clone());
         stream.set_allowed_updates(self.allowed_updates.clone());
 
-        while let Some(poll) = stream.next().await {
-            match poll {
-                Ok(update) => {
-                    self.fire_handlers(update);
-                },
-                Err(err) => return Err(err),
-            }
-        }
-
-        Ok(())
+        self.start_with_stream(&mut stream).await
     }
 
     /// Starts the client and blocks until an error happens in the updates stream or the program exits (for example due to a panic).
     /// If using the framework, it will update your commands in telegram
-    /// You have to provide your own UpdatesStream object
+    /// You have to provide your own [`UpdatesStream`] object
     pub async fn start_with_stream(&self, stream: &mut UpdatesStream) -> Result<()> {
         if let Some(fr) = self.framework.clone() {
             self.api_client
@@ -96,8 +111,8 @@ impl Client {
         Ok(())
     }
 
-    /// Subscribes an update event handler to the client and will be ran when a new update is received
-    pub fn subscribe_handler(&mut self, handler: EventHandlerFunc)
+    /// Subscribes an update event handler function ([`EventHandlerFunc`]) to the client and will be ran when a new update is received
+    pub fn subscribe_handler_func(&mut self, handler: EventHandlerFunc)
     {
         self.event_handlers
             .push(EventHandler::new(handler));
@@ -110,7 +125,7 @@ impl Client {
 //            .push(RawEventHandler::new(handler));
 //    }
 
-    /// for testing purposes
+    // public only for testing purposes
     #[doc(hidden)]
     pub fn fire_handlers(&self, update: Update) {
         for h in self.event_handlers.clone() {

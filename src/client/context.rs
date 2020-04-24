@@ -3,6 +3,7 @@ use parking_lot::RwLock;
 use std::sync::Arc;
 use typemap::ShareMap;
 
+
 #[derive(Clone)]
 pub struct Context {
     pub api: Arc<Box<APIConnector>>,

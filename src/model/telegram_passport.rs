@@ -79,6 +79,7 @@ pub struct EncryptedCredentials {
     pub secret: String
 }
 
+/// The type of a telegram passport element
 #[derive(Serialize, Deserialize, Debug, Clone, PartialEq)]
 pub enum TelegramPassportElement {
     #[serde(rename = "personal_details")]

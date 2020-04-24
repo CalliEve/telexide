@@ -1,3 +1,5 @@
+//! This modules provides all the objects describing the payloads to be send to the different telegram API endpoints
+
 mod commands;
 mod send_messages;
 mod updates;
