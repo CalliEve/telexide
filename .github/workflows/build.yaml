@@ -9,6 +9,9 @@ jobs:
     steps:
       - uses: actions/checkout@v2
 
+      - name: Prepare
+        run: sudo chmod +x scripts/build_examples.sh
+
       - name: Build
         run: cargo build --verbose
 
