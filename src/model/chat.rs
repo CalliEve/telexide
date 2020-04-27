@@ -1,7 +1,6 @@
-use super::utils::unix_date_formatting;
+use super::{utils::unix_date_formatting, User};
 use chrono::{DateTime, Utc};
 use serde::{Deserialize, Serialize};
-use super::User;
 
 /// The raw chat, for most usages the [`Chat`] object is easier to use
 #[derive(Serialize, Deserialize, Debug, Clone, PartialEq)]
@@ -20,30 +19,35 @@ pub struct RawChat {
     pub last_name: Option<String>,
     /// Chat photo. Returned only in getChat.
     pub photo: Option<ChatPhoto>,
-    /// Description, for groups, supergroups and channel chats. Returned only in [`get_chat`].
+    /// Description, for groups, supergroups and channel chats. Returned only in
+    /// [`get_chat`].
     ///
     /// [`get_chat`]: ../../api/trait.API.html#method.get_chat
     pub description: Option<String>,
     /// Chat invite link, for groups, supergroups and channel chats.
     pub invite_link: Option<String>,
-    /// Pinned message, for groups, supergroups and channels. Returned only in [`get_chat`].
+    /// Pinned message, for groups, supergroups and channels. Returned only in
+    /// [`get_chat`].
     ///
     /// [`get_chat`]: ../../api/trait.API.html#method.get_chat
     pub pinned_message: Option<Box<super::message::RawMessage>>,
-    /// Default chat member permissions, for groups and supergroups. Returned only in [`get_chat`].
+    /// Default chat member permissions, for groups and supergroups. Returned
+    /// only in [`get_chat`].
     ///
     /// [`get_chat`]: ../../api/trait.API.html#method.get_chat
     pub permissions: Option<super::ChatPermissions>,
-    /// For supergroups, the minimum allowed delay between consecutive messages sent by each
-    /// unpriviledged user. Returned only in [`get_chat`].
+    /// For supergroups, the minimum allowed delay between consecutive messages
+    /// sent by each unpriviledged user. Returned only in [`get_chat`].
     ///
     /// [`get_chat`]: ../../api/trait.API.html#method.get_chat
     pub slow_mode_delay: Option<usize>,
-    /// For supergroups, name of group sticker set. Returned only in [`get_chat`].
+    /// For supergroups, name of group sticker set. Returned only in
+    /// [`get_chat`].
     ///
     /// [`get_chat`]: ../../api/trait.API.html#method.get_chat
     pub sticker_set_name: Option<String>,
-    /// True, if the bot can change the group sticker set. Returned only in [`get_chat`].
+    /// True, if the bot can change the group sticker set. Returned only in
+    /// [`get_chat`].
     ///
     /// [`get_chat`]: ../../api/trait.API.html#method.get_chat
     pub can_set_sticker_set: Option<bool>,
@@ -131,8 +135,8 @@ pub struct SuperGroupChat {
     ///
     /// [`get_chat`]: ../../api/trait.API.html#method.get_chat
     pub permissions: Option<super::ChatPermissions>,
-    /// The minimum allowed delay between consecutive messages sent by each unprivileged user.
-    /// Returned only in [`get_chat`].
+    /// The minimum allowed delay between consecutive messages sent by each
+    /// unprivileged user. Returned only in [`get_chat`].
     ///
     /// [`get_chat`]: ../../api/trait.API.html#method.get_chat
     pub slow_mode_delay: Option<usize>,
@@ -140,7 +144,8 @@ pub struct SuperGroupChat {
     ///
     /// [`get_chat`]: ../../api/trait.API.html#method.get_chat
     pub sticker_set_name: Option<String>,
-    /// True, if the bot can change the group sticker set. Returned only in [`get_chat`].
+    /// True, if the bot can change the group sticker set. Returned only in
+    /// [`get_chat`].
     ///
     /// [`get_chat`]: ../../api/trait.API.html#method.get_chat
     pub can_set_sticker_set: Option<bool>,
@@ -170,7 +175,8 @@ pub struct ChannelChat {
     pub pinned_message: Option<Box<super::Message>>,
 }
 
-/// This object represents a chat. It can be a private, group, supergroup or channel chat
+/// This object represents a chat. It can be a private, group, supergroup or
+/// channel chat
 #[derive(Serialize, Deserialize, Debug, Clone, PartialEq)]
 #[serde(tag = "type")]
 pub enum Chat {
@@ -184,35 +190,39 @@ pub enum Chat {
     Channel(ChannelChat),
 }
 
-/// Describes actions that a non-administrator user is allowed to take in a chat.
+/// Describes actions that a non-administrator user is allowed to take in a
+/// chat.
 #[derive(Serialize, Deserialize, Debug, Clone, PartialEq)]
 pub struct ChatPermissions {
-    /// True, if the user is allowed to send text messages, contacts, locations and venues.
+    /// True, if the user is allowed to send text messages, contacts, locations
+    /// and venues.
     #[serde(default)]
     pub can_send_messages: bool,
-    /// True, if the user is allowed to send audios, documents, photos, videos, video notes and voice notes,
-    /// implies can_send_messages to be true.
+    /// True, if the user is allowed to send audios, documents, photos, videos,
+    /// video notes and voice notes, implies can_send_messages to be true.
     #[serde(default)]
     pub can_send_media_messages: bool,
-    /// True, if the user is allowed to send polls, implies can_send_messages to be true.
+    /// True, if the user is allowed to send polls, implies can_send_messages to
+    /// be true.
     #[serde(default)]
     pub can_send_polls: bool,
-    /// True, if the user is allowed to send animations, games, stickers and use inline bots,
-    /// implies can_send_media_messages to be true.
+    /// True, if the user is allowed to send animations, games, stickers and use
+    /// inline bots, implies can_send_media_messages to be true.
     #[serde(default)]
     pub can_send_other_messages: bool,
     /// True, if the user is allowed to add web page previews to their messages,
     /// implies can_send_media_messages to be true.
     #[serde(default)]
     pub can_add_web_page_previews: bool,
-    /// True, if the user is allowed to change the chat title, photo and other settings.
-    /// Ignored in public supergroups.
+    /// True, if the user is allowed to change the chat title, photo and other
+    /// settings. Ignored in public supergroups.
     #[serde(default)]
     pub can_change_info: bool,
     /// True, if the user is allowed to invite new users to the chat.
     #[serde(default)]
     pub can_invite_users: bool,
-    /// True, if the user is allowed to pin messages. Ignored in public supergroups.
+    /// True, if the user is allowed to pin messages. Ignored in public
+    /// supergroups.
     #[serde(default)]
     pub can_pin_messages: bool,
 }
@@ -221,16 +231,20 @@ pub struct ChatPermissions {
 #[derive(Serialize, Deserialize, Debug, Clone, PartialEq)]
 pub struct ChatPhoto {
     /// File identifier of small (160x160) chat photo.
-    /// This file_id can be used only for photo download and only for as long as the photo is not changed.
+    /// This file_id can be used only for photo download and only for as long as
+    /// the photo is not changed.
     pub small_file_id: String,
-    /// Unique file identifier of small (160x160) chat photo, which is supposed to be the same over time and for different bots.
-    /// Can't be used to download or reuse the file.
+    /// Unique file identifier of small (160x160) chat photo, which is supposed
+    /// to be the same over time and for different bots. Can't be used to
+    /// download or reuse the file.
     pub small_file_unique_id: String,
     /// File identifier of big (640x640) chat photo.
-    /// This file_id can be used only for photo download and only for as long as the photo is not changed.
+    /// This file_id can be used only for photo download and only for as long as
+    /// the photo is not changed.
     pub big_file_id: String,
-    /// Unique file identifier of big (640x640) chat photo, which is supposed to be the same over time and for different bots.
-    /// Can't be used to download or reuse the file.
+    /// Unique file identifier of big (640x640) chat photo, which is supposed to
+    /// be the same over time and for different bots. Can't be used to
+    /// download or reuse the file.
     pub big_file_unique_id: String,
 }
 
@@ -377,7 +391,7 @@ pub enum ChatMember {
     #[serde(rename = "left")]
     Left(LeftMemberStatus),
     #[serde(rename = "kicked")]
-    Kicked(KickedMemberStatus)
+    Kicked(KickedMemberStatus),
 }
 
 /// Represents a [`ChatMember`] who is the creator of the [`Chat`].
@@ -402,7 +416,8 @@ pub struct AdministratorMemberStatus {
     /// True, if the administrator can post in the channel; channels only
     #[serde(default)]
     pub can_post_messages: bool,
-    /// True, if the administrator can edit messages of other users and can pin messages; channels only
+    /// True, if the administrator can edit messages of other users and can pin
+    /// messages; channels only
     #[serde(default)]
     pub can_edit_messages: bool,
     /// True, if the administrator can delete messages of other users
@@ -411,23 +426,27 @@ pub struct AdministratorMemberStatus {
     /// True, if the administrator can restrict, ban or unban chat members
     #[serde(default)]
     pub can_restrict_members: bool,
-    /// True, if the administrator can add new administrators with a subset of his own privileges
-    /// or demote administrators that he has promoted, directly or indirectly
-    /// (promoted by administrators that were appointed by the user)
+    /// True, if the administrator can add new administrators with a subset of
+    /// his own privileges or demote administrators that he has promoted,
+    /// directly or indirectly (promoted by administrators that were
+    /// appointed by the user)
     #[serde(default)]
     pub can_promote_members: bool,
-    /// True, if the user is allowed to change the chat title, photo and other settings
+    /// True, if the user is allowed to change the chat title, photo and other
+    /// settings
     #[serde(default)]
     pub can_change_info: bool,
     /// True, if the user is allowed to invite new users to the chat
     #[serde(default)]
     pub can_invite_users: bool,
-    ///  True, if the user is allowed to pin messages; groups and supergroups only
+    ///  True, if the user is allowed to pin messages; groups and supergroups
+    /// only
     #[serde(default)]
     pub can_pin_messages: bool,
 }
 
-/// Represents a [`ChatMember`] who is a normal member of the [`Chat`] without any special powers.
+/// Represents a [`ChatMember`] who is a normal member of the [`Chat`] without
+/// any special powers.
 #[derive(Serialize, Deserialize, Debug, Clone, PartialEq)]
 pub struct MemberMemberStatus {
     /// Information about the user
@@ -443,27 +462,32 @@ pub struct RestrictedMemberStatus {
     #[serde(with = "unix_date_formatting::optional")]
     pub until_date: Option<DateTime<Utc>>,
     #[serde(default)]
-    /// True, if the user is allowed to change the chat title, photo and other settings
+    /// True, if the user is allowed to change the chat title, photo and other
+    /// settings
     pub can_change_info: bool,
     /// True, if the user is allowed to invite new users to the chat
     #[serde(default)]
     pub can_invite_users: bool,
-    ///  True, if the user is allowed to pin messages; groups and supergroups only
+    ///  True, if the user is allowed to pin messages; groups and supergroups
+    /// only
     #[serde(default)]
     pub can_pin_messages: bool,
     /// True, if the user is a member of the chat at the moment of the request
     #[serde(default)]
     pub is_member: bool,
-    /// True, if the user is allowed to send text messages, contacts, locations and venues
+    /// True, if the user is allowed to send text messages, contacts, locations
+    /// and venues
     #[serde(default)]
     pub can_send_messages: bool,
-    /// True, if the user is allowed to send audios, documents, photos, videos, video notes and voice notes
+    /// True, if the user is allowed to send audios, documents, photos, videos,
+    /// video notes and voice notes
     #[serde(default)]
     pub can_send_media_messages: bool,
     /// True, if the user is allowed to send polls
     #[serde(default)]
     pub can_send_polls: bool,
-    /// True, if the user is allowed to send animations, games, stickers and use inline bots
+    /// True, if the user is allowed to send animations, games, stickers and use
+    /// inline bots
     #[serde(default)]
     pub can_send_other_messages: bool,
     /// True, if the user is allowed to add web page previews to their messages

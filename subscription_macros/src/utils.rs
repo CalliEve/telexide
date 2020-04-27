@@ -1,13 +1,14 @@
+use proc_macro2::{Ident, Literal};
+use quote::format_ident;
 use syn::{
+    parenthesized,
+    parse::{Parse, ParseStream, Result},
     punctuated::Punctuated,
     token::Comma,
-    parse::{Parse, ParseStream, Result},
-    parenthesized, Token
+    Token,
 };
-use quote::format_ident;
-use proc_macro2::{Ident, Literal};
 
-pub struct ParenthesisedItems<T> (pub Punctuated<T, Comma>);
+pub struct ParenthesisedItems<T>(pub Punctuated<T, Comma>);
 
 impl<T: Parse> Parse for ParenthesisedItems<T> {
     fn parse(input: ParseStream<'_>) -> Result<Self> {
@@ -25,7 +26,7 @@ impl Parse for PunctuatedNamedArgs {
     }
 }
 
-pub struct NamedArgs{
+pub struct NamedArgs {
     pub name: String,
     pub value: String,
 }
@@ -35,10 +36,13 @@ impl Parse for NamedArgs {
         let name = input.parse::<Ident>()?.to_string();
         input.parse::<Token![=]>()?;
         let mut value = input.parse::<Literal>()?.to_string();
-        value = value.trim_start_matches("\"").to_owned();
-        value = value.trim_end_matches("\"").to_owned();
+        value = value.trim_start_matches('\"').to_owned();
+        value = value.trim_end_matches('\"').to_owned();
 
-        Ok(Self{name, value})
+        Ok(Self {
+            name,
+            value,
+        })
     }
 }
 

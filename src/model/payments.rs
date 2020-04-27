@@ -8,13 +8,14 @@ pub struct Invoice {
     pub title: String,
     /// Product description
     pub description: String,
-    /// Unique bot deep-linking parameter that can be used to generate this invoice
+    /// Unique bot deep-linking parameter that can be used to generate this
+    /// invoice
     pub start_parameter: String,
     /// Three-letter ISO 4217 [currency](https://core.telegram.org/bots/payments#supported-currencies) code
     pub currency: String,
     /// Total price in the smallest units of the [currency](https://core.telegram.org/bots/payments#supported-currencies)
-    /// (integer, not float). For example, for a price of US$ 1.45 pass amount = 145. See the exp parameter in
-    /// [currencies.json](https://core.telegram.org/bots/payments/currencies.json),
+    /// (integer, not float). For example, for a price of US$ 1.45 pass amount =
+    /// 145. See the exp parameter in [currencies.json](https://core.telegram.org/bots/payments/currencies.json),
     /// it shows the number of digits past the decimal point for each currency
     /// (2 for the majority of currencies).
     pub total_amount: usize,
@@ -26,8 +27,8 @@ pub struct SuccessfulPayment {
     /// Three-letter ISO 4217 [currency](https://core.telegram.org/bots/payments#supported-currencies) code
     pub currency: String,
     /// Total amount in the smallest units of the [currency](https://core.telegram.org/bots/payments#supported-currencies)
-    /// (integer, not float). For example, for a price of US$ 1.45 pass amount = 145. See the exp parameter in
-    /// [currencies.json](https://core.telegram.org/bots/payments/currencies.json),
+    /// (integer, not float). For example, for a price of US$ 1.45 pass amount =
+    /// 145. See the exp parameter in [currencies.json](https://core.telegram.org/bots/payments/currencies.json),
     /// it shows the number of digits past the decimal point for each currency
     /// (2 for the majority of currencies).
     pub total_amount: usize,
@@ -96,8 +97,8 @@ pub struct PreCheckoutQuery {
     /// Three-letter ISO 4217 [currency](https://core.telegram.org/bots/payments#supported-currencies) code
     pub currency: String,
     /// Total amount in the smallest units of the [currency](https://core.telegram.org/bots/payments#supported-currencies)
-    /// (integer, not float). For example, for a price of US$ 1.45 pass amount = 145. See the exp parameter in
-    /// [currencies.json](https://core.telegram.org/bots/payments/currencies.json),
+    /// (integer, not float). For example, for a price of US$ 1.45 pass amount =
+    /// 145. See the exp parameter in [currencies.json](https://core.telegram.org/bots/payments/currencies.json),
     /// it shows the number of digits past the decimal point for each currency
     /// (2 for the majority of currencies).
     pub total_amount: usize,
@@ -117,7 +118,7 @@ pub struct ShippingOption {
     /// Option title
     pub title: String,
     /// List of price portions
-    pub prices: Vec<LabeledPrice>
+    pub prices: Vec<LabeledPrice>,
 }
 
 /// This object represents a portion of the price for goods or services.
@@ -126,8 +127,8 @@ pub struct LabeledPrice {
     /// Portion label
     pub label: String,
     /// Price of the product in the smallest units of the [currency](https://core.telegram.org/bots/payments#supported-currencies)
-    /// (integer, not float). For example, for a price of US$ 1.45 pass amount = 145. See the exp parameter in
-    /// [currencies.json](https://core.telegram.org/bots/payments/currencies.json),
+    /// (integer, not float). For example, for a price of US$ 1.45 pass amount =
+    /// 145. See the exp parameter in [currencies.json](https://core.telegram.org/bots/payments/currencies.json),
     /// it shows the number of digits past the decimal point for each currency
     /// (2 for the majority of currencies).
     pub amount: i64,

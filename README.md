@@ -2,6 +2,10 @@
 
 This is a WIP easy to use library for making a telegram bot, built on tokio and hyper.
 
+[![Crate](https://img.shields.io/crates/v/telexide?style=flat-square)](https://crates.io/crates/telexide)
+[![Docs](https://docs.rs/telexide/badge.svg)](https://docs.rs/telexide)
+[![Build Status](https://img.shields.io/endpoint.svg?url=https%3A%2F%2Factions-badge.atrox.dev%2Fbaev1%2Ftelexide%2Fbadge&style=flat-square)](https://actions-badge.atrox.dev/baev1/telexide/goto)
+
 ## Features
 
 - [X] easy to use and customisable client

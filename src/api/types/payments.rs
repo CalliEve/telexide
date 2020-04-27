@@ -1,6 +1,11 @@
+use crate::model::{LabeledPrice, ReplyMarkup, ShippingOption};
 use serde::{Deserialize, Serialize};
-use crate::model::{ShippingOption, LabeledPrice, ReplyMarkup};
 
+/// struct for holding data needed to call
+/// [`send_invoice`]
+///
+/// [`send_invoice`]:
+/// ../../api/trait.API.html#method.send_invoice
 #[derive(Serialize, Deserialize, Debug, Clone, PartialEq)]
 pub struct SendInvoice {
     /// Unique identifier for the target private chat
@@ -14,14 +19,17 @@ pub struct SendInvoice {
     pub payload: String,
     /// Payments provider token, obtained via [Botfather](https://t.me/botfather)
     pub provider_token: String,
-    /// Unique deep-linking parameter that can be used to generate this invoice when used as a start parameter
+    /// Unique deep-linking parameter that can be used to generate this invoice
+    /// when used as a start parameter
     pub start_parameter: String,
     /// Three-letter ISO 4217 currency code
     pub currency: String,
-    /// Price breakdown, a list of components (e.g. product price, tax, discount, delivery cost, delivery tax, bonus, etc.)
+    /// Price breakdown, a list of components (e.g. product price, tax,
+    /// discount, delivery cost, delivery tax, bonus, etc.)
     pub prices: Vec<LabeledPrice>,
-    /// JSON-encoded data about the invoice, which will be shared with the payment provider.
-    /// A detailed description of required fields should be provided by the payment provider.
+    /// JSON-encoded data about the invoice, which will be shared with the
+    /// payment provider. A detailed description of required fields should
+    /// be provided by the payment provider.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub provider_data: Option<String>,
     /// URL of the product photo for the invoice.
@@ -44,7 +52,8 @@ pub struct SendInvoice {
     pub need_phone_number: bool,
     /// Pass True, if you require the user's email address to complete the order
     pub need_email: bool,
-    /// Pass True, if you require the user's shipping address to complete the order
+    /// Pass True, if you require the user's shipping address to complete the
+    /// order
     pub need_shipping_address: bool,
     /// Pass True, if user's phone number should be sent to provider
     pub send_phone_number_to_provider: bool,
@@ -52,7 +61,8 @@ pub struct SendInvoice {
     pub send_email_to_provider: bool,
     /// Pass True, if the final price depends on the shipping method
     pub is_flexible: bool,
-    /// Sends the message silently. Users will receive a notification with no sound.
+    /// Sends the message silently. Users will receive a notification with no
+    /// sound.
     pub disable_notification: bool,
     /// If the message is a reply, ID of the original message
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -62,37 +72,50 @@ pub struct SendInvoice {
     pub reply_markup: Option<ReplyMarkup>,
 }
 
+/// struct for holding data needed to call
+/// [`answer_shipping_query`]
+///
+/// [`answer_shipping_query`]:
+/// ../../api/trait.API.html#method.answer_shipping_query
 #[derive(Serialize, Deserialize, Debug, Clone, PartialEq)]
 pub struct AnswerShippingQuery {
     /// Unique identifier for the query to be answered
     pub shipping_query_id: String,
     /// Specify True if delivery to the specified address is possible and
-    /// False if there are any problems (for example, if delivery to the specified address is not possible)
+    /// False if there are any problems (for example, if delivery to the
+    /// specified address is not possible)
     pub ok: bool,
     /// Required if ok is True.
     /// A vec of available shipping options.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub shipping_options: Option<Vec<ShippingOption>>,
     /// Required if ok is False.
-    /// Error message in human readable form that explains why it is impossible to complete the order
-    /// (e.g. "Sorry, delivery to your desired address is unavailable').
-    /// Telegram will display this message to the user.
+    /// Error message in human readable form that explains why it is impossible
+    /// to complete the order (e.g. "Sorry, delivery to your desired address
+    /// is unavailable'). Telegram will display this message to the user.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub error_message: Option<String>
+    pub error_message: Option<String>,
 }
 
+/// struct for holding data needed to call
+/// [`answer_pre_checkout_query`]
+///
+/// [`answer_pre_checkout_query`]:
+/// ../../api/trait.API.html#method.answer_pre_checkout_query
 #[derive(Serialize, Deserialize, Debug, Clone, PartialEq)]
 pub struct AnswerPreCheckoutQuery {
     /// Unique identifier for the query to be answered
     pub pre_checkout_query_id: String,
     /// Specify True if everything is alright (goods are available, etc.)
-    /// and the bot is ready to proceed with the order. Use False if there are any problems.
+    /// and the bot is ready to proceed with the order. Use False if there are
+    /// any problems.
     pub ok: bool,
-    /// Required if ok is False. Error message in human readable form that explains the reason
-    /// for failure to proceed with the checkout (e.g. "Sorry, somebody just bought the last of
-    /// our amazing black T-shirts while you were busy filling out your payment details.
-    /// Please choose a different color or garment!").
-    /// Telegram will display this message to the user.
+    /// Required if ok is False. Error message in human readable form that
+    /// explains the reason for failure to proceed with the checkout (e.g.
+    /// "Sorry, somebody just bought the last of our amazing black T-shirts
+    /// while you were busy filling out your payment details. Please choose
+    /// a different color or garment!"). Telegram will display this message
+    /// to the user.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub error_message: Option<String>
+    pub error_message: Option<String>,
 }

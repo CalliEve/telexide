@@ -1,4 +1,5 @@
-//! Note: It is necessary to enable [inline feedback] via [@Botfather] in order to receive these objects in updates.
+//! Note: It is necessary to enable [inline feedback] via [@Botfather] in order
+//! to receive these objects in updates.
 //!
 //! [inline feedback]: https://core.telegram.org/bots/inline#collecting-feedback
 //! [@Botfather]: https://t.me/botfather
@@ -7,7 +8,8 @@ use super::{Location, User};
 use serde::{Deserialize, Serialize};
 
 /// This object represents an incoming inline query.
-/// When the user sends an empty query, your bot could return some default or trending results.
+/// When the user sends an empty query, your bot could return some default or
+/// trending results.
 #[derive(Serialize, Deserialize, Debug, Clone, PartialEq)]
 pub struct InlineQuery {
     /// Unique identifier for this query
@@ -22,7 +24,8 @@ pub struct InlineQuery {
     pub offset: String,
 }
 
-/// Represents a result of an inline query that was chosen by the user and sent to their chat partner.
+/// Represents a result of an inline query that was chosen by the user and sent
+/// to their chat partner.
 #[derive(Serialize, Deserialize, Debug, Clone, PartialEq)]
 pub struct ChosenInlineResult {
     /// The unique identifier for the result that was chosen
@@ -33,7 +36,8 @@ pub struct ChosenInlineResult {
     pub location: Option<Location>,
     /// Identifier of the sent inline message.
     /// Available only if there is an inline keyboard attached to the message.
-    /// Will be also received in callback queries and can be used to edit the message.
+    /// Will be also received in callback queries and can be used to edit the
+    /// message.
     pub query: String,
     /// The query that was used to obtain the result
     pub inline_message_id: Option<String>,

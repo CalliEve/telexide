@@ -1,24 +1,27 @@
-use tokio::sync::Mutex;
-use std::sync::Arc;
 use super::{Context, FutureOutcome};
 use crate::model::{raw::RawUpdate, ChosenInlineResult, InlineQuery, Message, Update};
+use std::sync::Arc;
+use tokio::sync::Mutex;
 
 pub(crate) type MessageHandlerFunc = fn(Context, Message) -> FutureOutcome;
 pub(crate) type InlineQueryHandlerFunc = fn(Context, InlineQuery) -> FutureOutcome;
 pub(crate) type InlineResultHandlerFunc = fn(Context, ChosenInlineResult) -> FutureOutcome;
 
-/// A function that handles a new update, it receives a [`Context`] and [`Update`] and returns a pinned future.
-/// Wrap an async function with [`#[prepare_listener]`] for easier development.
+/// A function that handles a new update, it receives a [`Context`] and
+/// [`Update`] and returns a pinned future. Wrap an async function with
+/// [`#[prepare_listener]`] for easier development.
 ///
 /// [`#[prepare_listener]`]: ../macros/macro.prepare_listener.html
+#[allow(clippy::doc_markdown)]
 pub(crate) type EventHandlerFunc = fn(Context, Update) -> FutureOutcome;
 
-/// A function that handles a new raw update, it receives a [`Context`] and [`RawUpdate`] and returns a pinned future.
-/// Wrap an async function with [`#[prepare_listener]`] for easier development.
+/// A function that handles a new raw update, it receives a [`Context`] and
+/// [`RawUpdate`] and returns a pinned future. Wrap an async function with
+/// [`#[prepare_listener]`] for easier development.
 ///
 /// [`#[prepare_listener]`]: ../macros/macro.prepare_listener.html
-pub(crate) type RawEventHandlerFunc =
-    fn(Context, RawUpdate) -> FutureOutcome;
+#[allow(clippy::doc_markdown)]
+pub(crate) type RawEventHandlerFunc = fn(Context, RawUpdate) -> FutureOutcome;
 
 // is public for use with the command framework
 #[doc(hidden)]
@@ -28,8 +31,7 @@ pub struct EventHandler {
 }
 
 impl EventHandler {
-    pub fn new(handler: EventHandlerFunc) -> Self
-    {
+    pub fn new(handler: EventHandlerFunc) -> Self {
         Self {
             inner: Arc::new(Mutex::new(handler)),
         }
@@ -53,8 +55,7 @@ pub struct RawEventHandler {
 }
 
 impl RawEventHandler {
-    pub fn new(handler: RawEventHandlerFunc) -> Self
-    {
+    pub fn new(handler: RawEventHandlerFunc) -> Self {
         Self {
             inner: Arc::new(Mutex::new(handler)),
         }
@@ -78,8 +79,7 @@ pub struct MessageHandler {
 }
 
 impl MessageHandler {
-    pub fn new(handler: MessageHandlerFunc) -> Self
-    {
+    pub fn new(handler: MessageHandlerFunc) -> Self {
         Self {
             inner: Arc::new(Mutex::new(handler)),
         }
@@ -109,8 +109,7 @@ pub struct InlineQueryHandler {
 }
 
 impl InlineQueryHandler {
-    pub fn new(handler: InlineQueryHandlerFunc) -> Self
-    {
+    pub fn new(handler: InlineQueryHandlerFunc) -> Self {
         Self {
             inner: Arc::new(Mutex::new(handler)),
         }
@@ -140,8 +139,7 @@ pub struct InlineResultHandler {
 }
 
 impl InlineResultHandler {
-    pub fn new(handler: InlineResultHandlerFunc) -> Self
-    {
+    pub fn new(handler: InlineResultHandlerFunc) -> Self {
         Self {
             inner: Arc::new(Mutex::new(handler)),
         }

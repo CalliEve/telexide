@@ -1,10 +1,14 @@
-use super::{APIConnector, Client, EventHandler, event_handlers::EventHandlerFunc};
-use crate::{api::{APIClient, types::UpdateType}, framework::Framework};
+use super::{event_handlers::EventHandlerFunc, APIConnector, Client, EventHandler};
+use crate::{
+    api::{types::UpdateType, APIClient},
+    framework::Framework,
+};
 
 use parking_lot::RwLock;
 use std::sync::Arc;
 use typemap::ShareMap;
 
+/// A builder for the [`Client`] object to make customisation easier
 pub struct ClientBuilder {
     hyper_client: Option<hyper::Client<hyper_tls::HttpsConnector<hyper::client::HttpConnector>>>,
     api_client: Option<Arc<Box<APIConnector>>>,
@@ -16,6 +20,7 @@ pub struct ClientBuilder {
 }
 
 impl ClientBuilder {
+    /// Creates a bare builder
     #[allow(clippy::new_without_default)]
     pub fn new() -> Self {
         Self {
@@ -25,25 +30,34 @@ impl ClientBuilder {
             framework: None,
             token: None,
             allowed_updates: Vec::new(),
-            event_handler_funcs: Vec::new()
+            event_handler_funcs: Vec::new(),
         }
     }
 
+    // TODO: remove hide macro when having added webhook support
+    #[doc(hidden)]
+    /// sets the webhook url for the [`Client`] to listen to
     pub fn set_webhook(&mut self, webhook: String) -> &mut Self {
         self.webhook = Some(webhook);
         self
     }
 
+    /// Sets the framework for your bot to use, please use the
+    /// [`create_framework`] macro for creating it
+    ///
+    /// [`create_framework`]: ../macro.create_framework.html
     pub fn set_framework(&mut self, framework: Arc<Framework>) -> &mut Self {
         self.framework = Some(framework);
         self
     }
 
-    pub fn set_token(&mut self, token: String) -> &mut Self {
-        self.token = Some(token);
+    /// Sets the token to be used in authorizing the API requests of your bot
+    pub fn set_token(&mut self, token: &str) -> &mut Self {
+        self.token = Some(token.to_owned());
         self
     }
 
+    /// Sets the custom hyper client for the `APIClient` to use
     pub fn set_hyper_client(
         &mut self,
         client: hyper::Client<hyper_tls::HttpsConnector<hyper::client::HttpConnector>>,
@@ -52,32 +66,45 @@ impl ClientBuilder {
         self
     }
 
+    /// Sets the custom API client
     pub fn set_api_client(&mut self, client: Arc<Box<APIConnector>>) -> &mut Self {
         self.api_client = Some(client);
         self
     }
 
+    /// Set the list of update types you want your update handlers to handle
     pub fn set_allowed_updates(&mut self, allowed: Vec<UpdateType>) -> &mut Self {
         self.allowed_updates = allowed;
         self
     }
 
+    /// Add an update type to the list of update types you want your update
+    /// handlers to handle
     pub fn add_allowed_updates(&mut self, allowed: UpdateType) -> &mut Self {
         self.allowed_updates.push(allowed);
         self
     }
 
-    pub fn remove_allowed_updates(&mut self, denied: UpdateType) -> &mut Self {
-        self.allowed_updates.retain(|t| *t != denied);
+    /// Remove an update type from the list of update types you want your update
+    /// handlers to handle
+    pub fn remove_allowed_updates(&mut self, denied: &UpdateType) -> &mut Self {
+        self.allowed_updates.retain(|t| t != denied);
         self
     }
 
+    /// Adds an `EventHandlerFunc` function for handling incoming updates
     pub fn add_handler_func(&mut self, handler: EventHandlerFunc) -> &mut Self {
         self.event_handler_funcs.push(EventHandler::new(handler));
         self
     }
 
-    pub fn build(&self) -> Client {
+    /// Creates the [`Client`] object from the settings set in the
+    /// [`ClientBuilder`] object
+    pub fn build(&mut self) -> Client {
+        if self.framework.is_some() && !self.allowed_updates.contains(&UpdateType::Message) {
+            self.allowed_updates.push(UpdateType::Message)
+        }
+
         if let Some(c) = self.api_client.clone() {
             Client {
                 api_client: c,

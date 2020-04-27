@@ -1,10 +1,12 @@
 #![allow(where_clauses_object_safety)]
-use std::env;
-use std::collections::HashMap;
-use std::sync::Arc;
-use telexide::{api::types::{SendMessage, UpdateType, SendPhoto}, model::{UpdateContent, MessageContent}, prelude::*};
-use typemap::Key as TypeMapKey;
 use parking_lot::RwLock;
+use std::{collections::HashMap, env, sync::Arc};
+use telexide::{
+    api::types::{SendMessage, SendPhoto},
+    model::{MessageContent, UpdateContent},
+    prelude::*,
+};
+use typemap::Key as TypeMapKey;
 
 struct HashMapKey;
 impl TypeMapKey for HashMapKey {
@@ -19,18 +21,25 @@ async fn repeat(context: Context, message: Message) {
 
     let res = context
         .api
-        .send_message(
-            SendMessage::new(message.chat.get_id(), "please send the image I will repeat")
-        )
+        .send_message(SendMessage::new(
+            message.chat.get_id(),
+            "please send the image I will repeat",
+        ))
         .await;
     if res.is_err() {
-        println!("got an error when sending the asking message: {}", res.err().unwrap());
+        println!(
+            "got an error when sending the asking message: {}",
+            res.err().unwrap()
+        );
         return;
     }
 
     let mut guard = context.data.write();
-    let mut map = guard.get_mut::<HashMapKey>().expect("no hashmap").clone();
-    map.write().insert(message.chat.get_id(), message.from.as_ref().expect("no author").id);
+    let map = guard.get_mut::<HashMapKey>().expect("no hashmap").clone();
+    map.write().insert(
+        message.chat.get_id(),
+        message.from.as_ref().expect("no author").id,
+    );
 }
 
 #[prepare_listener]
@@ -45,7 +54,9 @@ async fn handle_next(context: Context, update: Update) {
     }
 
     let image = match message.content {
-        MessageContent::Photo {ref content, .. } => content.first(),
+        MessageContent::Photo {
+            ref content, ..
+        } => content.first(),
         _ => return,
     };
 
@@ -55,7 +66,7 @@ async fn handle_next(context: Context, update: Update) {
 
     {
         let mut guard = context.data.write();
-        let mut maplock = guard.get_mut::<HashMapKey>().expect("no hashmap").clone();
+        let maplock = guard.get_mut::<HashMapKey>().expect("no hashmap").clone();
         let mut map = maplock.write();
 
         let key = match map.get(&message.chat.get_id()) {
@@ -69,12 +80,16 @@ async fn handle_next(context: Context, update: Update) {
 
     let res = context
         .api
-        .send_photo(
-            SendPhoto::from_photo_size(message.chat.get_id(), &image.expect("no image"))
-        )
+        .send_photo(SendPhoto::from_photo_size(
+            message.chat.get_id(),
+            &image.expect("no image"),
+        ))
         .await;
     if res.is_err() {
-        println!("got an error when sending the asking message: {}", res.err().unwrap());
+        println!(
+            "got an error when sending the asking message: {}",
+            res.err().unwrap()
+        );
         return;
     }
 }
@@ -85,9 +100,8 @@ async fn main() -> telexide::Result<()> {
     let bot_name = env::var("BOT_NAME").expect("no bot name env variable set");
 
     let client = ClientBuilder::new()
-        .set_token(token)
+        .set_token(&token)
         .set_framework(create_framework!(&bot_name, repeat))
-        .add_allowed_updates(UpdateType::Message)
         .add_handler_func(handle_next)
         .build();
 

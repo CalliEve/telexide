@@ -1,8 +1,9 @@
 use super::{Animation, MessageEntity, PhotoSize, User};
 use serde::{Deserialize, Serialize};
 
-/// This object represents a game. Use BotFather to create and edit games,
+/// This object represents a game. Use [@BotFather](https://t.me/botfather) to create and edit games,
 /// their short names will act as unique identifiers.
+#[allow(clippy::doc_markdown)]
 #[derive(Serialize, Deserialize, Debug, Clone, PartialEq)]
 pub struct Game {
     /// Title of the game
@@ -11,16 +12,19 @@ pub struct Game {
     pub description: String,
     /// Photo that will be displayed in the game message in chats.
     pub photo: Vec<PhotoSize>,
-    /// Brief description of the game or high scores included in the game message.
-    /// Can be automatically edited to include current high scores for the game when the bot calls [set_game_score],
-    /// or manually edited using [edit_message_text]. 0-4096 characters.
+    /// Brief description of the game or high scores included in the game
+    /// message. Can be automatically edited to include current high scores
+    /// for the game when the bot calls [set_game_score], or manually edited
+    /// using [edit_message_text]. 0-4096 characters.
     ///
     /// [edit_message_text]: ../api/trait.API.hmtl#method.edit_message_text
     /// [set_game_score]: ../api/trait.API.hmtl#method.set_game_score
     pub text: Option<String>,
-    /// Special entities that appear in text, such as usernames, URLs, bot commands, etc.
+    /// Special entities that appear in text, such as usernames, URLs, bot
+    /// commands, etc.
     pub text_entities: Option<Vec<MessageEntity>>,
-    /// Animation that will be displayed in the game message in chats. Upload via BotFather
+    /// Animation that will be displayed in the game message in chats. Upload
+    /// via BotFather
     pub animation: Option<Animation>,
 }
 

@@ -1,15 +1,21 @@
-use serde::{Deserialize, Serialize};
 use crate::model::TelegramPassportElement;
+use serde::{Deserialize, Serialize};
 
+/// struct for holding data needed to call
+/// [`set_passport_data_errors`]
+///
+/// [`set_passport_data_errors`]:
+/// ../../api/trait.API.html#method.set_passport_data_errors
 #[derive(Serialize, Deserialize, Debug, Clone, PartialEq)]
 pub struct SetPassportDataErrors {
     /// User identifier
     pub user_id: i64,
     /// A vec describing the errors
-    pub errors: Vec<PassportElementError>
+    pub errors: Vec<PassportElementError>,
 }
 
-/// This object represents an error in the Telegram Passport element which was submitted that should be resolved by the user
+/// This object represents an error in the Telegram Passport element which was
+/// submitted that should be resolved by the user
 #[derive(Serialize, Deserialize, Debug, Clone, PartialEq)]
 #[serde(tag = "source")]
 pub enum PassportElementError {
@@ -30,7 +36,7 @@ pub enum PassportElementError {
     #[serde(rename = "translation_files")]
     TranslationFiles(PassportElementErrorTranslationFiles),
     #[serde(rename = "unspecified")]
-    Unspecified(PassportElementErrorUnspecified)
+    Unspecified(PassportElementErrorUnspecified),
 }
 
 /// Represents an issue in one of the data fields that was provided by the user.
@@ -38,7 +44,8 @@ pub enum PassportElementError {
 #[derive(Serialize, Deserialize, Debug, Clone, PartialEq)]
 pub struct PassportElementErrorDataField {
     /// The section of the user's Telegram Passport which has the error,
-    /// one of “personal_details”, “passport”, “driver_license”, “identity_card”, “internal_passport”, “address”
+    /// one of “personal_details”, “passport”, “driver_license”,
+    /// “identity_card”, “internal_passport”, “address”
     #[serde(rename = "type")]
     pub section_type: TelegramPassportElement,
     /// Name of the data field which has the error
@@ -46,25 +53,28 @@ pub struct PassportElementErrorDataField {
     /// Base64-encoded data hash
     pub data_hash: String,
     /// Error message
-    pub message: String
+    pub message: String,
 }
 
 /// Represents an issue with the front side of a document.
-/// The error is considered resolved when the file with the front side of the document changes.
+/// The error is considered resolved when the file with the front side of the
+/// document changes.
 #[derive(Serialize, Deserialize, Debug, Clone, PartialEq)]
 pub struct PassportElementErrorFrontSide {
     /// The section of the user's Telegram Passport which has the issue,
-    /// one of “passport”, “driver_license”, “identity_card”, “internal_passport”
+    /// one of “passport”, “driver_license”, “identity_card”,
+    /// “internal_passport”
     #[serde(rename = "type")]
     pub section_type: TelegramPassportElement,
     /// Base64-encoded hash of the file with the front side of the document
     pub file_hash: String,
     /// Error message
-    pub message: String
+    pub message: String,
 }
 
 /// Represents an issue with the reverse side of a document.
-/// The error is considered resolved when the file with reverse side of the document changes.
+/// The error is considered resolved when the file with reverse side of the
+/// document changes.
 #[derive(Serialize, Deserialize, Debug, Clone, PartialEq)]
 pub struct PassportElementErrorReverseSide {
     /// The section of the user's Telegram Passport which has the issue,
@@ -74,7 +84,7 @@ pub struct PassportElementErrorReverseSide {
     /// Base64-encoded hash of the file with the reverse side of the document
     pub file_hash: String,
     /// Error message
-    pub message: String
+    pub message: String,
 }
 
 /// Represents an issue with the selfie with a document.
@@ -82,71 +92,79 @@ pub struct PassportElementErrorReverseSide {
 #[derive(Serialize, Deserialize, Debug, Clone, PartialEq)]
 pub struct PassportElementErrorSelfie {
     /// The section of the user's Telegram Passport which has the issue,
-    /// one of “passport”, “driver_license”, “identity_card”, “internal_passport”
+    /// one of “passport”, “driver_license”, “identity_card”,
+    /// “internal_passport”
     #[serde(rename = "type")]
     pub section_type: TelegramPassportElement,
     /// Base64-encoded hash of the file with the selfie
     pub file_hash: String,
     /// Error message
-    pub message: String
+    pub message: String,
 }
 
 /// Represents an issue with a document scan.
-/// The error is considered resolved when the file with the document scan changes.
+/// The error is considered resolved when the file with the document scan
+/// changes.
 #[derive(Serialize, Deserialize, Debug, Clone, PartialEq)]
 pub struct PassportElementErrorFile {
     /// The section of the user's Telegram Passport which has the issue
-    /// one of “utility_bill”, “bank_statement”, “rental_agreement”, “passport_registration”, “temporary_registration”
+    /// one of “utility_bill”, “bank_statement”, “rental_agreement”,
+    /// “passport_registration”, “temporary_registration”
     #[serde(rename = "type")]
     pub section_type: TelegramPassportElement,
     /// Base64-encoded file hash
     pub file_hash: String,
     /// Error message
-    pub message: String
+    pub message: String,
 }
 
 /// Represents an issue with a list of scans.
-/// The error is considered resolved when the list of files containing the scans changes.
+/// The error is considered resolved when the list of files containing the scans
+/// changes.
 #[derive(Serialize, Deserialize, Debug, Clone, PartialEq)]
 pub struct PassportElementErrorFiles {
     /// The section of the user's Telegram Passport which has the issue,
-    /// one of “utility_bill”, “bank_statement”, “rental_agreement”, “passport_registration”, “temporary_registration”
+    /// one of “utility_bill”, “bank_statement”, “rental_agreement”,
+    /// “passport_registration”, “temporary_registration”
     #[serde(rename = "type")]
     pub section_type: TelegramPassportElement,
     /// List of base64-encoded file hashes
     pub file_hashes: Vec<String>,
     /// Error message
-    pub message: String
+    pub message: String,
 }
 
-/// Represents an issue with one of the files that constitute the translation of a document.
-/// The error is considered resolved when the file changes.
+/// Represents an issue with one of the files that constitute the translation of
+/// a document. The error is considered resolved when the file changes.
 #[derive(Serialize, Deserialize, Debug, Clone, PartialEq)]
 pub struct PassportElementErrorTranslationFile {
     /// Type of element of the user's Telegram Passport which has the issue,
-    /// one of “passport”, “driver_license”, “identity_card”, “internal_passport”,
-    /// “utility_bill”, “bank_statement”, “rental_agreement”, “passport_registration”, “temporary_registration”
+    /// one of “passport”, “driver_license”, “identity_card”,
+    /// “internal_passport”, “utility_bill”, “bank_statement”,
+    /// “rental_agreement”, “passport_registration”, “temporary_registration”
     #[serde(rename = "type")]
     pub section_type: TelegramPassportElement,
     /// Base64-encoded file hash
     pub file_hash: String,
     /// Error message
-    pub message: String
+    pub message: String,
 }
 
 /// Represents an issue with the translated version of a document.
-/// The error is considered resolved when a file with the document translation change.
+/// The error is considered resolved when a file with the document translation
+/// change.
 #[derive(Serialize, Deserialize, Debug, Clone, PartialEq)]
 pub struct PassportElementErrorTranslationFiles {
     /// Type of element of the user's Telegram Passport which has the issue,
-    /// one of “passport”, “driver_license”, “identity_card”, “internal_passport”,
-    /// “utility_bill”, “bank_statement”, “rental_agreement”, “passport_registration”, “temporary_registration”
+    /// one of “passport”, “driver_license”, “identity_card”,
+    /// “internal_passport”, “utility_bill”, “bank_statement”,
+    /// “rental_agreement”, “passport_registration”, “temporary_registration”
     #[serde(rename = "type")]
     pub section_type: TelegramPassportElement,
     /// List of base64-encoded file hashes
     pub file_hashes: Vec<String>,
     /// Error message
-    pub message: String
+    pub message: String,
 }
 
 /// Represents an issue in an unspecified place.
@@ -159,5 +177,5 @@ pub struct PassportElementErrorUnspecified {
     /// Base64-encoded element hash
     pub element_hash: String,
     /// Error message
-    pub message: String
+    pub message: String,
 }

@@ -1,16 +1,18 @@
-use super::User;
-use super::utils::unix_date_formatting;
-use serde::{Deserialize, Serialize};
-use chrono::{DateTime, Utc};
+use super::{utils::unix_date_formatting, User};
 use crate::model::MessageEntity;
+use chrono::{DateTime, Utc};
+use serde::{Deserialize, Serialize};
 
-/// This object represents an audio file to be treated as music by the Telegram clients.
+/// This object represents an audio file to be treated as music by the Telegram
+/// clients.
 #[derive(Serialize, Deserialize, Debug, Clone, PartialEq)]
 pub struct Audio {
-    /// Identifier for this file, which can be used to download or reuse the file
+    /// Identifier for this file, which can be used to download or reuse the
+    /// file
     pub file_id: String,
-    /// Unique identifier for this file, which is supposed to be the same over time and for different bots.
-    /// Can't be used to download or reuse the file.
+    /// Unique identifier for this file, which is supposed to be the same over
+    /// time and for different bots. Can't be used to download or reuse the
+    /// file.
     pub file_unique_id: String,
     /// Duration of the audio in seconds as defined by sender
     pub duration: usize,
@@ -26,13 +28,16 @@ pub struct Audio {
     pub thumb: Option<PhotoSize>,
 }
 
-/// This object represents a general file (as opposed to [photos][PhotoSize], [voice messages][Voice] and [audio files][Audio]).
+/// This object represents a general file (as opposed to [photos][PhotoSize],
+/// [voice messages][Voice] and [audio files][Audio]).
 #[derive(Serialize, Deserialize, Debug, Clone, PartialEq)]
 pub struct Document {
-    /// Identifier for this file, which can be used to download or reuse the file
+    /// Identifier for this file, which can be used to download or reuse the
+    /// file
     pub file_id: String,
-    /// Unique identifier for this file, which is supposed to be the same over time and for different bots.
-    /// Can't be used to download or reuse the file.
+    /// Unique identifier for this file, which is supposed to be the same over
+    /// time and for different bots. Can't be used to download or reuse the
+    /// file.
     pub file_unique_id: String,
     /// Document thumbnail as defined by sender
     pub thumb: Option<PhotoSize>,
@@ -44,13 +49,16 @@ pub struct Document {
     pub file_size: Option<usize>,
 }
 
-/// This object represents an animation file (GIF or H.264/MPEG-4 AVC video without sound).
+/// This object represents an animation file (GIF or H.264/MPEG-4 AVC video
+/// without sound).
 #[derive(Serialize, Deserialize, Debug, Clone, PartialEq)]
 pub struct Animation {
-    /// Identifier for this file, which can be used to download or reuse the file
+    /// Identifier for this file, which can be used to download or reuse the
+    /// file
     pub file_id: String,
-    /// Unique identifier for this file, which is supposed to be the same over time and for different bots.
-    /// Can't be used to download or reuse the file.
+    /// Unique identifier for this file, which is supposed to be the same over
+    /// time and for different bots. Can't be used to download or reuse the
+    /// file.
     pub file_unique_id: String,
     /// Video width as defined by sender
     pub width: usize,
@@ -71,10 +79,12 @@ pub struct Animation {
 /// This object represents one size of a photo or a file / sticker thumbnail
 #[derive(Serialize, Deserialize, Debug, Clone, PartialEq)]
 pub struct PhotoSize {
-    /// Identifier for this file, which can be used to download or reuse the file
+    /// Identifier for this file, which can be used to download or reuse the
+    /// file
     pub file_id: String,
-    /// Unique identifier for this file, which is supposed to be the same over time and for different bots.
-    /// Can't be used to download or reuse the file.
+    /// Unique identifier for this file, which is supposed to be the same over
+    /// time and for different bots. Can't be used to download or reuse the
+    /// file.
     pub file_unique_id: String,
     /// Photo width
     pub width: usize,
@@ -87,10 +97,12 @@ pub struct PhotoSize {
 /// This object represents a video file
 #[derive(Serialize, Deserialize, Debug, Clone, PartialEq)]
 pub struct Video {
-    /// Identifier for this file, which can be used to download or reuse the file
+    /// Identifier for this file, which can be used to download or reuse the
+    /// file
     pub file_id: String,
-    /// Unique identifier for this file, which is supposed to be the same over time and for different bots.
-    /// Can't be used to download or reuse the file.
+    /// Unique identifier for this file, which is supposed to be the same over
+    /// time and for different bots. Can't be used to download or reuse the
+    /// file.
     pub file_unique_id: String,
     /// Video width as defined by sender
     pub width: usize,
@@ -109,10 +121,12 @@ pub struct Video {
 /// This object represents a voice note
 #[derive(Serialize, Deserialize, Debug, Clone, PartialEq)]
 pub struct Voice {
-    /// Identifier for this file, which can be used to download or reuse the file
+    /// Identifier for this file, which can be used to download or reuse the
+    /// file
     pub file_id: String,
-    /// Unique identifier for this file, which is supposed to be the same over time and for different bots.
-    /// Can't be used to download or reuse the file.
+    /// Unique identifier for this file, which is supposed to be the same over
+    /// time and for different bots. Can't be used to download or reuse the
+    /// file.
     pub file_unique_id: String,
     /// Duration of the audio in seconds as defined by sender
     pub duration: usize,
@@ -125,12 +139,15 @@ pub struct Voice {
 /// This object represents a [video message](https://telegram.org/blog/video-messages-and-telescope)
 #[derive(Serialize, Deserialize, Debug, Clone, PartialEq)]
 pub struct VideoNote {
-    /// Identifier for this file, which can be used to download or reuse the file
+    /// Identifier for this file, which can be used to download or reuse the
+    /// file
     pub file_id: String,
-    /// Unique identifier for this file, which is supposed to be the same over time and for different bots.
-    /// Can't be used to download or reuse the file.
+    /// Unique identifier for this file, which is supposed to be the same over
+    /// time and for different bots. Can't be used to download or reuse the
+    /// file.
     pub file_unique_id: String,
-    /// Video width and height (diameter of the video message) as defined by sender
+    /// Video width and height (diameter of the video message) as defined by
+    /// sender
     pub length: usize,
     /// Duration of the video in seconds as defined by sender
     pub duration: usize,
@@ -178,7 +195,8 @@ pub struct Venue {
     /// Foursquare identifier of the venue
     pub foursquare_id: Option<String>,
     /// Foursquare type of the venue.
-    /// (For example, “arts_entertainment/default”, “arts_entertainment/aquarium” or “food/icecream”.)
+    /// (For example, “arts_entertainment/default”,
+    /// “arts_entertainment/aquarium” or “food/icecream”.)
     pub foursquare_type: Option<String>,
 }
 
@@ -207,22 +225,25 @@ pub struct Poll {
     pub poll_type: PollType,
     /// 0-based identifier of the correct answer option.
     /// Available only for polls in the quiz mode, which are closed,
-    /// or was sent (not forwarded) by the bot or to the private chat with the bot.
+    /// or was sent (not forwarded) by the bot or to the private chat with the
+    /// bot.
     pub correct_option_id: Option<usize>,
-    /// Text that is shown when a user chooses an incorrect answer or taps on the lamp icon in a quiz-style poll,
-    /// 0-200 characters
+    /// Text that is shown when a user chooses an incorrect answer or taps on
+    /// the lamp icon in a quiz-style poll, 0-200 characters
     pub explanation: Option<String>,
-    /// Special entities like usernames, URLs, bot commands, etc. that appear in the explanation
+    /// Special entities like usernames, URLs, bot commands, etc. that appear in
+    /// the explanation
     pub explanation_entities: Option<Vec<MessageEntity>>,
     /// Amount of time in seconds the poll will be active after creation
     pub open_period: Option<i64>,
     /// Point in time when the poll will be automatically closed
     #[serde(default)]
     #[serde(with = "unix_date_formatting::optional")]
-    pub close_date: Option<DateTime<Utc>>
+    pub close_date: Option<DateTime<Utc>>,
 }
 
-/// This object represents a dice with a random value from 1 to 6 for currently supported base emoji.
+/// This object represents a dice with a random value from 1 to 6 for currently
+/// supported base emoji.
 #[derive(Serialize, Deserialize, Debug, Clone, PartialEq)]
 pub struct Dice {
     /// Emoji on which the dice throw animation is based
@@ -261,34 +282,40 @@ pub enum PollType {
     Quiz,
 }
 
-/// This object represents a parameter of the inline keyboard button used to automatically authorize a user.
-/// Serves as a great replacement for the [Telegram Login Widget] when the user is coming from Telegram.
-/// All the user needs to do is tap/click a button and confirm that they want to log in
+/// This object represents a parameter of the inline keyboard button used to
+/// automatically authorize a user. Serves as a great replacement for the
+/// [Telegram Login Widget] when the user is coming from Telegram. All the user
+/// needs to do is tap/click a button and confirm that they want to log in
 ///
 /// [Telegram Login Widget]: https://core.telegram.org/widgets/login
 #[derive(Serialize, Deserialize, Debug, Clone, PartialEq)]
 pub struct LoginUrl {
-    /// An HTTP URL to be opened with user authorization data added to the query string when the button is pressed.
-    /// If the user refuses to provide authorization data, the original URL without information about the user will be opened.
-    /// The data added is the same as described in [Receiving authorization data].
+    /// An HTTP URL to be opened with user authorization data added to the query
+    /// string when the button is pressed. If the user refuses to provide
+    /// authorization data, the original URL without information about the user
+    /// will be opened. The data added is the same as described in
+    /// [Receiving authorization data].
     ///
-    /// **NOTE:** You must always check the hash of the received data to verify the authentication
-    /// and the integrity of the data as described in [Checking authorization].
+    /// **NOTE:** You must always check the hash of the received data to verify
+    /// the authentication and the integrity of the data as described in
+    /// [Checking authorization].
     ///
     /// [Receiving authorization data]: https://core.telegram.org/widgets/login#receiving-authorization-data
     /// [Checking authorization]: https://core.telegram.org/widgets/login#checking-authorization
     pub url: String,
     /// New text of the button in forwarded messages.
     pub forward_text: Option<String>,
-    /// Username of a bot, which will be used for user authorization. See [Setting up a bot][setup] for more details.
-    /// If not specified, the current bot's username will be assumed.
-    /// The url's domain must be the same as the domain linked with the bot.
-    /// See [Linking your domain to the bot][linking] for more details.
+    /// Username of a bot, which will be used for user authorization. See
+    /// [Setting up a bot][setup] for more details. If not specified, the
+    /// current bot's username will be assumed. The url's domain must be the
+    /// same as the domain linked with the bot. See [Linking your domain to
+    /// the bot][linking] for more details.
     ///
     /// [setup]: https://core.telegram.org/widgets/login#setting-up-a-bot
     /// [linking]: https://core.telegram.org/widgets/login#linking-your-domain-to-the-bot
     pub bot_username: Option<String>,
-    /// Pass True to request the permission for your bot to send messages to the user.
+    /// Pass True to request the permission for your bot to send messages to the
+    /// user.
     #[serde(default)]
     pub request_write_access: bool,
 }

@@ -1,5 +1,10 @@
 use serde::{Deserialize, Serialize};
 
+/// struct for holding data needed to call
+/// [`get_updates`]
+///
+/// [`get_updates`]:
+/// ../../api/trait.API.html#method.get_updates
 #[derive(Serialize, Deserialize, Debug, Clone, PartialEq)]
 pub struct GetUpdates {
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -61,6 +66,8 @@ impl std::default::Default for GetUpdates {
     }
 }
 
+/// The type of an update, can be used for specifying which update types you
+/// want to receive
 #[derive(Serialize, Deserialize, Debug, Clone, PartialEq)]
 pub enum UpdateType {
     #[serde(rename = "message")]

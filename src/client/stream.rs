@@ -16,8 +16,39 @@ use crate::{
 
 type FutureUpdate = Pin<Box<dyn Future<Output = Result<Vec<Update>>>>>;
 
-/// The stream of incoming updates, created by long polling the telegram API using their getUpdates endpoint.
+/// The stream of incoming updates, created by long polling the telegram API
+/// using their getUpdates endpoint.
 ///
+/// In most use-cases, this will be handled for you by the [`Client`]
+/// and the new updates then dispatched to your eventhandlers.
+///
+/// ## Example
+/// ```rust,no_run
+/// use std::sync::Arc;
+/// use telexide::{
+///     api::APIClient,
+///     client::UpdatesStream
+/// };
+///
+/// let mut stream = UpdatesStream::new(
+///     Arc::new(
+///         Box::new(
+///             APIClient::new_default(your_token)
+///         )
+///     )
+/// );
+///
+/// while let Some(poll) = stream.next().await {
+///     match poll {
+///         Ok(update) => {
+///             fire_update_handlers(update);
+///         },
+///         Err(err) => return Err(err),
+///     }
+/// }
+/// ```
+///
+/// [`Client`]: struct.Client.html
 #[must_use = "streams do nothing unless polled"]
 pub struct UpdatesStream {
     api: Arc<Box<APIConnector>>,
@@ -39,8 +70,8 @@ impl Stream for UpdatesStream {
             return Poll::Ready(Some(Ok(u)));
         }
 
-        match ref_mut.current_request {
-            Some(ref mut req) => match req.as_mut().poll(cx) {
+        if let Some(ref mut request) = ref_mut.current_request {
+            match request.as_mut().poll(cx) {
                 Poll::Pending => return Poll::Pending,
                 Poll::Ready(Ok(ref res)) if res.is_empty() => {
                     ref_mut.poll_telegram();
@@ -56,11 +87,10 @@ impl Stream for UpdatesStream {
                     ref_mut.poll_telegram();
                     return Poll::Ready(Some(Err(err)));
                 },
-            },
-            None => {
-                ref_mut.poll_telegram();
-                return Pin::new(ref_mut).poll_next(cx);
-            },
+            };
+        } else {
+            ref_mut.poll_telegram();
+            return Pin::new(ref_mut).poll_next(cx);
         }
 
         ref_mut.current_request = None;
@@ -80,6 +110,9 @@ impl UpdatesStream {
         self.current_request = Some(Box::pin(async move { api.get_updates(data).await }));
     }
 
+    /// creates a new update stream using the provided [`API`]
+    ///
+    /// [`API`]: ../api/trait.API.html
     pub fn new(api: Arc<Box<APIConnector>>) -> Self {
         Self {
             api,
@@ -92,28 +125,35 @@ impl UpdatesStream {
         }
     }
 
+    /// Sets the maximum amount of updates retrieved in one API call
     pub fn set_limit(&mut self, limit: usize) -> &mut Self {
         self.limit = limit;
         self
     }
 
+    /// Set the timeout in seconds for long polling. Defaults to 5.
+    /// Should be positive, short polling should be used for testing purposes
+    /// only.
     pub fn set_timout(&mut self, timeout: usize) -> &mut Self {
         self.timeout = timeout;
         self
     }
 
+    /// Set which update types you want to receive
     pub fn set_allowed_updates(&mut self, allowed: Vec<UpdateType>) -> &mut Self {
         self.allowed_updates = allowed;
         self
     }
 
+    /// Add an update type to the list of update types you want to receive
     pub fn add_allowed_updates(&mut self, allowed: UpdateType) -> &mut Self {
         self.allowed_updates.push(allowed);
         self
     }
 
-    pub fn remove_allowed_updates(&mut self, to_remove: UpdateType) -> &mut Self {
-        self.allowed_updates.retain(|t| t != &to_remove);
+    /// Remove an update type from the list of update types you want to receive
+    pub fn remove_allowed_updates(&mut self, to_remove: &UpdateType) -> &mut Self {
+        self.allowed_updates.retain(|t| t != to_remove);
         self
     }
 }

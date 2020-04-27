@@ -20,7 +20,8 @@ pub struct User {
     ///
     /// [`get_me`]: ../api/struct.API.hmtl#method.get_me
     pub can_join_groups: Option<bool>,
-    /// True, if privacy mode is disabled for the bot. Returned only in [`get_me`].
+    /// True, if privacy mode is disabled for the bot. Returned only in
+    /// [`get_me`].
     ///
     /// [`get_me`]: ../api/struct.API.hmtl#method.get_me
     pub can_read_all_group_messages: Option<bool>,

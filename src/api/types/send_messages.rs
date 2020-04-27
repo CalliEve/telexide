@@ -1,26 +1,32 @@
 use super::{InputFile, InputMedia};
 use crate::{
-    model::{ReplyMarkup, ParseMode, PollType, ChatAction, PhotoSize},
+    model::{utils::unix_date_formatting, ChatAction, ParseMode, PhotoSize, PollType, ReplyMarkup},
     prelude::Message,
     utils::result::Result,
-    utils::FormDataFile,
 };
+use chrono::{DateTime, Utc};
 use serde::{Deserialize, Serialize};
 use std::path::Path;
 
-/// struct for holding data needed to send a text message to a chat on telegram
+/// struct for holding data needed to call
+/// [`send_message`]
+///
+/// [`send_message`]:
+/// ../../api/trait.API.html#method.send_message
 #[derive(Serialize, Deserialize, Debug, Clone, PartialEq)]
 pub struct SendMessage {
     /// Unique identifier for the target chat
     pub chat_id: i64,
     /// Text of the message to be sen, 1-4096 characters after entities parsing
     pub text: String,
-    /// Send Markdown or HTML, if you want Telegram apps to show bold, italic, fixed-width text or inline URLs in your bot's message.
+    /// Send Markdown or HTML, if you want Telegram apps to show bold, italic,
+    /// fixed-width text or inline URLs in your bot's message.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub parse_mode: Option<ParseMode>,
     /// Disables link previews for links in this message
     pub disable_web_page_preview: bool,
-    /// Sends the message silently. Users will receive a notification with no sound.
+    /// Sends the message silently. Users will receive a notification with no
+    /// sound.
     pub disable_notification: bool,
     /// If the message is a reply, ID of the original message
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -29,7 +35,6 @@ pub struct SendMessage {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub reply_markup: Option<ReplyMarkup>,
 }
-
 
 impl SendMessage {
     pub fn new(chat_id: i64, text: &str) -> Self {
@@ -75,7 +80,11 @@ impl SendMessage {
     }
 }
 
-/// struct for holding data needed to forward any existing message to on telegram
+/// struct for holding data needed to call
+/// [`forward_message`]
+///
+/// [`forward_message`]:
+/// ../../api/trait.API.html#method.forward_message
 #[derive(Serialize, Deserialize, Debug, Clone, PartialEq)]
 pub struct ForwardMessage {
     /// Unique identifier for the target chat
@@ -84,7 +93,8 @@ pub struct ForwardMessage {
     pub from_chat_id: i64,
     /// Message identifier in the chat specified in from_chat_id
     pub message_id: i64,
-    /// Sends the message silently. Users will receive a notification with no sound.
+    /// Sends the message silently. Users will receive a notification with no
+    /// sound.
     pub disable_notification: bool,
 }
 
@@ -94,7 +104,7 @@ impl ForwardMessage {
             chat_id,
             from_chat_id,
             message_id,
-            disable_notification: false
+            disable_notification: false,
         }
     }
 
@@ -108,26 +118,34 @@ impl ForwardMessage {
             chat_id,
             from_chat_id: message.chat.get_id(),
             message_id: message.message_id,
-            disable_notification: false
+            disable_notification: false,
         }
     }
 }
 
-/// struct for holding data needed to send a photo message to a chat on telegram
+/// struct for holding data needed to call
+/// [`send_photo`]
+///
+/// [`send_photo`]:
+/// ../../api/trait.API.html#method.send_photo
 #[derive(Serialize, Deserialize, Debug, Clone, PartialEq)]
 pub struct SendPhoto {
     /// Unique identifier for the target chat
     pub chat_id: i64,
-    /// Photo to send. Pass a file_id as String to send a photo that exists on the Telegram servers (recommended),
-    /// pass an HTTP URL as a String for Telegram to get a photo from the Internet
+    /// Photo to send. Pass a file_id as String to send a photo that exists on
+    /// the Telegram servers (recommended), pass an HTTP URL as a String for
+    /// Telegram to get a photo from the Internet
     pub photo: InputFile,
-    /// Photo caption (may also be used when resending photos by file_id), 0-1024 characters after entities parsing
+    /// Photo caption (may also be used when resending photos by file_id),
+    /// 0-1024 characters after entities parsing
     #[serde(skip_serializing_if = "Option::is_none")]
     pub caption: Option<String>,
-    /// Send Markdown or HTML, if you want Telegram apps to show bold, italic, fixed-width text or inline URLs in your bot's message.
+    /// Send Markdown or HTML, if you want Telegram apps to show bold, italic,
+    /// fixed-width text or inline URLs in your bot's message.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub parse_mode: Option<ParseMode>,
-    /// Sends the message silently. Users will receive a notification with no sound.
+    /// Sends the message silently. Users will receive a notification with no
+    /// sound.
     pub disable_notification: bool,
     /// If the message is a reply, ID of the original message
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -175,20 +193,28 @@ impl SendPhoto {
     }
 }
 
-/// struct for holding data needed to send an audio message to a chat on telegram
+/// struct for holding data needed to call
+/// [`send_audio`]
+///
+/// [`send_audio`]:
+/// ../../api/trait.API.html#method.send_audio
 #[derive(Serialize, Deserialize, Debug, Clone, PartialEq)]
 pub struct SendAudio {
     /// Unique identifier for the target chat
     pub chat_id: i64,
-    /// Audio to send. Pass a file_id as String to send an audio file that exists on the Telegram servers (recommended),
-    /// pass an HTTP URL as a String for Telegram to get an audio file from the Internet
+    /// Audio to send. Pass a file_id as String to send an audio file that
+    /// exists on the Telegram servers (recommended), pass an HTTP URL as a
+    /// String for Telegram to get an audio file from the Internet
     pub audio: InputFile,
-    /// Thumbnail of the file sent; can be ignored if thumbnail generation for the file is supported server-side.
-    /// The thumbnail should be in JPEG format and less than 200 kB in size. A thumbnail‘s width and height should not exceed 320.
-    /// Ignored if the file is not uploaded using multipart/form-data.
+    /// Thumbnail of the file sent; can be ignored if thumbnail generation for
+    /// the file is supported server-side. The thumbnail should be in JPEG
+    /// format and less than 200 kB in size. A thumbnail‘s width and height
+    /// should not exceed 320. Ignored if the file is not uploaded using
+    /// multipart/form-data.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub thumb: Option<InputFile>,
-    /// Audio caption (may also be used when resending audio files by file_id), 0-1024 characters after entities parsing
+    /// Audio caption (may also be used when resending audio files by file_id),
+    /// 0-1024 characters after entities parsing
     #[serde(skip_serializing_if = "Option::is_none")]
     pub caption: Option<String>,
     /// Duration of the audio in seconds
@@ -200,10 +226,12 @@ pub struct SendAudio {
     /// Track name
     #[serde(skip_serializing_if = "Option::is_none")]
     pub title: Option<String>,
-    /// Send Markdown or HTML, if you want Telegram apps to show bold, italic, fixed-width text or inline URLs in your bot's message.
+    /// Send Markdown or HTML, if you want Telegram apps to show bold, italic,
+    /// fixed-width text or inline URLs in your bot's message.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub parse_mode: Option<ParseMode>,
-    /// Sends the message silently. Users will receive a notification with no sound.
+    /// Sends the message silently. Users will receive a notification with no
+    /// sound.
     pub disable_notification: bool,
     /// If the message is a reply, ID of the original message
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -247,26 +275,36 @@ impl SendAudio {
     }
 }
 
-/// struct for holding data needed to send a message containing a document to a chat on telegram
+/// struct for holding data needed to call
+/// [`send_document`]
+///
+/// [`send_document`]:
+/// ../../api/trait.API.html#method.send_document
 #[derive(Serialize, Deserialize, Debug, Clone, PartialEq)]
 pub struct SendDocument {
     /// Unique identifier for the target chat
     pub chat_id: i64,
-    /// Document to send. Pass a file_id as String to send a photo that exists on the Telegram servers (recommended),
-    /// pass an HTTP URL as a String for Telegram to get a document from the Internet
+    /// Document to send. Pass a file_id as String to send a photo that exists
+    /// on the Telegram servers (recommended), pass an HTTP URL as a String
+    /// for Telegram to get a document from the Internet
     pub document: InputFile,
-    /// Thumbnail of the file sent; can be ignored if thumbnail generation for the file is supported server-side.
-    /// The thumbnail should be in JPEG format and less than 200 kB in size. A thumbnail‘s width and height should not exceed 320.
-    /// Ignored if the file is not uploaded using multipart/form-data.
+    /// Thumbnail of the file sent; can be ignored if thumbnail generation for
+    /// the file is supported server-side. The thumbnail should be in JPEG
+    /// format and less than 200 kB in size. A thumbnail‘s width and height
+    /// should not exceed 320. Ignored if the file is not uploaded using
+    /// multipart/form-data.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub thumb: Option<InputFile>,
-    /// Document caption (may also be used when resending documents by file_id), 0-1024 characters after entities parsing
+    /// Document caption (may also be used when resending documents by file_id),
+    /// 0-1024 characters after entities parsing
     #[serde(skip_serializing_if = "Option::is_none")]
     pub caption: Option<String>,
-    /// Send Markdown or HTML, if you want Telegram apps to show bold, italic, fixed-width text or inline URLs in your bot's message.
+    /// Send Markdown or HTML, if you want Telegram apps to show bold, italic,
+    /// fixed-width text or inline URLs in your bot's message.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub parse_mode: Option<ParseMode>,
-    /// Sends the message silently. Users will receive a notification with no sound.
+    /// Sends the message silently. Users will receive a notification with no
+    /// sound.
     pub disable_notification: bool,
     /// If the message is a reply, ID of the original message
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -304,20 +342,28 @@ impl SendDocument {
     }
 }
 
-/// struct for holding data needed to send a video message to a chat on telegram
+/// struct for holding data needed to call
+/// [`send_video`]
+///
+/// [`send_video`]:
+/// ../../api/trait.API.html#method.send_video
 #[derive(Serialize, Deserialize, Debug, Clone, PartialEq)]
 pub struct SendVideo {
     /// Unique identifier for the target chat
     pub chat_id: i64,
-    /// Video to send. Pass a file_id as String to send an video file that exists on the Telegram servers (recommended),
-    /// pass an HTTP URL as a String for Telegram to get an video file from the Internet
+    /// Video to send. Pass a file_id as String to send an video file that
+    /// exists on the Telegram servers (recommended), pass an HTTP URL as a
+    /// String for Telegram to get an video file from the Internet
     pub video: InputFile,
-    /// Thumbnail of the file sent; can be ignored if thumbnail generation for the file is supported server-side.
-    /// The thumbnail should be in JPEG format and less than 200 kB in size. A thumbnail‘s width and height should not exceed 320.
-    /// Ignored if the file is not uploaded using multipart/form-data.
+    /// Thumbnail of the file sent; can be ignored if thumbnail generation for
+    /// the file is supported server-side. The thumbnail should be in JPEG
+    /// format and less than 200 kB in size. A thumbnail‘s width and height
+    /// should not exceed 320. Ignored if the file is not uploaded using
+    /// multipart/form-data.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub thumb: Option<InputFile>,
-    /// Video caption (may also be used when resending video files by file_id), 0-1024 characters after entities parsing
+    /// Video caption (may also be used when resending video files by file_id),
+    /// 0-1024 characters after entities parsing
     #[serde(skip_serializing_if = "Option::is_none")]
     pub caption: Option<String>,
     /// Duration of the video in seconds
@@ -335,10 +381,12 @@ pub struct SendVideo {
     /// Track name
     #[serde(skip_serializing_if = "Option::is_none")]
     pub title: Option<String>,
-    /// Send Markdown or HTML, if you want Telegram apps to show bold, italic, fixed-width text or inline URLs in your bot's message.
+    /// Send Markdown or HTML, if you want Telegram apps to show bold, italic,
+    /// fixed-width text or inline URLs in your bot's message.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub parse_mode: Option<ParseMode>,
-    /// Sends the message silently. Users will receive a notification with no sound.
+    /// Sends the message silently. Users will receive a notification with no
+    /// sound.
     pub disable_notification: bool,
     /// If the uploaded video is suitable for streaming
     pub supports_streaming: bool,
@@ -390,20 +438,28 @@ impl SendVideo {
     }
 }
 
-/// struct for holding data needed to send an animation message to a chat on telegram
+/// struct for holding data needed to call
+/// [`send_animation`]
+///
+/// [`send_animation`]:
+/// ../../api/trait.API.html#method.send_animation
 #[derive(Serialize, Deserialize, Debug, Clone, PartialEq)]
 pub struct SendAnimation {
     /// Unique identifier for the target chat
     pub chat_id: i64,
-    /// Animation to send. Pass a file_id as String to send an animation file that exists on the Telegram servers (recommended),
-    /// pass an HTTP URL as a String for Telegram to get an animation file from the Internet
+    /// Animation to send. Pass a file_id as String to send an animation file
+    /// that exists on the Telegram servers (recommended), pass an HTTP URL
+    /// as a String for Telegram to get an animation file from the Internet
     pub animation: InputFile,
-    /// Thumbnail of the file sent; can be ignored if thumbnail generation for the file is supported server-side.
-    /// The thumbnail should be in JPEG format and less than 200 kB in size. A thumbnail‘s width and height should not exceed 320.
-    /// Ignored if the file is not uploaded using multipart/form-data.
+    /// Thumbnail of the file sent; can be ignored if thumbnail generation for
+    /// the file is supported server-side. The thumbnail should be in JPEG
+    /// format and less than 200 kB in size. A thumbnail‘s width and height
+    /// should not exceed 320. Ignored if the file is not uploaded using
+    /// multipart/form-data.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub thumb: Option<InputFile>,
-    /// Animation caption (may also be used when resending animation files by file_id), 0-1024 characters after entities parsing
+    /// Animation caption (may also be used when resending animation files by
+    /// file_id), 0-1024 characters after entities parsing
     #[serde(skip_serializing_if = "Option::is_none")]
     pub caption: Option<String>,
     /// Duration of the animation in seconds
@@ -421,10 +477,12 @@ pub struct SendAnimation {
     /// Track name
     #[serde(skip_serializing_if = "Option::is_none")]
     pub title: Option<String>,
-    /// Send Markdown or HTML, if you want Telegram apps to show bold, italic, fixed-width text or inline URLs in your bot's message.
+    /// Send Markdown or HTML, if you want Telegram apps to show bold, italic,
+    /// fixed-width text or inline URLs in your bot's message.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub parse_mode: Option<ParseMode>,
-    /// Sends the message silently. Users will receive a notification with no sound.
+    /// Sends the message silently. Users will receive a notification with no
+    /// sound.
     pub disable_notification: bool,
     /// If the message is a reply, ID of the original message
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -472,24 +530,32 @@ impl SendAnimation {
     }
 }
 
-/// struct for holding data needed to send a voice message to a chat on telegram
+/// struct for holding data needed to call
+/// [`send_voice`]
+///
+/// [`send_voice`]:
+/// ../../api/trait.API.html#method.send_voice
 #[derive(Serialize, Deserialize, Debug, Clone, PartialEq)]
 pub struct SendVoice {
     /// Unique identifier for the target chat
     pub chat_id: i64,
-    /// Voice to send. Pass a file_id as String to send an voice file that exists on the Telegram servers (recommended),
-    /// pass an HTTP URL as a String for Telegram to get an voice file from the Internet
+    /// Voice to send. Pass a file_id as String to send an voice file that
+    /// exists on the Telegram servers (recommended), pass an HTTP URL as a
+    /// String for Telegram to get an voice file from the Internet
     pub voice: InputFile,
-    /// Voice caption (may also be used when resending video files by file_id), 0-1024 characters after entities parsing
+    /// Voice caption (may also be used when resending video files by file_id),
+    /// 0-1024 characters after entities parsing
     #[serde(skip_serializing_if = "Option::is_none")]
     pub caption: Option<String>,
     /// Duration of the voice message in seconds
     #[serde(skip_serializing_if = "Option::is_none")]
     pub duration: Option<i64>,
-    /// Send Markdown or HTML, if you want Telegram apps to show bold, italic, fixed-width text or inline URLs in your bot's message.
+    /// Send Markdown or HTML, if you want Telegram apps to show bold, italic,
+    /// fixed-width text or inline URLs in your bot's message.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub parse_mode: Option<ParseMode>,
-    /// Sends the message silently. Users will receive a notification with no sound.
+    /// Sends the message silently. Users will receive a notification with no
+    /// sound.
     pub disable_notification: bool,
     /// If the message is a reply, ID of the original message
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -527,17 +593,24 @@ impl SendVoice {
     }
 }
 
-/// struct for holding data needed to send a video note message to a chat on telegram
+/// struct for holding data needed to call
+/// [`send_video_note`]
+///
+/// [`send_video_note`]:
+/// ../../api/trait.API.html#method.send_video_note
 #[derive(Serialize, Deserialize, Debug, Clone, PartialEq)]
 pub struct SendVideoNote {
     /// Unique identifier for the target chat
     pub chat_id: i64,
-    /// VideoNote to send. Pass a file_id as String to send an video_note file that exists on the Telegram servers (recommended),
-    /// pass an HTTP URL as a String for Telegram to get an video_note file from the Internet
+    /// VideoNote to send. Pass a file_id as String to send an video_note file
+    /// that exists on the Telegram servers (recommended), pass an HTTP URL
+    /// as a String for Telegram to get an video_note file from the Internet
     pub video_note: InputFile,
-    /// Thumbnail of the file sent; can be ignored if thumbnail generation for the file is supported server-side.
-    /// The thumbnail should be in JPEG format and less than 200 kB in size. A thumbnail‘s width and height should not exceed 320.
-    /// Ignored if the file is not uploaded using multipart/form-data.
+    /// Thumbnail of the file sent; can be ignored if thumbnail generation for
+    /// the file is supported server-side. The thumbnail should be in JPEG
+    /// format and less than 200 kB in size. A thumbnail‘s width and height
+    /// should not exceed 320. Ignored if the file is not uploaded using
+    /// multipart/form-data.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub thumb: Option<InputFile>,
     /// Duration of the voice message in seconds
@@ -546,7 +619,8 @@ pub struct SendVideoNote {
     /// Video width and height, i.e. diameter of the video message
     #[serde(skip_serializing_if = "Option::is_none")]
     pub length: Option<i64>,
-    /// Sends the message silently. Users will receive a notification with no sound.
+    /// Sends the message silently. Users will receive a notification with no
+    /// sound.
     pub disable_notification: bool,
     /// If the message is a reply, ID of the original message
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -584,14 +658,19 @@ impl SendVideoNote {
     }
 }
 
-/// struct for holding data needed to send a media group message to a chat on telegram
+/// struct for holding data needed to call
+/// [`send_media_group`]
+///
+/// [`send_media_group`]:
+/// ../../api/trait.API.html#method.send_media_group
 #[derive(Serialize, Deserialize, Debug, Clone, PartialEq)]
 pub struct SendMediaGroup {
     /// Unique identifier for the target chat
     pub chat_id: i64,
     /// Photos or videos to be send, amount must be 2-10
     pub media: Vec<InputMedia>,
-    /// Sends the message silently. Users will receive a notification with no sound.
+    /// Sends the message silently. Users will receive a notification with no
+    /// sound.
     pub disable_notification: bool,
     /// If the message is a reply, ID of the original message
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -604,12 +683,16 @@ impl SendMediaGroup {
             chat_id,
             media,
             disable_notification: false,
-            reply_to_message_id: None
+            reply_to_message_id: None,
         }
     }
 }
 
-/// struct for holding data needed to send a location message to a chat on telegram
+/// struct for holding data needed to call
+/// [`send_location`]
+///
+/// [`send_location`]:
+/// ../../api/trait.API.html#method.send_location
 #[derive(Serialize, Deserialize, Debug, Clone, PartialEq)]
 pub struct SendLocation {
     /// Unique identifier for the target chat
@@ -621,7 +704,8 @@ pub struct SendLocation {
     /// Period in seconds for which the location will be updated
     #[serde(skip_serializing_if = "Option::is_none")]
     pub live_period: Option<i64>,
-    /// Sends the message silently. Users will receive a notification with no sound.
+    /// Sends the message silently. Users will receive a notification with no
+    /// sound.
     pub disable_notification: bool,
     /// If the message is a reply, ID of the original message
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -631,7 +715,11 @@ pub struct SendLocation {
     pub reply_markup: Option<ReplyMarkup>,
 }
 
-/// struct for holding data needed to send a venue message to a chat on telegram
+/// struct for holding data needed to call
+/// [`send_venue`]
+///
+/// [`send_venue`]:
+/// ../../api/trait.API.html#method.send_venue
 #[derive(Serialize, Deserialize, Debug, Clone, PartialEq)]
 pub struct SendVenue {
     /// Unique identifier for the target chat
@@ -648,10 +736,12 @@ pub struct SendVenue {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub foursquare_id: Option<String>,
     /// Foursquare type of the venue, if known.
-    /// (For example, “arts_entertainment/default”, “arts_entertainment/aquarium” or “food/icecream”.)
+    /// (For example, “arts_entertainment/default”,
+    /// “arts_entertainment/aquarium” or “food/icecream”.)
     #[serde(skip_serializing_if = "Option::is_none")]
     pub foursquare_type: Option<String>,
-    /// Sends the message silently. Users will receive a notification with no sound.
+    /// Sends the message silently. Users will receive a notification with no
+    /// sound.
     pub disable_notification: bool,
     /// If the message is a reply, ID of the original message
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -661,7 +751,11 @@ pub struct SendVenue {
     pub reply_markup: Option<ReplyMarkup>,
 }
 
-/// struct for holding data needed to send a message containing contact information to a chat on telegram
+/// struct for holding data needed to call
+/// [`send_contact`]
+///
+/// [`send_contact`]:
+/// ../../api/trait.API.html#method.send_contact
 #[derive(Serialize, Deserialize, Debug, Clone, PartialEq)]
 pub struct SendContact {
     /// Unique identifier for the target chat
@@ -676,7 +770,8 @@ pub struct SendContact {
     /// Additional data about the contact in the form of a vCard, 0-2048 bytes
     #[serde(skip_serializing_if = "Option::is_none")]
     pub vcard: Option<String>,
-    /// Sends the message silently. Users will receive a notification with no sound.
+    /// Sends the message silently. Users will receive a notification with no
+    /// sound.
     pub disable_notification: bool,
     /// If the message is a reply, ID of the original message
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -686,14 +781,19 @@ pub struct SendContact {
     pub reply_markup: Option<ReplyMarkup>,
 }
 
-/// struct for holding data needed to send a message containing a poll to a chat on telegram
+/// struct for holding data needed to call
+/// [`send_poll`]
+///
+/// [`send_poll`]:
+/// ../../api/trait.API.html#method.send_poll
 #[derive(Serialize, Deserialize, Debug, Clone, PartialEq)]
 pub struct SendPoll {
     /// Unique identifier for the target chat
     pub chat_id: i64,
     /// Poll question, 1-255 characters
     pub question: String,
-    /// A JSON-serialized list of answer options, 2-10 strings 1-100 characters each
+    /// A JSON-serialized list of answer options, 2-10 strings 1-100 characters
+    /// each
     pub options: Vec<String>,
     /// True, if the poll needs to be anonymous, defaults to True
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -702,14 +802,31 @@ pub struct SendPoll {
     #[serde(skip_serializing_if = "Option::is_none")]
     #[serde(rename = "type")]
     pub poll_type: Option<PollType>,
-    /// True, if the poll allows multiple answers, ignored for polls in quiz mode
+    /// True, if the poll allows multiple answers, ignored for polls in quiz
+    /// mode
     pub allows_multiple_answers: bool,
-    /// 0-based identifier of the correct answer option, required for polls in quiz mode
+    /// 0-based identifier of the correct answer option, required for polls in
+    /// quiz mode
     #[serde(skip_serializing_if = "Option::is_none")]
     pub correct_option_id: Option<i64>,
+    /// Text that is shown when a user chooses an incorrect answer or taps on
+    /// the lamp icon in a quiz-style poll, 0-200 characters with at most 2 line
+    /// feeds after entities parsing
+    pub explanation: Option<String>,
+    /// Mode for parsing entities in the explanation.
+    pub explanation_parse_mode: Option<ParseMode>,
+    /// Amount of time in seconds the poll will be active after creation, 5-600.
+    /// Can't be used together with close_date.
+    pub open_period: Option<i64>,
+    /// Point in time (Unix timestamp) when the poll will be automatically
+    /// closed. Must be at least 5 and no more than 600 seconds in the future.
+    /// Can't be used together with open_period.
+    #[serde(with = "unix_date_formatting::optional")]
+    pub close_date: Option<DateTime<Utc>>,
     /// Pass True, if the poll needs to be immediately closed.
     pub is_closed: bool,
-    /// Sends the message silently. Users will receive a notification with no sound.
+    /// Sends the message silently. Users will receive a notification with no
+    /// sound.
     pub disable_notification: bool,
     /// If the message is a reply, ID of the original message
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -719,12 +836,20 @@ pub struct SendPoll {
     pub reply_markup: Option<ReplyMarkup>,
 }
 
-/// struct for holding data needed to send a message containing a dice to a chat on telegram
+/// struct for holding data needed to call
+/// [`send_dice`]
+///
+/// [`send_dice`]:
+/// ../../api/trait.API.html#method.send_dice
 #[derive(Serialize, Deserialize, Debug, Clone, PartialEq)]
 pub struct SendDice {
     /// Unique identifier for the target chat
     pub chat_id: i64,
-    /// Sends the message silently. Users will receive a notification with no sound.
+    /// Emoji on which the dice throw animation is based.
+    /// Currently, must be one of “🎲” or “🎯”. Defauts to “🎲”
+    pub emoji: Option<String>,
+    /// Sends the message silently. Users will receive a notification with no
+    /// sound.
     pub disable_notification: bool,
     /// If the message is a reply, ID of the original message
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -734,7 +859,11 @@ pub struct SendDice {
     pub reply_markup: Option<ReplyMarkup>,
 }
 
-/// struct for holding data needed to send a chat action message to a chat on telegram
+/// struct for holding data needed to call
+/// [`send_chat_action`]
+///
+/// [`send_chat_action`]:
+/// ../../api/trait.API.html#method.send_chat_action
 #[derive(Serialize, Deserialize, Debug, Clone, PartialEq)]
 pub struct SendChatAction {
     /// Unique identifier for the target chat

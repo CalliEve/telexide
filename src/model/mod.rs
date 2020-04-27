@@ -1,3 +1,5 @@
+//! Mappings of objects received from the API
+
 pub(crate) mod utils;
 
 mod chat;
@@ -17,14 +19,14 @@ mod user;
 pub use chat::{
     ChannelChat,
     Chat,
+    ChatMember,
     ChatPermissions,
     ChatPhoto,
     ChatType,
     GroupChat,
+    MemberMemberStatus,
     PrivateChat,
     SuperGroupChat,
-    ChatMember,
-    MemberMemberStatus
 };
 pub use games::*;
 pub use inline::*;
@@ -39,7 +41,7 @@ pub use markup::{
 pub use message::{Message, MessageContent};
 pub use message_contents::*;
 pub use message_entity::*;
-pub use other::{BotCommand, CallbackQuery, ParseMode, ChatAction, ReplyMarkup, File, WebhookInfo};
+pub use other::{BotCommand, CallbackQuery, ChatAction, File, ParseMode, ReplyMarkup, WebhookInfo};
 pub use payments::*;
 pub use stickers::*;
 pub use telegram_passport::*;

@@ -1,6 +1,13 @@
 [package]
 name = "telexide"
 version = "0.1.0"
+description = "An async Rust library for the telegram bot API."
+documentation = "https://docs.rs/telexide"
+repository = "https://github.com/baev1/telexide"
+homepage = "https://github.com/baev1/telexide"
+keywords = ["telegram", "api", "bot"]
+license = "MIT"
+readme = "README.md"
 authors = ["Callidus <callidusumbra@gmail.com>"]
 edition = "2018"
 

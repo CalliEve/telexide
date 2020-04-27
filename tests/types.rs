@@ -1,4 +1,4 @@
-use telegram_botoxide::model::{Chat, Message, MessageContent, User};
+use telexide::model::{Chat, Message, MessageContent, User};
 
 #[test]
 fn decode_user() -> serde_json::Result<()> {

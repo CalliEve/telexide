@@ -93,7 +93,8 @@ pub struct Message {
     pub forward_data: Option<ForwardData>,
 
     /// For replies, the original message.
-    /// Note that the Message object in this field will not contain further reply_to_message fields even if it itself is a reply.
+    /// Note that the Message object in this field will not contain further
+    /// reply_to_message fields even if it itself is a reply.
     pub reply_to_message: Option<Box<Message>>,
     /// Date the message was last edited in Unix time
     pub edit_date: Option<DateTime<Utc>>,
@@ -107,7 +108,8 @@ pub struct Message {
     pub connected_website: Option<String>,
     /// Telegram Passport data
     pub passport_data: Option<PassportData>,
-    /// Inline keyboard attached to the message. `login_url` buttons are represented as ordinary `url` buttons.
+    /// Inline keyboard attached to the message. `login_url` buttons are
+    /// represented as ordinary `url` buttons.
     pub reply_markup: Option<InlineKeyboardMarkup>,
 }
 
@@ -118,7 +120,8 @@ pub enum MessageContent {
     Text {
         /// The actual UTF-8 text of the message, 0-4096 characters
         content: String,
-        /// Special entities like usernames, URLs, bot commands, etc. that appear in the text
+        /// Special entities like usernames, URLs, bot commands, etc. that
+        /// appear in the text
         entities: Vec<MessageEntity>,
     },
     Audio {
@@ -126,7 +129,8 @@ pub enum MessageContent {
         content: Audio,
         /// The caption, 0-1024 characters
         caption: Option<String>,
-        /// Special entities like usernames, URLs, bot commands, etc. that appear in the caption
+        /// Special entities like usernames, URLs, bot commands, etc. that
+        /// appear in the caption
         caption_entities: Option<Vec<MessageEntity>>,
     },
     Document {
@@ -134,7 +138,8 @@ pub enum MessageContent {
         content: Document,
         /// The caption, 0-1024 characters
         caption: Option<String>,
-        /// Special entities like usernames, URLs, bot commands, etc. that appear in the caption
+        /// Special entities like usernames, URLs, bot commands, etc. that
+        /// appear in the caption
         caption_entities: Option<Vec<MessageEntity>>,
     },
     Animation {
@@ -142,7 +147,8 @@ pub enum MessageContent {
         content: Animation,
         /// The caption, 0-1024 characters
         caption: Option<String>,
-        /// Special entities like usernames, URLs, bot commands, etc. that appear in the caption
+        /// Special entities like usernames, URLs, bot commands, etc. that
+        /// appear in the caption
         caption_entities: Option<Vec<MessageEntity>>,
     },
     Video {
@@ -150,9 +156,11 @@ pub enum MessageContent {
         content: Video,
         /// The caption, 0-1024 characters
         caption: Option<String>,
-        /// Special entities like usernames, URLs, bot commands, etc. that appear in the caption
+        /// Special entities like usernames, URLs, bot commands, etc. that
+        /// appear in the caption
         caption_entities: Option<Vec<MessageEntity>>,
-        /// The unique identifier of a media message group this message belongs to
+        /// The unique identifier of a media message group this message belongs
+        /// to
         media_group_id: Option<String>,
     },
     Voice {
@@ -160,7 +168,8 @@ pub enum MessageContent {
         content: Voice,
         /// The caption, 0-1024 characters
         caption: Option<String>,
-        /// Special entities like usernames, URLs, bot commands, etc. that appear in the caption
+        /// Special entities like usernames, URLs, bot commands, etc. that
+        /// appear in the caption
         caption_entities: Option<Vec<MessageEntity>>,
     },
     Photo {
@@ -168,9 +177,11 @@ pub enum MessageContent {
         content: Vec<PhotoSize>,
         /// The caption, 0-1024 characters
         caption: Option<String>,
-        /// Special entities like usernames, URLs, bot commands, etc. that appear in the caption
+        /// Special entities like usernames, URLs, bot commands, etc. that
+        /// appear in the caption
         caption_entities: Option<Vec<MessageEntity>>,
-        /// The unique identifier of a media message group this message belongs to
+        /// The unique identifier of a media message group this message belongs
+        /// to
         media_group_id: Option<String>,
     },
 
@@ -207,8 +218,9 @@ pub enum MessageContent {
         content: Dice,
     },
     NewChatMembers {
-        /// New members that were added to the group or supergroup and information about them
-        /// (the bot itself may be one of these members)
+        /// New members that were added to the group or supergroup and
+        /// information about them (the bot itself may be one of these
+        /// members)
         content: Vec<User>,
     },
     LeftChatMember {
@@ -225,26 +237,31 @@ pub enum MessageContent {
         content: Vec<PhotoSize>,
     },
     MigrateToChatID {
-        /// The group has been migrated to a supergroup with the specified identifier.
+        /// The group has been migrated to a supergroup with the specified
+        /// identifier.
         content: i64,
     },
     MigrateFromChatID {
-        /// The supergroup has been migrated from a group with the specified identifier.
+        /// The supergroup has been migrated from a group with the specified
+        /// identifier.
         content: i64,
     },
     PinnedMessage {
-        /// Specified message was pinned. Note that the Message object in this field will not contain
-        /// further reply_to_message fields even if it is itself a reply.
+        /// Specified message was pinned. Note that the Message object in this
+        /// field will not contain further reply_to_message fields even
+        /// if it is itself a reply.
         content: Box<Message>,
     },
     Invoice {
-        /// Message is an invoice for a [payment], information about the invoice.
+        /// Message is an invoice for a [payment], information about the
+        /// invoice.
         ///
         /// [payment]: https://core.telegram.org/bots/api#payments
         content: Invoice,
     },
     SuccessfulPayment {
-        /// Message is a service message about a successful payment, information about the payment.
+        /// Message is a service message about a successful payment, information
+        /// about the payment.
         content: SuccessfulPayment,
     },
 
@@ -255,12 +272,14 @@ pub enum MessageContent {
     /// Service message: the supergroup has been created.
     /// This field can‘t be received in a message coming through updates,
     /// because bot can’t be a member of a supergroup when it is created.
-    /// It can only be found in reply_to_message if someone replies to a very first message in a directly created supergroup.
+    /// It can only be found in reply_to_message if someone replies to a very
+    /// first message in a directly created supergroup.
     SupergroupChatCreated,
     /// Service message: the channel has been created.
     /// This field can‘t be received in a message coming through updates,
     /// because bot can’t be a member of a channel when it is created.
-    /// It can only be found in reply_to_message if someone replies to the very first message in a channel.
+    /// It can only be found in reply_to_message if someone replies to the very
+    /// first message in a channel.
     ChannelChatCreated,
     /// Received a message with an unknown content
     Unknown,
@@ -271,13 +290,17 @@ pub enum MessageContent {
 pub struct ForwardData {
     /// For forwarded messages, sender of the original message
     pub from: Option<super::User>,
-    /// For messages forwarded from channels, information about the original channel
+    /// For messages forwarded from channels, information about the original
+    /// channel
     pub from_chat: Option<super::Chat>,
-    /// For messages forwarded from channels, identifier of the original message in the channel
+    /// For messages forwarded from channels, identifier of the original message
+    /// in the channel
     pub from_message_id: Option<i64>,
-    /// For messages forwarded from channels, signature of the post author if present
+    /// For messages forwarded from channels, signature of the post author if
+    /// present
     pub signature: Option<String>,
-    /// Sender's name for messages forwarded from users who disallow adding a link to their account in forwarded messages
+    /// Sender's name for messages forwarded from users who disallow adding a
+    /// link to their account in forwarded messages
     pub sender_name: Option<String>,
     /// For forwarded messages, date the original message was sent in Unix time
     pub date: DateTime<Utc>,
@@ -291,15 +314,20 @@ impl Message {
             } => Some(content.clone()),
             MessageContent::Audio {
                 ref caption, ..
-            } | MessageContent::Document {
+            }
+            | MessageContent::Document {
                 ref caption, ..
-            } | MessageContent::Animation {
+            }
+            | MessageContent::Animation {
                 ref caption, ..
-            } | MessageContent::Video {
+            }
+            | MessageContent::Video {
                 ref caption, ..
-            } | MessageContent::Voice {
+            }
+            | MessageContent::Voice {
                 ref caption, ..
-            } | MessageContent::Photo {
+            }
+            | MessageContent::Photo {
                 ref caption, ..
             } => caption.clone(),
             _ => None,
@@ -334,21 +362,19 @@ impl From<RawMessage> for Message {
             None
         };
 
-        let fill_in_content = |content: MessageContent| {
-            Self {
-                message_id,
-                from,
-                date,
-                chat,
-                forward_data,
-                reply_to_message,
-                edit_date,
-                author_signature,
-                content,
-                connected_website,
-                passport_data,
-                reply_markup,
-            }
+        let fill_in_content = |content: MessageContent| Self {
+            message_id,
+            from,
+            date,
+            chat,
+            forward_data,
+            reply_to_message,
+            edit_date,
+            author_signature,
+            content,
+            connected_website,
+            passport_data,
+            reply_markup,
         };
 
         if let Some(c) = raw.text {

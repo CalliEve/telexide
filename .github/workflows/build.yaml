@@ -1,0 +1,16 @@
+name: build
+
+on: push
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v2
+      - name: Build
+        run: |
+          cargo build --verbose
+          scripts/build_examples.sh
+      - name: Test
+        run: cargo test --tests --verbose

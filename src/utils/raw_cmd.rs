@@ -1,5 +1,7 @@
-use crate::framework::types::{CommandOptions, CommandTypes, TelegramCommand};
-use crate::client::event_handlers::{MessageHandlerFunc, InlineResultHandlerFunc, InlineQueryHandlerFunc};
+use crate::{
+    client::event_handlers::{InlineQueryHandlerFunc, InlineResultHandlerFunc, MessageHandlerFunc},
+    framework::types::{CommandOptions, CommandTypes, TelegramCommand},
+};
 
 #[derive(Clone)]
 pub enum RawCommandTypes {
@@ -19,7 +21,7 @@ impl From<&RawTelegramCommand> for TelegramCommand {
         let cmd = match raw.command.clone() {
             RawCommandTypes::Default(c) => CommandTypes::Default(c.into()),
             RawCommandTypes::InlineResult(c) => CommandTypes::InlineResult(c.into()),
-            RawCommandTypes::Inline(c) => CommandTypes::Inline(c.into())
+            RawCommandTypes::Inline(c) => CommandTypes::Inline(c.into()),
         };
 
         Self {

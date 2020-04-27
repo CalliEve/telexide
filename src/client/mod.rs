@@ -1,10 +1,11 @@
 //! The [Client] contains information about your registered event handlers.
-//! Dispatching events to configured handlers is also handled directly via the client.
-//! In addition, the [`api`] and [`framework`] modules are also automatically handled by the Client module for you.
+//! Dispatching events to configured handlers is also handled directly via the
+//! client. In addition, the [`api`] and [`framework`] modules are also
+//! automatically handled by the Client module for you.
 //!
 //! A [`Context`] is provided for every handler.
 //!
-//! See [here][examples] for some examples of how to use the [`Client`] easily.
+//! See [here][examples] for some examples on how to use the [`Client`].
 //!
 //! [examples]: struct.Client.hmtl#Examples
 //! [`api`]: ../api/index.hmtl
@@ -25,7 +26,11 @@ pub use builder::ClientBuilder;
 pub use client::Client;
 pub use context::Context;
 pub use event_handlers::{
-    MessageHandler, InlineQueryHandler, EventHandler, RawEventHandler, InlineResultHandler
+    EventHandler,
+    InlineQueryHandler,
+    InlineResultHandler,
+    MessageHandler,
+    RawEventHandler,
 };
 pub use stream::UpdatesStream;
 

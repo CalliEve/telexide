@@ -3,11 +3,10 @@ use std::sync::{
     Arc,
     RwLock,
 };
-use telegram_botoxide::{
-    client::{Client, Context},
+use telexide::{
+    client::{ClientBuilder, Context},
     macros::{command, prepare_listener},
     model::{Update, UpdateContent},
-    options::OptionsBuilder,
     Result,
 };
 
@@ -15,8 +14,8 @@ use telegram_botoxide::{
 async fn update_handler_gets_called() -> Result<()> {
     static b: AtomicUsize = AtomicUsize::new(0);
 
-    let mut c = Client::new(&OptionsBuilder::new().set_token("test".to_owned()).build()?);
-    c.subscribe_handler(|_x, u| {
+    let mut c = ClientBuilder::new().set_token("test").build();
+    c.subscribe_handler_func(|_x, u| {
         Box::pin(async move {
             b.fetch_add(u.update_id as usize, Ordering::Acquire);
         })
@@ -25,8 +24,9 @@ async fn update_handler_gets_called() -> Result<()> {
     c.fire_handlers(Update {
         update_id: 10,
         content: UpdateContent::Unknown,
-    })
-    .await;
+    });
+
+    tokio::time::delay_for(tokio::time::Duration::from_millis(50)).await;
 
     assert_eq!(b.load(Ordering::Relaxed), 10);
     Ok(())
@@ -45,15 +45,16 @@ fn testing_func(
 
 #[tokio::test]
 async fn test_using_func() -> Result<()> {
-    let mut c = Client::new(&OptionsBuilder::new().set_token("test".to_owned()).build()?);
+    let mut c = ClientBuilder::new().set_token("test").build();
 
-    c.subscribe_handler(testing_func);
+    c.subscribe_handler_func(testing_func);
 
     c.fire_handlers(Update {
         update_id: 10,
         content: UpdateContent::Unknown,
-    })
-    .await;
+    });
+
+    tokio::time::delay_for(tokio::time::Duration::from_millis(50)).await;
 
     assert_eq!(func_b.load(Ordering::Relaxed), 10);
     Ok(())
