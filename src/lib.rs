@@ -1,4 +1,4 @@
-//! ## Telexide is a rust library for the telegram API
+//! Telexide is a rust library for the telegram API
 //!
 //! View the [examples] to see practical examples of how to use the library.
 //!
@@ -6,11 +6,22 @@
 //! preferences and register commands with the [`create_framework`] macro and/or
 //! register your own update handlers, before running [`Client::start`] to start
 //! your bot. All of this is designed to be highly customisable. For further
-//! information, please see [client's module-level documentation][client].
+//! information about the client, please see the [client's module-level
+//! documentation][client].
 //!
-//! Telegram also has their own [API docs for bots][tg docs], which should
-//! always be referenced in case of discrepancies between the working of this
-//! library and what is expected.
+//! API calls are easy to make using the [`APIClient`] and the api data models,
+//! or create and use your own api client by implementing the [`API`] trait. For
+//! further information about the api client, please see the [api's module-level
+//! documentation][api].
+//!
+//! A default command framework is provided using the [`Framework`] object,
+//! providing easy handling of incoming [telegram bot commands][tg_commands]
+//! sent by users of your bot. For further information about the framework,
+//! please see the [framework's module-level documentation][framework].
+//!
+//! Telegram also has their own [API docs for bots][tg docs]. Although this
+//! documentation will try to be as accurate as possible, if you need to be
+//! sure, refer to their docs.
 //!
 //! # Resources
 //!  - [Examples][examples]
@@ -34,8 +45,13 @@
 //! [`ClientBuilder`]: client/struct.ClientBuilder.html
 //! [`Client`]: client/struct.Client.html
 //! [`Client::start`]: client/struct.Client.html#method.start
+//! [`APIClient`]: api/struct.APIClient.html
+//! [`API`]: api/trait.API.html
+//! [api]: api/index.html
+//! [tg_commands]: https://core.telegram.org/bots#commands
+//! [`Framework`]: framework/struct.Framework.html
+//! [framework]: framework/index.html
 
-#![allow(where_clauses_object_safety)] // TODO: make this unnecessary by refactoring the API trait?
 #![warn(clippy::pedantic)]
 #![allow(
     dead_code,
@@ -65,8 +81,8 @@ pub use utils::result::{Error, Result};
 pub mod prelude {
     //! A default set of exports which can be helpful to use.
     //!
-    //! note that `TelexideError` is a re-export of [`telexide::Error`] under a
-    //! different name to remove likely ambiguity with other crate error
+    //! note that [`TelexideError`] is a re-export of [`telexide::Error`] under
+    //! a different name to remove likely ambiguity with other crate error
     //! enums.
     //!
     //! ## Examples
@@ -78,13 +94,18 @@ pub mod prelude {
     //! ```
     //!
     //! [`telexide::Error`]: ../enum.Error.html
+    //! [`TelexideError`]: ../enum.Error.html
 
     pub use super::{
         client::{Client, ClientBuilder, Context},
         create_framework,
+        framework::CommandResult,
         model::{Message, Update},
         Error as TelexideError,
-        framework::CommandResult
     };
     pub use subscription_macros::{command, prepare_listener};
 }
+
+#[doc(hidden)]
+#[allow(unused_imports)]
+pub use paste::expr as paste_expr;

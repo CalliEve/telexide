@@ -18,16 +18,16 @@ pub struct User {
     pub language_code: Option<String>,
     /// True, if the bot can be invited to groups. Returned only in [`get_me`].
     ///
-    /// [`get_me`]: ../api/struct.API.hmtl#method.get_me
+    /// [`get_me`]: ../api/struct.API.html#method.get_me
     pub can_join_groups: Option<bool>,
     /// True, if privacy mode is disabled for the bot. Returned only in
     /// [`get_me`].
     ///
-    /// [`get_me`]: ../api/struct.API.hmtl#method.get_me
+    /// [`get_me`]: ../api/struct.API.html#method.get_me
     pub can_read_all_group_messages: Option<bool>,
     /// True, if the bot supports inline queries. Returned only in [`get_me`].
     ///
-    /// [`get_me`]: ../api/struct.API.hmtl#method.get_me
+    /// [`get_me`]: ../api/struct.API.html#method.get_me
     pub supports_inline_queries: Option<bool>,
 }
 

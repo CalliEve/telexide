@@ -1,10 +1,4 @@
-use super::{
-    APIConnector,
-    Context,
-    EventHandlerFunc,
-    RawEventHandlerFunc,
-    UpdatesStream,
-};
+use super::{APIConnector, Context, EventHandlerFunc, RawEventHandlerFunc, UpdatesStream};
 use crate::{
     api::{types::UpdateType, APIClient},
     framework::Framework,

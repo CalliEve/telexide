@@ -1,0 +1,11 @@
+[package]
+name = "repeat_image_bot"
+version = "0.1.0"
+authors = ["my name <my@email.address>"]
+edition = "2018"
+
+[dependencies]
+telexide = { path = "../../" }
+tokio = { version = "^0.2" }
+typemap = "^0.3"
+parking_lot = "^0.10"

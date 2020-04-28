@@ -1,13 +1,13 @@
 use super::{api::API, endpoints::APIEndpoint, response::Response};
 use crate::utils::{
     encode_multipart_form_data,
-    result::{Result, TelegramError},
+    result::Result,
     AsFormData,
     FormDataFile,
     BOUNDARY,
 };
 use async_trait::async_trait;
-use hyper::{body::HttpBody, client::HttpConnector, Body, Client, Method, Request};
+use hyper::{body::HttpBody, client::HttpConnector, Body, Client, Request};
 use std::io::Write;
 
 static TELEGRAM_API: &str = "https://api.telegram.org/bot";
@@ -80,9 +80,8 @@ impl APIClient {
         };
 
         match endpoint {
-            e if e.get_method() == Method::GET => self.get(e, data).await,
-            e if e.get_method() == Method::POST => self.post(e, data).await,
-            _ => Err(TelegramError::InvalidEndpoint.into()),
+            e if e.as_str().starts_with("get") => self.get(e, data).await,
+            e => self.post(e, data).await,
         }
     }
 }

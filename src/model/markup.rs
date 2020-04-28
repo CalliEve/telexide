@@ -42,7 +42,7 @@ pub struct InlineKeyboardButton {
     /// from, skipping the chat selection screen.
     ///
     /// [inline mode]: https://core.telegram.org/bots/inline
-    /// [switch_pm]: ../api/trait.API.hmtl#method.answer_callback_query
+    /// [switch_pm]: ../api/trait.API.html#method.answer_callback_query
     pub switch_inline_query: Option<String>,
     /// If set, pressing the button will insert the bot‘s username and the
     /// specified inline query in the current chat's input field. Can be

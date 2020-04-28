@@ -16,7 +16,7 @@ pub enum Error {
     /// An error from the `serde_json` crate.
     JSON(serde_json::Error),
     /// An error happened in a command
-    Command(CommandError)
+    Command(CommandError),
 }
 
 /// An error enum returned by errors generated within the library itself

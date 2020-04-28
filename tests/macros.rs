@@ -1,10 +1,19 @@
 use std::sync::atomic::{AtomicUsize, Ordering};
 use telexide::{
     client::{ClientBuilder, Context},
-    macros::{command, prepare_listener, create_framework},
-    model::{Chat, Message, MessageContent, PrivateChat, Update, UpdateContent, MessageEntity, TextBlock},
-    Result,
     framework::CommandResult,
+    macros::{command, create_framework, prepare_listener},
+    model::{
+        Chat,
+        Message,
+        MessageContent,
+        MessageEntity,
+        PrivateChat,
+        TextBlock,
+        Update,
+        UpdateContent,
+    },
+    Result,
 };
 
 static macro_b: AtomicUsize = AtomicUsize::new(0);
@@ -97,9 +106,10 @@ async fn test_using_command() -> Result<()> {
             reply_markup: None,
             content: MessageContent::Text {
                 content: "/testing_command".to_owned(),
-                entities: vec![
-                    MessageEntity::BotCommand(TextBlock{ offset: 0, length: 16 })
-                ],
+                entities: vec![MessageEntity::BotCommand(TextBlock {
+                    offset: 0,
+                    length: 16,
+                })],
             },
         }),
     });

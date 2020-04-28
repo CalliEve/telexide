@@ -1,4 +1,3 @@
-#![allow(where_clauses_object_safety)]
 use std::env;
 use telexide::{api::types::SendMessage, prelude::*};
 

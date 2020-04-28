@@ -1,4 +1,3 @@
-#![allow(where_clauses_object_safety)]
 use parking_lot::RwLock;
 use std::{collections::HashMap, env, sync::Arc};
 use telexide::{
@@ -19,7 +18,7 @@ async fn repeat(context: Context, message: Message) -> CommandResult {
         return Ok(());
     }
 
-    let res = context
+    context
         .api
         .send_message(SendMessage::new(
             message.chat.get_id(),

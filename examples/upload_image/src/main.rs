@@ -1,8 +1,7 @@
-#![allow(where_clauses_object_safety)]
 use std::env;
 use telexide::{api::types::SendPhoto, prelude::*};
 
-#[command(description = "just a ping-pong command", name = "spaceimage")]
+#[command(description = "returns a gorgeous image of space!", name = "spaceimage")]
 async fn space_image(context: Context, message: Message) -> CommandResult {
     let mut data = SendPhoto::from_file(message.chat.get_id(), "./examples/silver_coin_galaxy.jpg")
         .expect("error while getting file");

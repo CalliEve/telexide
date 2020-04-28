@@ -9,7 +9,22 @@ Telexide is an easy to use library for making a telegram bot, built on tokio and
 
 View the [examples] on how to make and structure a bot.
 
+Use the [`ClientBuilder`] to easily create a [`Client`] object to your
+preferences and register commands with the [`create_framework`] macro and/or
+register your own update handlers, before running [`Client::start`] to start
+your bot. All of this is designed to be highly customisable. For further
+information about the client, please see the [client's module-level
+documentation][client].
 
+API calls are easy to make using the [`APIClient`] and the api data models,
+or create and use your own api client by implementing the [`API`] trait. For
+further information about the api client, please see the [api's module-level
+documentation][api].
+
+A default command framework is provided using the [`Framework`] object,
+providing easy handling of incoming [telegram bot commands][tg_commands]
+sent by users of your bot. For further information about the framework,
+please see the [framework's module-level documentation][framework].
 
 ## Example Bot
 
@@ -31,14 +46,11 @@ async fn ping(context: Context, message: Message) -> CommandResult {
 #[tokio::main]
 async fn main() -> telexide::Result<()> {
     let token = env::var("BOT_TOKEN").expect("no token environment variable set");
-    let bot_name = env::var("BOT_NAME").expect("no bot name env variable set");
 
     ClientBuilder::with_framework(
-        create_framework!(&bot_name, ping),
+        create_framework!("ping-pong", ping),
         token
-    )
-        .start()
-        .await
+    ).start().await
 }
 ```
 
@@ -64,7 +76,7 @@ For more examples, please see the examples dir.
     - [ ] run command on receiving a poll that matches your requirements
 - [ ] wait_for style Context method to wait for an update matching your criteria
 - [ ] more builder methods for creating api data
-- [ ] methods on models for easier calling of API endpoints (like `ChatMember::kick`)v
+- [ ] methods on models for easier calling of API endpoints (like `ChatMember::kick`)
 
 ## Installation
 
@@ -75,3 +87,14 @@ telexide = "0.1"
 ```
 
 [examples]: https://github.com/Baev1/telexide/blob/master/examples
+[client]: https://docs.rs/telexide/client/index.html
+[`ClientBuilder`]: https://docs.rs/telexide/client/struct.ClientBuilder.html
+[`Client`]: https://docs.rs/telexide/client/struct.Client.html
+[`Client::start`]: https://docs.rs/telexide/client/struct.Client.html#method.start
+[`APIClient`]: https://docs.rs/telexide/api/struct.APIClient.html
+[`API`]: https://docs.rs/telexide/api/trait.API.html
+[api]: https://docs.rs/telexide/api/index.html
+[`create_framework`]: https://docs.rs/telexide/macro.create_framework.html
+[tg_commands]: https://core.telegram.org/bots#commands
+[`Framework`]: https://docs.rs/telexide/framework/struct.Framework.html
+[framework]: https://docs.rs/telexide/framework/index.html

@@ -1,8 +1,6 @@
 #!/bin/bash
 
-suff=rs
-for f in examples/*.rs
+for f in examples/*
 do
-    IFS='/' read -ra fileArr <<< "$f"
-    cargo build --verbose --example ${fileArr[1]%.$suff}
+    cargo build --verbose --manifest-path  $f/Cargo.toml
 done

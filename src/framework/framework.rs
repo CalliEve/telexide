@@ -46,13 +46,17 @@ impl Framework {
                 CommandTypes::Default(c) if self.match_command(&message, &command.options.name) => {
                     let ctx = context.clone();
                     let msg = message.clone();
-                    let command_name = command.options.name.clone();
+                    let command_name = command.options.name;
                     debug!("calling command {}", &command_name);
 
                     tokio::spawn(async move {
                         let res = c(ctx, msg).await;
                         if res.is_err() {
-                            warn!("command {} returned error: {}", &command_name, res.unwrap_err().0)
+                            warn!(
+                                "command {} returned error: {}",
+                                &command_name,
+                                res.unwrap_err().0
+                            )
                         }
                     });
                 },

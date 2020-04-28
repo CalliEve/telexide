@@ -7,7 +7,7 @@
 macro_rules! create_framework {
     ($bot_name:expr, $( $c:expr ),*) => {
         {
-            paste::expr! {
+            telexide::paste_expr! {
                 let mut fr = telexide::framework::Framework::new($bot_name);
                 $(
                      fr.add_command(&(&[<$c _COMMAND>]));

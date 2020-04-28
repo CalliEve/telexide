@@ -1,5 +1,8 @@
-//! The api module provides the API trait and `APIClient`, providing methods to
-//! perform requests to the telegram API
+//! The api module provides the [`API`] trait and [`APIClient`], providing
+//! methods to perform requests to the telegram API
+//!
+//! [`API`]: trait.API.html
+//! [`APIClient`]: struct.APIClient.html
 
 mod api;
 mod api_client;

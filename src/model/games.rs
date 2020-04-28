@@ -17,8 +17,8 @@ pub struct Game {
     /// for the game when the bot calls [set_game_score], or manually edited
     /// using [edit_message_text]. 0-4096 characters.
     ///
-    /// [edit_message_text]: ../api/trait.API.hmtl#method.edit_message_text
-    /// [set_game_score]: ../api/trait.API.hmtl#method.set_game_score
+    /// [edit_message_text]: ../api/trait.API.html#method.edit_message_text
+    /// [set_game_score]: ../api/trait.API.html#method.set_game_score
     pub text: Option<String>,
     /// Special entities that appear in text, such as usernames, URLs, bot
     /// commands, etc.
