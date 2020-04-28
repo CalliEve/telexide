@@ -3,18 +3,13 @@ use std::env;
 use telexide::{api::types::SendPhoto, prelude::*};
 
 #[command(description = "just a ping-pong command", name = "spaceimage")]
-async fn space_image(context: Context, message: Message) {
+async fn space_image(context: Context, message: Message) -> CommandResult {
     let mut data = SendPhoto::from_file(message.chat.get_id(), "./examples/silver_coin_galaxy.jpg")
         .expect("error while getting file");
     data.caption = Some("Take a look at this awesome galaxy!".to_owned());
 
-    let res = context.api.send_photo(data).await;
-    if res.is_err() {
-        println!(
-            "got an error when sending the space image message: {}",
-            res.err().unwrap()
-        )
-    }
+    context.api.send_photo(data).await?;
+    Ok(())
 }
 
 #[tokio::main]

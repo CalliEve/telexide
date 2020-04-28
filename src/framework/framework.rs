@@ -3,6 +3,7 @@ use crate::{
     client::Context,
     model::{Message, MessageContent, MessageEntity, Update, UpdateContent},
 };
+use log::{debug, warn};
 
 /// A utility for easily managing commands.
 ///
@@ -45,8 +46,15 @@ impl Framework {
                 CommandTypes::Default(c) if self.match_command(&message, &command.options.name) => {
                     let ctx = context.clone();
                     let msg = message.clone();
-                    println!("calling command {}", &command.options.name);
-                    tokio::spawn(async move { c.call(ctx, msg).await });
+                    let command_name = command.options.name.clone();
+                    debug!("calling command {}", &command_name);
+
+                    tokio::spawn(async move {
+                        let res = c(ctx, msg).await;
+                        if res.is_err() {
+                            warn!("command {} returned error: {}", &command_name, res.unwrap_err().0)
+                        }
+                    });
                 },
                 _ => (),
             }

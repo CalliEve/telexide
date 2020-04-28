@@ -1,9 +1,8 @@
 use super::{
-    event_handlers::EventHandlerFunc,
     APIConnector,
     Context,
-    EventHandler,
-    RawEventHandler,
+    EventHandlerFunc,
+    RawEventHandlerFunc,
     UpdatesStream,
 };
 use crate::{
@@ -75,8 +74,8 @@ pub struct Client {
     ///
     /// [repeat_image_bot]: https://github.com/Baev1/telexide/tree/master/examples/repeat_image_bot.rs
     pub data: Arc<RwLock<ShareMap>>,
-    pub(super) event_handlers: Vec<EventHandler>,
-    pub(super) raw_event_handlers: Vec<RawEventHandler>,
+    pub(super) event_handlers: Vec<EventHandlerFunc>,
+    pub(super) raw_event_handlers: Vec<RawEventHandlerFunc>,
     pub(super) framework: Option<Arc<Framework>>,
     /// The update types that you want to receive, see the documentation of
     /// [`UpdateType`] for more information
@@ -145,7 +144,7 @@ impl Client {
     /// Subscribes an update event handler function ([`EventHandlerFunc`]) to
     /// the client and will be ran when a new update is received
     pub fn subscribe_handler_func(&mut self, handler: EventHandlerFunc) {
-        self.event_handlers.push(EventHandler::new(handler));
+        self.event_handlers.push(handler);
     }
 
     //    /// Subscribes a raw update event handler to the client and will be ran
@@ -161,7 +160,7 @@ impl Client {
         for h in self.event_handlers.clone() {
             let ctx = Context::new(self.api_client.clone(), self.data.clone());
             let u = update.clone();
-            tokio::spawn(async move { h.call(ctx, u).await });
+            tokio::spawn(async move { h(ctx, u).await });
         }
 
         if self.framework.is_some() {

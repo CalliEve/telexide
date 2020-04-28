@@ -84,9 +84,7 @@ pub mod prelude {
         create_framework,
         model::{Message, Update},
         Error as TelexideError,
+        framework::CommandResult
     };
     pub use subscription_macros::{command, prepare_listener};
 }
-
-#[doc(hidden)]
-pub use utils::raw_cmd;

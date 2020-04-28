@@ -1,3 +1,5 @@
+use crate::framework::types::CommandError;
+
 /// The common result type between most library functions.
 pub type Result<T> = std::result::Result<T, Error>;
 
@@ -13,6 +15,8 @@ pub enum Error {
     HTTP(http::Error),
     /// An error from the `serde_json` crate.
     JSON(serde_json::Error),
+    /// An error happened in a command
+    Command(CommandError)
 }
 
 /// An error enum returned by errors generated within the library itself
@@ -70,6 +74,7 @@ impl std::fmt::Display for Error {
             Error::IO(e) => std::fmt::Display::fmt(&e, f),
             Error::HTTP(e) => std::fmt::Display::fmt(&e, f),
             Error::JSON(e) => std::fmt::Display::fmt(&e, f),
+            Error::Command(e) => std::fmt::Display::fmt(&e.0, f),
         }
     }
 }
@@ -90,6 +95,7 @@ impl std::fmt::Debug for Error {
             Error::IO(e) => std::fmt::Debug::fmt(&e, f),
             Error::HTTP(e) => std::fmt::Debug::fmt(&e, f),
             Error::JSON(e) => std::fmt::Debug::fmt(&e, f),
+            Error::Command(e) => std::fmt::Debug::fmt(&e, f),
         }
     }
 }
@@ -104,6 +110,7 @@ impl std::error::Error for Error {
             Error::IO(e) => e,
             Error::HTTP(e) => e,
             Error::JSON(e) => e,
+            Error::Command(_) => return None,
         })
     }
 }

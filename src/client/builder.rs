@@ -1,4 +1,4 @@
-use super::{event_handlers::EventHandlerFunc, APIConnector, Client, EventHandler};
+use super::{APIConnector, Client, EventHandlerFunc};
 use crate::{
     api::{types::UpdateType, APIClient},
     framework::Framework,
@@ -16,7 +16,7 @@ pub struct ClientBuilder {
     framework: Option<Arc<Framework>>,
     token: Option<String>,
     allowed_updates: Vec<UpdateType>,
-    event_handler_funcs: Vec<EventHandler>,
+    event_handler_funcs: Vec<EventHandlerFunc>,
 }
 
 impl ClientBuilder {
@@ -94,7 +94,7 @@ impl ClientBuilder {
 
     /// Adds an `EventHandlerFunc` function for handling incoming updates
     pub fn add_handler_func(&mut self, handler: EventHandlerFunc) -> &mut Self {
-        self.event_handler_funcs.push(EventHandler::new(handler));
+        self.event_handler_funcs.push(handler);
         self
     }
 

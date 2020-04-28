@@ -14,9 +14,9 @@ impl TypeMapKey for HashMapKey {
 }
 
 #[command(description = "repeat the next image")]
-async fn repeat(context: Context, message: Message) {
+async fn repeat(context: Context, message: Message) -> CommandResult {
     if message.from.is_none() {
-        return;
+        return Ok(());
     }
 
     let res = context
@@ -25,14 +25,7 @@ async fn repeat(context: Context, message: Message) {
             message.chat.get_id(),
             "please send the image I will repeat",
         ))
-        .await;
-    if res.is_err() {
-        println!(
-            "got an error when sending the asking message: {}",
-            res.err().unwrap()
-        );
-        return;
-    }
+        .await?;
 
     let mut guard = context.data.write();
     let map = guard.get_mut::<HashMapKey>().expect("no hashmap").clone();
@@ -40,6 +33,8 @@ async fn repeat(context: Context, message: Message) {
         message.chat.get_id(),
         message.from.as_ref().expect("no author").id,
     );
+
+    Ok(())
 }
 
 #[prepare_listener]

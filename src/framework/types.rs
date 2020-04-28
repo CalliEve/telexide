@@ -1,13 +1,12 @@
 use crate::{
-    client::{InlineQueryHandler, InlineResultHandler, MessageHandler},
     model::BotCommand,
+    utils::result::Error
 };
+use super::handlers::CommandHandlerFunc;
 
 #[derive(Clone)]
 pub enum CommandTypes {
-    Default(MessageHandler),
-    Inline(InlineQueryHandler),
-    InlineResult(InlineResultHandler),
+    Default(CommandHandlerFunc),
 }
 
 #[derive(Clone)]
@@ -28,5 +27,24 @@ impl TelegramCommand {
             command: self.options.name.to_owned(),
             description: self.options.description.to_owned(),
         }
+    }
+}
+
+#[derive(Debug, Clone)]
+pub struct CommandError(pub String);
+
+impl<T: std::fmt::Display> From<T> for CommandError {
+    #[inline]
+    fn from(d: T) -> Self {
+        CommandError(d.to_string())
+    }
+}
+
+pub type CommandResult = ::std::result::Result<(), CommandError>;
+
+impl From<CommandError> for Error {
+    #[inline]
+    fn from(d: CommandError) -> Self {
+        Error::Command(d)
     }
 }

@@ -10,7 +10,7 @@ macro_rules! create_framework {
             paste::expr! {
                 let mut fr = telexide::framework::Framework::new($bot_name);
                 $(
-                     fr.add_command(&(&[<$c _COMMAND>]).into());
+                     fr.add_command(&(&[<$c _COMMAND>]));
                 )*
                 ::std::sync::Arc::new(fr)
             }

@@ -15,7 +15,7 @@
 mod builder;
 mod client;
 mod context;
-pub(crate) mod event_handlers;
+mod event_handlers;
 mod stream;
 
 use crate::api::API;
@@ -25,12 +25,9 @@ use std::pin::Pin;
 pub use builder::ClientBuilder;
 pub use client::Client;
 pub use context::Context;
-pub use event_handlers::{
-    EventHandler,
-    InlineQueryHandler,
-    InlineResultHandler,
-    MessageHandler,
-    RawEventHandler,
+pub(crate) use event_handlers::{
+    EventHandlerFunc,
+    RawEventHandlerFunc,
 };
 pub use stream::UpdatesStream;
 

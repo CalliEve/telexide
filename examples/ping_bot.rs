@@ -3,17 +3,12 @@ use std::env;
 use telexide::{api::types::SendMessage, prelude::*};
 
 #[command(description = "just a ping-pong command")]
-async fn ping(context: Context, message: Message) {
-    let res = context
+async fn ping(context: Context, message: Message) -> CommandResult {
+    context
         .api
         .send_message(SendMessage::new(message.chat.get_id(), "pong"))
-        .await;
-    if res.is_err() {
-        println!(
-            "got an error when sending the pong message: {}",
-            res.err().unwrap()
-        )
-    }
+        .await?;
+    Ok(())
 }
 
 #[tokio::main]

@@ -1,6 +1,6 @@
 use proc_macro2::TokenStream as TokenStream2;
 use syn::parse::{Parse, ParseStream, Result};
-use syn::{Attribute, Ident, Stmt, Visibility, ReturnType, braced, FnArg, Token, Block};
+use syn::{Attribute, Ident, Stmt, Visibility, ReturnType, braced, FnArg, Token, Block, Type};
 use quote::{quote, ToTokens};
 use super::utils::ParenthesisedItems;
 
@@ -86,6 +86,7 @@ pub struct CommandFunc {
     pub cooked: Vec<Attribute>,
     pub visibility: Visibility,
     pub name: Ident,
+    pub ret: Type,
     pub args: Vec<FnArg>,
     pub body: Vec<Stmt>,
 }
@@ -105,12 +106,12 @@ impl Parse for CommandFunc {
 
         let ParenthesisedItems(args) = input.parse::<ParenthesisedItems<FnArg>>()?;
 
-        match input.parse::<ReturnType>()? {
-            ReturnType::Type(_, _) => {
-                return Err(input
-                    .error("expected a default return value"))
+        let ret = match input.parse::<ReturnType>()? {
+            ReturnType::Type(_, t) => {
+                *t
             },
-            ReturnType::Default => ()
+            ReturnType::Default => return Err(input
+                .error("expected a CommandResult return value"))
         };
 
         let body_content;
@@ -124,6 +125,7 @@ impl Parse for CommandFunc {
             cooked,
             visibility,
             name,
+            ret,
             args,
             body,
         })
@@ -136,6 +138,7 @@ impl ToTokens for CommandFunc {
             attributes: _,
             cooked,
             visibility,
+            ret,
             name,
             args,
             body,
@@ -143,7 +146,7 @@ impl ToTokens for CommandFunc {
 
         stream.extend(quote! {
             #(#cooked)*
-            #visibility fn #name (#(#args),*) -> ::std::pin::Pin<::std::boxed::Box<(dyn ::std::future::Future<Output = ()> + ::std::marker::Send )>> {
+            #visibility fn #name (#(#args),*) -> ::std::pin::Pin<::std::boxed::Box<(dyn ::std::future::Future<Output = #ret> + ::std::marker::Send )>> {
                 ::std::boxed::Box::pin(async move {
                     #(#body)*
             })

@@ -1,6 +1,9 @@
 mod structs;
 mod utils;
 
+#[allow(unused_extern_crates)]
+extern crate proc_macro;
+
 use quote::quote;
 use proc_macro::TokenStream;
 use syn::{
@@ -75,9 +78,9 @@ pub fn command(attr: TokenStream, item: TokenStream) -> TokenStream {
     let command_cooked = command_fun.cooked.clone();
     let options_cooked = command_cooked.clone();
 
-    let command_struct_path = quote!(telexide::raw_cmd::RawTelegramCommand);
+    let command_struct_path = quote!(telexide::framework::types::TelegramCommand);
     let options_struct_path = quote!(telexide::framework::types::CommandOptions);
-    let default_command_type_path = quote!(telexide::raw_cmd::RawCommandTypes::Default);
+    let default_command_type_path = quote!(telexide::framework::types::CommandTypes::Default);
 
     (quote!{
         #(#options_cooked)*

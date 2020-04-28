@@ -4,6 +4,7 @@ use telexide::{
     macros::{command, prepare_listener, create_framework},
     model::{Chat, Message, MessageContent, PrivateChat, Update, UpdateContent, MessageEntity, TextBlock},
     Result,
+    framework::CommandResult,
 };
 
 static macro_b: AtomicUsize = AtomicUsize::new(0);
@@ -33,9 +34,10 @@ async fn test_using_macro_to_prepare() -> Result<()> {
 static command_b: AtomicUsize = AtomicUsize::new(0);
 
 #[command(description = "testing")]
-async fn testing_command(_c: Context, m: Message) {
+async fn testing_command(_c: Context, m: Message) -> CommandResult {
     println!("{}", m.message_id);
     command_b.fetch_add(m.message_id as usize, Ordering::Acquire);
+    Ok(())
 }
 
 #[tokio::test]
