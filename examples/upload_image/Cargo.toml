@@ -7,3 +7,5 @@ edition = "2018"
 [dependencies]
 telexide = { path = "../../" }
 tokio = { version = "^0.2" }
+env_logger = "0.7"
+log = "0.4"

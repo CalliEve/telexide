@@ -84,6 +84,11 @@ impl APIClient {
             e => self.post(e, data).await,
         }
     }
+
+    /// gets a reference to the underlying hyper client, for example so you can make custom api requests
+    pub fn get_hyper(&self) -> &Client<hyper_tls::HttpsConnector<HttpConnector>> {
+        &self.hyper_client
+    }
 }
 
 #[async_trait]
@@ -103,6 +108,7 @@ impl API for APIClient {
             req_builder.body(Body::empty())?
         };
 
+        log::debug!("GET request to {}", &endpoint);
         let mut response = self.hyper_client.request(request).await?;
 
         let mut res: Vec<u8> = Vec::new();
@@ -128,6 +134,7 @@ impl API for APIClient {
             req_builder.body(Body::empty())?
         };
 
+        log::debug!("POST request to {}", &endpoint);
         let mut response = self.hyper_client.request(request).await?;
 
         let mut res: Vec<u8> = Vec::new();
@@ -160,15 +167,14 @@ impl API for APIClient {
             )
             .header("accept", "application/json");
 
-        //files = Vec::new();
         if data.is_some() {
             files.append(&mut data.expect("no data").as_form_data()?)
         }
 
         let bytes = encode_multipart_form_data(&files)?;
-        //println!("data sent: {}", String::from_utf8_lossy(&bytes));
         let request = req_builder.body(Body::from(bytes))?;
 
+        log::debug!("POST request with files to {}", &endpoint);
         let mut response = self.hyper_client.request(request).await?;
 
         let mut res: Vec<u8> = Vec::new();

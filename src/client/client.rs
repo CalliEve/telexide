@@ -123,6 +123,7 @@ impl Client {
                 .await?;
         }
 
+        log::info!("starting long polling to listen for updates from telegram api");
         while let Some(poll) = stream.next().await {
             match poll {
                 Ok(update) => {

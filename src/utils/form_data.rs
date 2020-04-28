@@ -156,11 +156,6 @@ impl AsFormData for Value {
             })
         }
 
-        println!(
-            "{}",
-            String::from_utf8_lossy(res.last().as_ref().unwrap().bytes.as_slice())
-        );
-
         Ok(res)
     }
 }
