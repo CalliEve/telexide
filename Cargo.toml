@@ -1,6 +1,6 @@
 [package]
 name = "telexide"
-version = "0.1.0"
+version = "0.1.1"
 description = "An async Rust library for the telegram bot API."
 documentation = "https://docs.rs/telexide"
 repository = "https://github.com/baev1/telexide"
@@ -10,8 +10,6 @@ license = "MIT"
 readme = "README.md"
 authors = ["Callidus <callidusumbra@gmail.com>"]
 edition = "2018"
-
-# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
 [dependencies.telexide_proc_macros]
 path = "./telexide_proc_macros"
