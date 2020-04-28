@@ -70,7 +70,7 @@ For more examples, please see the examples dir.
 
 #### Planned:
 - [ ] webhook based update handling
-- [ ] choosing what you want from the lib sing feature flags
+- [ ] choosing what you want from the lib using feature flags
 - [ ] subscribe to non-message events using command (or similar) framework
     - [ ] run command on receiving an inline query or answer to one
     - [ ] run command on receiving a poll that matches your requirements

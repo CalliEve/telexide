@@ -1,4 +1,4 @@
-use super::{APIConnector, Client, EventHandlerFunc};
+use super::{APIConnector, Client, EventHandlerFunc, RawEventHandlerFunc};
 use crate::{
     api::{types::UpdateType, APIClient},
     framework::Framework,
@@ -17,6 +17,7 @@ pub struct ClientBuilder {
     token: Option<String>,
     allowed_updates: Vec<UpdateType>,
     event_handler_funcs: Vec<EventHandlerFunc>,
+    raw_event_handler_funcs: Vec<RawEventHandlerFunc>,
 }
 
 impl ClientBuilder {
@@ -31,6 +32,7 @@ impl ClientBuilder {
             token: None,
             allowed_updates: Vec::new(),
             event_handler_funcs: Vec::new(),
+            raw_event_handler_funcs: Vec::new()
         }
     }
 
@@ -92,9 +94,15 @@ impl ClientBuilder {
         self
     }
 
-    /// Adds an `EventHandlerFunc` function for handling incoming updates
+    /// Adds an [`EventHandlerFunc`] function for handling incoming updates
     pub fn add_handler_func(&mut self, handler: EventHandlerFunc) -> &mut Self {
         self.event_handler_funcs.push(handler);
+        self
+    }
+
+    /// Adds an [`RawEventHandlerFunc`] function for handling incoming updates
+    pub fn add_raw_handler_func(&mut self, handler: RawEventHandlerFunc) -> &mut Self {
+        self.raw_event_handler_funcs.push(handler);
         self
     }
 
@@ -109,7 +117,7 @@ impl ClientBuilder {
             Client {
                 api_client: c,
                 event_handlers: self.event_handler_funcs.clone(),
-                raw_event_handlers: Vec::new(),
+                raw_event_handlers: self.raw_event_handler_funcs.clone(),
                 data: Arc::new(RwLock::new(ShareMap::custom())),
                 framework: self.framework.clone(),
                 allowed_updates: self.allowed_updates.clone(),
@@ -123,7 +131,7 @@ impl ClientBuilder {
                         .expect("A token must be provided for the telegram bot to work"),
                 ))),
                 event_handlers: self.event_handler_funcs.clone(),
-                raw_event_handlers: Vec::new(),
+                raw_event_handlers: self.raw_event_handler_funcs.clone(),
                 data: Arc::new(RwLock::new(ShareMap::custom())),
                 framework: self.framework.clone(),
                 allowed_updates: self.allowed_updates.clone(),

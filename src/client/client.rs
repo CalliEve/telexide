@@ -137,21 +137,27 @@ impl Client {
     }
 
     /// Subscribes an update event handler function ([`EventHandlerFunc`]) to
-    /// the client and will be ran when a new update is received
+    /// the client and will be ran whenever a new update is received
     pub fn subscribe_handler_func(&mut self, handler: EventHandlerFunc) {
         self.event_handlers.push(handler);
     }
 
-    //    /// Subscribes a raw update event handler to the client and will be ran
-    // when a new update is received    pub fn subscribe_raw_handler(&mut self,
-    // handler: RawEventHandlerFunc)    {
-    //        self.raw_event_handlers
-    //            .push(RawEventHandler::new(handler));
-    //    }
+    /// Subscribes a raw update event handler function ([`RawEventHandlerFunc`]) to the client and will be ran
+    /// whenever a new update is received
+    pub fn subscribe_raw_handler(&mut self, handler: RawEventHandlerFunc)    {
+        self.raw_event_handlers
+            .push(handler);
+    }
 
     // public only for testing purposes
     #[doc(hidden)]
     pub fn fire_handlers(&self, update: Update) {
+        for h in self.raw_event_handlers.clone() {
+            let ctx = Context::new(self.api_client.clone(), self.data.clone());
+            let u = update.clone();
+            tokio::spawn(async move { h(ctx, u.into()).await });
+        }
+
         for h in self.event_handlers.clone() {
             let ctx = Context::new(self.api_client.clone(), self.data.clone());
             let u = update.clone();
