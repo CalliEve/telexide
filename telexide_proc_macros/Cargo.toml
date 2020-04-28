@@ -1,9 +1,12 @@
 [package]
-name = "subscription_macros"
+name = "telexide_proc_macros"
 version = "0.1.0"
 authors = ["Callidus <callidusumbra@gmail.com>"]
 edition = "2018"
-description = "macros for subscribing to update events for telegram-botoxide"
+description = "macros for subscribing to events in telexide"
+license = "MIT"
+repository = "https://github.com/baev1/telexide"
+homepage = "https://github.com/baev1/telexide"
 
 [lib]
 proc-macro = true

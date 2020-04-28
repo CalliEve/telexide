@@ -1,3 +1,7 @@
+//! macros for subscribing to events in [telexide]
+//!
+//! [telexide]: https://crates.io/crates/telexide
+
 mod structs;
 mod utils;
 

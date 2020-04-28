@@ -13,8 +13,8 @@ edition = "2018"
 
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
-[dependencies.subscription_macros]
-path = "./subscription_macros"
+[dependencies.telexide_proc_macros]
+path = "./telexide_proc_macros"
 version = "0.1.0"
 
 [dependencies]

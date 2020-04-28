@@ -72,7 +72,7 @@ mod utils;
 /// Macros for using the framework and helping with adding listeners
 pub mod macros {
     pub use super::create_framework;
-    pub use subscription_macros::{command, prepare_listener};
+    pub use telexide_proc_macros::{command, prepare_listener};
 }
 
 pub use client::Client;
@@ -103,7 +103,7 @@ pub mod prelude {
         model::{Message, Update},
         Error as TelexideError,
     };
-    pub use subscription_macros::{command, prepare_listener};
+    pub use telexide_proc_macros::{command, prepare_listener};
 }
 
 #[doc(hidden)]
