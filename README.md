@@ -87,14 +87,14 @@ telexide = "0.1"
 ```
 
 [examples]: https://github.com/Baev1/telexide/blob/master/examples
-[client]: https://docs.rs/telexide/client/index.html
-[`ClientBuilder`]: https://docs.rs/telexide/client/struct.ClientBuilder.html
-[`Client`]: https://docs.rs/telexide/client/struct.Client.html
-[`Client::start`]: https://docs.rs/telexide/client/struct.Client.html#method.start
-[`APIClient`]: https://docs.rs/telexide/api/struct.APIClient.html
-[`API`]: https://docs.rs/telexide/api/trait.API.html
-[api]: https://docs.rs/telexide/api/index.html
-[`create_framework`]: https://docs.rs/telexide/macro.create_framework.html
+[client]: https://docs.rs/telexide/*/serenity/client/index.html
+[`ClientBuilder`]: https://docs.rs/telexide/*/serenity/client/struct.ClientBuilder.html
+[`Client`]: https://docs.rs/telexide/*/serenity/client/struct.Client.html
+[`Client::start`]: https://docs.rs/telexide/*/serenity/client/struct.Client.html#method.start
+[`APIClient`]: https://docs.rs/telexide/*/serenity/api/struct.APIClient.html
+[`API`]: https://docs.rs/telexide/*/serenity/api/trait.API.html
+[api]: https://docs.rs/telexide/*/serenity/api/index.html
+[`create_framework`]: https://docs.rs/telexide/*/serenity/macro.create_framework.html
 [tg_commands]: https://core.telegram.org/bots#commands
-[`Framework`]: https://docs.rs/telexide/framework/struct.Framework.html
-[framework]: https://docs.rs/telexide/framework/index.html
+[`Framework`]: https://docs.rs/telexide/*/serenity/framework/struct.Framework.html
+[framework]: https://docs.rs/telexide/*/serenity/framework/index.html
