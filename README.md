@@ -67,9 +67,9 @@ For more examples, please see the examples dir.
     - [X] use your own hyper client
     - [X] use your own api struct so you control the get and post methods
     - [X] includes all telegram api endpoints
+- [X] webhook based update handling
 
 #### Planned:
-- [ ] webhook based update handling
 - [ ] choosing what you want from the lib using feature flags
 - [ ] subscribe to non-message events using command (or similar) framework
     - [ ] run command on receiving an inline query or answer to one

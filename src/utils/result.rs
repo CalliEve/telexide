@@ -28,6 +28,7 @@ pub enum TelegramError {
     ServerError,
     InvalidEndpoint,
     InvalidCommandType,
+    WebhookError,
     InvalidArgument(String),
     APIResponseError(String),
     Unknown(String),
@@ -47,6 +48,7 @@ impl TelegramError {
             TelegramError::ServerError => {
                 "The telegram server returned a 500 status code".to_owned()
             },
+            TelegramError::WebhookError => "An error occurred in the webhook handling".to_owned(),
             TelegramError::InvalidEndpoint => "The requested endpoint does not exist".to_owned(),
             TelegramError::InvalidCommandType => {
                 "This action cannot be done on this command type".to_owned()
@@ -142,5 +144,11 @@ impl From<http::Error> for Error {
 impl From<serde_json::Error> for Error {
     fn from(e: serde_json::Error) -> Self {
         Self::JSON(e)
+    }
+}
+
+impl From<http::uri::InvalidUri> for Error {
+    fn from(e: http::uri::InvalidUri) -> Self {
+        Self::HTTP(e.into())
     }
 }

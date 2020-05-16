@@ -1,4 +1,3 @@
-
 /// This enum represents all the telegram API endpoints.
 ///
 /// It is mostly used for letting the get and post methods in the API trait know
