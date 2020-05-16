@@ -1,4 +1,4 @@
-use super::{APIConnector, Client, EventHandlerFunc, RawEventHandlerFunc};
+use super::{APIConnector, Client, EventHandlerFunc, RawEventHandlerFunc, WebhookOptions};
 use crate::{
     api::{types::UpdateType, APIClient},
     framework::Framework,
@@ -12,7 +12,7 @@ use typemap::ShareMap;
 pub struct ClientBuilder {
     hyper_client: Option<hyper::Client<hyper_tls::HttpsConnector<hyper::client::HttpConnector>>>,
     api_client: Option<Arc<Box<APIConnector>>>,
-    webhook: Option<String>,
+    webhook: Option<WebhookOptions>,
     framework: Option<Arc<Framework>>,
     token: Option<String>,
     allowed_updates: Vec<UpdateType>,
@@ -32,15 +32,13 @@ impl ClientBuilder {
             token: None,
             allowed_updates: Vec::new(),
             event_handler_funcs: Vec::new(),
-            raw_event_handler_funcs: Vec::new()
+            raw_event_handler_funcs: Vec::new(),
         }
     }
 
-    // TODO: remove hide macro when having added webhook support
-    #[doc(hidden)]
     /// sets the webhook url for the [`Client`] to listen to
-    pub fn set_webhook(&mut self, webhook: String) -> &mut Self {
-        self.webhook = Some(webhook);
+    pub fn set_webhook(&mut self, webhook: &WebhookOptions) -> &mut Self {
+        self.webhook = Some(webhook.clone());
         self
     }
 
@@ -120,6 +118,7 @@ impl ClientBuilder {
                 raw_event_handlers: self.raw_event_handler_funcs.clone(),
                 data: Arc::new(RwLock::new(ShareMap::custom())),
                 framework: self.framework.clone(),
+                webhook_opts: self.webhook.clone(),
                 allowed_updates: self.allowed_updates.clone(),
             }
         } else {
@@ -131,6 +130,7 @@ impl ClientBuilder {
                         .expect("A token must be provided for the telegram bot to work"),
                 ))),
                 event_handlers: self.event_handler_funcs.clone(),
+                webhook_opts: self.webhook.clone(),
                 raw_event_handlers: self.raw_event_handler_funcs.clone(),
                 data: Arc::new(RwLock::new(ShareMap::custom())),
                 framework: self.framework.clone(),

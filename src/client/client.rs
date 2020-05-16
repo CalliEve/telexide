@@ -1,6 +1,18 @@
-use super::{APIConnector, Context, EventHandlerFunc, RawEventHandlerFunc, UpdatesStream};
+use super::{
+    APIConnector,
+    ClientBuilder,
+    Context,
+    EventHandlerFunc,
+    RawEventHandlerFunc,
+    UpdatesStream,
+    Webhook,
+    WebhookOptions,
+};
 use crate::{
-    api::{types::UpdateType, APIClient},
+    api::{
+        types::{SetWebhook, UpdateType},
+        APIClient,
+    },
     framework::Framework,
     model::Update,
     Result,
@@ -71,6 +83,7 @@ pub struct Client {
     pub(super) event_handlers: Vec<EventHandlerFunc>,
     pub(super) raw_event_handlers: Vec<RawEventHandlerFunc>,
     pub(super) framework: Option<Arc<Framework>>,
+    pub(super) webhook_opts: Option<WebhookOptions>,
     /// The update types that you want to receive, see the documentation of
     /// [`UpdateType`] for more information
     pub allowed_updates: Vec<UpdateType>,
@@ -85,6 +98,7 @@ impl Client {
             raw_event_handlers: Vec::new(),
             data: Arc::new(RwLock::new(ShareMap::custom())),
             framework: None,
+            webhook_opts: None,
             allowed_updates: Vec::new(),
         }
     }
@@ -96,20 +110,31 @@ impl Client {
             event_handlers: Vec::new(),
             raw_event_handlers: Vec::new(),
             data: Arc::new(RwLock::new(ShareMap::custom())),
+            webhook_opts: None,
             framework: Some(fr),
             allowed_updates: Vec::new(),
         }
     }
 
+    /// Returns a new `ClientBuilder`
+    pub fn builder() -> ClientBuilder {
+        ClientBuilder::new()
+    }
+
     /// Starts the client and blocks until an error happens in the updates
     /// stream or the program exits (for example due to a panic).
-    /// If using the framework, it will update your commands in telegram
-    /// This uses a default [`UpdatesStream`] object
+    /// If using the framework, it will update your commands in telegram.
+    /// If using a webhook, it will handle it, else it will use polling using a
+    /// default [`UpdatesStream`] object
     pub async fn start(&self) -> Result<()> {
-        let mut stream = UpdatesStream::new(self.api_client.clone());
-        stream.set_allowed_updates(self.allowed_updates.clone());
+        if let Some(opts) = &self.webhook_opts {
+            self.start_with_webhook(opts).await
+        } else {
+            let mut stream = UpdatesStream::new(self.api_client.clone());
+            stream.set_allowed_updates(self.allowed_updates.clone());
 
-        self.start_with_stream(&mut stream).await
+            self.start_with_stream(&mut stream).await
+        }
     }
 
     /// Starts the client and blocks until an error happens in the updates
@@ -136,17 +161,52 @@ impl Client {
         Ok(())
     }
 
+    /// Starts the client and blocks until an error happens in the webhook
+    /// handling or the program exits (for example due to a panic).
+    /// If using the framework, it will update your commands in telegram
+    /// You have to provide your own [`WebhookOptions`] object
+    pub async fn start_with_webhook(&self, opts: &WebhookOptions) -> Result<()> {
+        if let Some(fr) = self.framework.clone() {
+            self.api_client
+                .set_my_commands(fr.get_commands().into())
+                .await?;
+        }
+
+        if let Some(webhook_url) = &opts.url {
+            self.api_client
+                .set_webhook(SetWebhook {
+                    url: webhook_url.to_string(),
+                    certificate: None,
+                    max_connections: None,
+                    allowed_updates: Some(self.allowed_updates.clone()),
+                })
+                .await?;
+        }
+
+        log::info!("starting to listen on the webhook");
+        let mut receiver = Webhook::new(opts).start();
+        while let Some(u) = receiver.recv().await {
+            match u {
+                Ok(update) => {
+                    self.fire_handlers(update);
+                },
+                Err(err) => return Err(err),
+            }
+        }
+
+        Ok(())
+    }
+
     /// Subscribes an update event handler function ([`EventHandlerFunc`]) to
     /// the client and will be ran whenever a new update is received
     pub fn subscribe_handler_func(&mut self, handler: EventHandlerFunc) {
         self.event_handlers.push(handler);
     }
 
-    /// Subscribes a raw update event handler function ([`RawEventHandlerFunc`]) to the client and will be ran
-    /// whenever a new update is received
-    pub fn subscribe_raw_handler(&mut self, handler: RawEventHandlerFunc)    {
-        self.raw_event_handlers
-            .push(handler);
+    /// Subscribes a raw update event handler function ([`RawEventHandlerFunc`])
+    /// to the client and will be ran whenever a new update is received
+    pub fn subscribe_raw_handler(&mut self, handler: RawEventHandlerFunc) {
+        self.raw_event_handlers.push(handler);
     }
 
     // public only for testing purposes
@@ -182,6 +242,7 @@ impl From<Box<APIConnector>> for Client {
             raw_event_handlers: Vec::new(),
             data: Arc::new(RwLock::new(ShareMap::custom())),
             framework: None,
+            webhook_opts: None,
             allowed_updates: Vec::new(),
         }
     }

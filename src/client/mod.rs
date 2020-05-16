@@ -21,6 +21,7 @@ mod client;
 mod context;
 mod event_handlers;
 mod stream;
+mod webhook_handling;
 
 use crate::api::API;
 use core::future::Future;
@@ -31,6 +32,7 @@ pub use client::Client;
 pub use context::Context;
 pub(crate) use event_handlers::{EventHandlerFunc, RawEventHandlerFunc};
 pub use stream::UpdatesStream;
+pub use webhook_handling::{Webhook, WebhookOptions};
 
 type APIConnector = dyn API + Send;
 pub(crate) type FutureOutcome = Pin<Box<dyn Future<Output = ()> + Send>>;

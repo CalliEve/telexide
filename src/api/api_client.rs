@@ -85,7 +85,8 @@ impl APIClient {
         }
     }
 
-    /// gets a reference to the underlying hyper client, for example so you can make custom api requests
+    /// gets a reference to the underlying hyper client, for example so you can
+    /// make custom api requests
     pub fn get_hyper(&self) -> &Client<hyper_tls::HttpsConnector<HttpConnector>> {
         &self.hyper_client
     }

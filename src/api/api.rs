@@ -11,7 +11,7 @@ use std::vec::Vec;
 
 /// This trait provides methods for interacting with the telegram API.
 #[async_trait]
-pub trait API : Sync {
+pub trait API: Sync {
     /// executes a get request to the given telegram api endpoint
     async fn get(&self, endpoint: APIEndpoint, data: Option<serde_json::Value>)
         -> Result<Response>;
