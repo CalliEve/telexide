@@ -58,22 +58,23 @@ For more examples, please see the examples dir.
 
 ## Features
 
-- [X] easy to use and customisable client
-- [X] long-polling based update handling
-    - [X] set your own timeout
-    - [X] set your own limit for updates gotten at once
-- [X] easy to use, macro-based command framework
-- [X] easy to use and heavily customisable api client
-    - [X] use your own hyper client
-    - [X] use your own api struct so you control the get and post methods
-    - [X] includes all telegram api endpoints
-- [X] webhook based update handling
+- [x] easy to use and customisable client
+- [x] long-polling based update handling
+  - [x] set your own timeout
+  - [x] set your own limit for updates gotten at once
+- [x] easy to use, macro-based command framework
+- [x] easy to use and heavily customisable api client
+  - [x] use your own hyper client
+  - [x] use your own api struct so you control the get and post methods
+  - [x] includes all telegram api endpoints
+- [x] webhook based update handling
 
 #### Planned:
+
 - [ ] choosing what you want from the lib using feature flags
 - [ ] subscribe to non-message events using command (or similar) framework
-    - [ ] run command on receiving an inline query or answer to one
-    - [ ] run command on receiving a poll that matches your requirements
+  - [ ] run command on receiving an inline query or answer to one
+  - [ ] run command on receiving a poll that matches your requirements
 - [ ] wait_for style Context method to wait for an update matching your criteria
 - [ ] more builder methods for creating api data
 - [ ] methods on models for easier calling of API endpoints (like `ChatMember::kick`)
@@ -81,20 +82,21 @@ For more examples, please see the examples dir.
 ## Installation
 
 Add the following to your `Cargo.toml` file:
+
 ```toml
 [dependencies]
-telexide = "0.1"
+telexide = "0.1.2"
 ```
 
 [examples]: https://github.com/Baev1/telexide/blob/master/examples
 [client]: https://docs.rs/telexide/*/telexide/client/index.html
-[`ClientBuilder`]: https://docs.rs/telexide/*/telexide/client/struct.ClientBuilder.html
-[`Client`]: https://docs.rs/telexide/*/telexide/client/struct.Client.html
-[`Client::start`]: https://docs.rs/telexide/*/telexide/client/struct.Client.html#method.start
-[`APIClient`]: https://docs.rs/telexide/*/telexide/api/struct.APIClient.html
-[`API`]: https://docs.rs/telexide/*/telexide/api/trait.API.html
+[`clientbuilder`]: https://docs.rs/telexide/*/telexide/client/struct.ClientBuilder.html
+[`client`]: https://docs.rs/telexide/*/telexide/client/struct.Client.html
+[`client::start`]: https://docs.rs/telexide/*/telexide/client/struct.Client.html#method.start
+[`apiclient`]: https://docs.rs/telexide/*/telexide/api/struct.APIClient.html
+[`api`]: https://docs.rs/telexide/*/telexide/api/trait.API.html
 [api]: https://docs.rs/telexide/*/telexide/api/index.html
 [`create_framework`]: https://docs.rs/telexide/*/telexide/macro.create_framework.html
 [tg_commands]: https://core.telegram.org/bots#commands
-[`Framework`]: https://docs.rs/telexide/*/telexide/framework/struct.Framework.html
+[`framework`]: https://docs.rs/telexide/*/telexide/framework/struct.Framework.html
 [framework]: https://docs.rs/telexide/*/telexide/framework/index.html
