@@ -25,6 +25,7 @@ pub struct RawMessage {
     pub forward_date: Option<DateTime<Utc>>,
 
     pub reply_to_message: Option<Box<RawMessage>>,
+    pub via_bot: Option<User>,
 
     #[serde(default)]
     #[serde(with = "unix_date_formatting::optional")]
@@ -96,6 +97,8 @@ pub struct Message {
     /// Note that the Message object in this field will not contain further
     /// reply_to_message fields even if it itself is a reply.
     pub reply_to_message: Option<Box<Message>>,
+    /// Bot through which the message was sent
+    pub via_bot: Option<User>,
     /// Date the message was last edited in Unix time
     pub edit_date: Option<DateTime<Utc>>,
     /// Signature of the post author for messages in channels
@@ -343,6 +346,7 @@ impl From<RawMessage> for Message {
         let date = raw.date;
         let chat = raw.chat.into();
         let reply_to_message = raw.reply_to_message.map(|r| Box::new((*r).into()));
+        let via_bot = raw.via_bot;
         let edit_date = raw.edit_date;
         let author_signature = raw.author_signature;
         let connected_website = raw.connected_website;
@@ -369,6 +373,7 @@ impl From<RawMessage> for Message {
             chat,
             forward_data,
             reply_to_message,
+            via_bot,
             edit_date,
             author_signature,
             content,
@@ -472,6 +477,7 @@ impl From<Message> for RawMessage {
             date: message.date,
             chat: message.chat.into(),
             reply_to_message: message.reply_to_message.map(|r| Box::new((*r).into())),
+            via_bot: message.via_bot,
             edit_date: message.edit_date,
             media_group_id: None,
             author_signature: message.author_signature,

@@ -163,7 +163,7 @@ pub struct InlineQueryResultGif {
     pub id: String,
     /// A valid URL for the GIF file. File size must not exceed 1MB
     pub gif_url: String,
-    /// URL of the static thumbnail for the result (jpeg or gif)
+    /// URL of the static (JPEG or GIF) or animated (MPEG4) thumbnail for the result
     pub thumb_url: String,
     /// Width of the GIF
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -174,6 +174,10 @@ pub struct InlineQueryResultGif {
     /// Duration of the GIF
     #[serde(skip_serializing_if = "Option::is_none")]
     pub gif_duration: Option<i64>,
+    /// MIME type of the thumbnail, must be one of “image/jpeg”, “image/gif”, or
+    /// “video/mp4”. Defaults to “image/jpeg”
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub thumb_mime_type: Option<String>,
     /// Title of the result
     #[serde(skip_serializing_if = "Option::is_none")]
     pub title: Option<String>,
@@ -202,7 +206,8 @@ pub struct InlineQueryResultMpeg4Gif {
     pub id: String,
     /// A valid URL for the MP4 file. File size must not exceed 1MB
     pub mpeg4_url: String,
-    /// URL of the static thumbnail (jpeg or gif) for the result
+    /// URL of the static (JPEG or GIF) or animated (MPEG4) thumbnail for the
+    /// result
     pub thumb_url: String,
     /// Width of the video
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -213,6 +218,10 @@ pub struct InlineQueryResultMpeg4Gif {
     /// Duration of the video
     #[serde(skip_serializing_if = "Option::is_none")]
     pub mpeg4_duration: Option<i64>,
+    /// MIME type of the thumbnail, must be one of “image/jpeg”, “image/gif”, or
+    /// “video/mp4”. Defaults to “image/jpeg”
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub thumb_mime_type: Option<String>,
     /// Title of the result
     #[serde(skip_serializing_if = "Option::is_none")]
     pub title: Option<String>,
