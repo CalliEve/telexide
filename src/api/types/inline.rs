@@ -163,7 +163,8 @@ pub struct InlineQueryResultGif {
     pub id: String,
     /// A valid URL for the GIF file. File size must not exceed 1MB
     pub gif_url: String,
-    /// URL of the static (JPEG or GIF) or animated (MPEG4) thumbnail for the result
+    /// URL of the static (JPEG or GIF) or animated (MPEG4) thumbnail for the
+    /// result
     pub thumb_url: String,
     /// Width of the GIF
     #[serde(skip_serializing_if = "Option::is_none")]

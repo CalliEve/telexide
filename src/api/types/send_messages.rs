@@ -836,6 +836,67 @@ pub struct SendPoll {
     pub reply_markup: Option<ReplyMarkup>,
 }
 
+impl SendPoll {
+    /// Create a new Poll
+    ///
+    /// Note that you will have to add some options for people to choose from
+    /// after calling this
+    pub fn new<T>(chat_id: i64, question: T) -> Self
+    where
+        T: ToString,
+    {
+        Self {
+            chat_id,
+            question: question.to_string(),
+            options: Vec::new(),
+            is_anonymous: None,
+            poll_type: None,
+            allows_multiple_answers: false,
+            correct_option_id: None,
+            explanation: None,
+            explanation_parse_mode: None,
+            open_period: None,
+            close_date: None,
+            is_closed: false,
+            disable_notification: false,
+            reply_to_message_id: None,
+            reply_markup: None,
+        }
+    }
+
+    /// Add an option to the Poll
+    pub fn add_option<T>(&mut self, option: T) -> &mut Self
+    where
+        T: ToString,
+    {
+        self.options.push(option.to_string());
+        self
+    }
+
+    /// Make this poll a quiz
+    ///
+    /// **warning:** you need to set the correct option too if you make a quiz
+    pub fn make_quiz(&mut self) -> &mut Self {
+        self.poll_type = Some(PollType::Quiz);
+        self
+    }
+
+    /// Set the id of the correct option
+    pub fn set_correct_option_id(&mut self, option: i64) -> &mut Self {
+        self.correct_option_id = Some(option);
+        self
+    }
+
+    /// Set the explanation for the poll
+    pub fn set_explanation<T>(&mut self, explanation: T) -> &mut Self
+    where
+        T: ToString,
+    {
+        self.explanation = Some(explanation.to_string());
+        self
+    }
+}
+
 /// struct for holding data needed to call
 /// [`send_dice`]
 ///
@@ -859,6 +920,28 @@ pub struct SendDice {
     /// Additional interface options.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub reply_markup: Option<ReplyMarkup>,
+}
+
+impl SendDice {
+    /// create a new dice to send
+    pub fn new(chat_id: i64) -> Self {
+        Self {
+            chat_id,
+            emoji: None,
+            disable_notification: false,
+            reply_to_message_id: None,
+            reply_markup: None,
+        }
+    }
+
+    /// Set the emoji to use for the dice, must be one of “🎲”, “🎯”, or “🏀
+    pub fn emoji<T>(&mut self, emoji: T) -> &mut Self
+    where
+        T: ToString,
+    {
+        self.emoji = Some(emoji.to_string());
+        self
+    }
 }
 
 /// struct for holding data needed to call
