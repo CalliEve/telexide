@@ -38,7 +38,7 @@ pub use markup::{
     ReplyKeyboardMarkup,
     ReplyKeyboardRemove,
 };
-pub use message::{Message, MessageContent};
+pub use message::{Message, MessageContent, ForwardData};
 pub use message_contents::*;
 pub use message_entity::*;
 pub use other::{BotCommand, CallbackQuery, ChatAction, File, ParseMode, ReplyMarkup, WebhookInfo};
