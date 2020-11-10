@@ -1,5 +1,5 @@
 use super::InputFile;
-use crate::model::ParseMode;
+use crate::model::{MessageEntity, ParseMode};
 use serde::{Deserialize, Serialize};
 
 /// This object represents the content of a media message to be sent
@@ -33,6 +33,10 @@ pub struct InputMediaPhoto {
     /// fixed-width text or inline URLs in the media caption
     #[serde(skip_serializing_if = "Option::is_none")]
     pub parse_mode: Option<ParseMode>,
+    /// List of special entities that appear in the caption, which can be
+    /// specified instead of parse_mode
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub caption_entities: Option<Vec<MessageEntity>>,
 }
 
 #[derive(Serialize, Deserialize, Debug, Clone, PartialEq)]
@@ -49,6 +53,10 @@ pub struct InputMediaVideo {
     /// fixed-width text or inline URLs in the media caption
     #[serde(skip_serializing_if = "Option::is_none")]
     pub parse_mode: Option<ParseMode>,
+    /// List of special entities that appear in the caption, which can be
+    /// specified instead of parse_mode
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub caption_entities: Option<Vec<MessageEntity>>,
     /// Duration of the video in seconds
     #[serde(skip_serializing_if = "Option::is_none")]
     pub duration: Option<i64>,
@@ -78,6 +86,10 @@ pub struct InputMediaAnimation {
     /// fixed-width text or inline URLs in the media caption
     #[serde(skip_serializing_if = "Option::is_none")]
     pub parse_mode: Option<ParseMode>,
+    /// List of special entities that appear in the caption, which can be
+    /// specified instead of parse_mode
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub caption_entities: Option<Vec<MessageEntity>>,
     /// Duration of the animation in seconds
     #[serde(skip_serializing_if = "Option::is_none")]
     pub duration: Option<i64>,
@@ -104,6 +116,10 @@ pub struct InputMediaAudio {
     /// fixed-width text or inline URLs in the media caption
     #[serde(skip_serializing_if = "Option::is_none")]
     pub parse_mode: Option<ParseMode>,
+    /// List of special entities that appear in the caption, which can be
+    /// specified instead of parse_mode
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub caption_entities: Option<Vec<MessageEntity>>,
     /// Duration of the audio in seconds
     #[serde(skip_serializing_if = "Option::is_none")]
     pub duration: Option<i64>,
@@ -130,6 +146,14 @@ pub struct InputMediaDocument {
     /// fixed-width text or inline URLs in the media caption
     #[serde(skip_serializing_if = "Option::is_none")]
     pub parse_mode: Option<ParseMode>,
+    /// List of special entities that appear in the caption, which can be
+    /// specified instead of parse_mode
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub caption_entities: Option<Vec<MessageEntity>>,
+    /// Disables automatic server-side content type detection for files uploaded
+    /// using multipart/form-data. Always true, if the document is sent as
+    /// part of an album.
+    pub disable_content_type_detection: bool,
 }
 
 impl InputMedia {

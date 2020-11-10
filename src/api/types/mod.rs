@@ -27,4 +27,4 @@ pub use payments::*;
 pub use send_messages::*;
 pub use stickers::*;
 pub use updates::{GetUpdates, UpdateType};
-pub use webhooks::SetWebhook;
+pub use webhooks::*;

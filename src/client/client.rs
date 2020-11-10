@@ -47,7 +47,8 @@ use typemap::ShareMap;
 /// }
 ///
 /// #[tokio::main]
-///     async fn main() -> telexide::Result<()> {
+/// async fn main() -> telexide::Result<()> {
+///     # let token = "test token";
 ///     let mut client = Client::new(token);
 ///     client.subscribe_handler_func(event_listener);
 ///
@@ -91,7 +92,7 @@ pub struct Client {
 
 impl Client {
     /// Creates a Client object with default values and no framework
-    pub fn new(token: String) -> Self {
+    pub fn new<T: ToString>(token: T) -> Self {
         Self {
             api_client: Arc::new(Box::new(APIClient::new(None, token))),
             event_handlers: Vec::new(),
@@ -104,7 +105,7 @@ impl Client {
     }
 
     /// Creates a Client object with default values, but with a [`Framework`]
-    pub fn with_framework(fr: Arc<Framework>, token: String) -> Self {
+    pub fn with_framework<T: ToString>(fr: Arc<Framework>, token: T) -> Self {
         Self {
             api_client: Arc::new(Box::new(APIClient::new(None, token))),
             event_handlers: Vec::new(),
@@ -179,6 +180,8 @@ impl Client {
                     certificate: None,
                     max_connections: None,
                     allowed_updates: Some(self.allowed_updates.clone()),
+                    drop_pending_updates: None,
+                    ip_address: None, // TODO: add opts for these
                 })
                 .await?;
         }

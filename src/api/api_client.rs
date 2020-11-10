@@ -19,11 +19,17 @@ static TELEGRAM_API: &str = "https://api.telegram.org/bot";
 ///
 /// Using the default `APIClient` is as easy as:
 /// ```rust,no_run
-/// 
-/// use telexide::api::{APIClient};
+/// use telexide::api::{APIClient, API, types::SendMessage};
 ///
-/// let client = APIClient::new_default(token);
-/// client.send_message(&message)
+/// # #[tokio::main]
+/// # async fn main() {
+///     # let token = "test token";
+///     # let chat_id = 3;
+///     let message = SendMessage::new(chat_id, "hi!");
+///
+///     let client = APIClient::new_default(token);
+///     client.send_message(message).await;
+/// # }
 /// ```
 ///
 /// In most cases you would want to get updates though and the [`Client`] is
@@ -38,9 +44,9 @@ pub struct APIClient {
 impl APIClient {
     /// Creates a new `APIClient` with the provided token and hyper client (if
     /// it is Some).
-    pub fn new(
+    pub fn new<T: ToString>(
         hyper_client: Option<Client<hyper_tls::HttpsConnector<HttpConnector>>>,
-        token: String,
+        token: T,
     ) -> Self {
         let client = if let Some(c) = hyper_client {
             c
@@ -50,16 +56,16 @@ impl APIClient {
 
         Self {
             hyper_client: client,
-            token,
+            token: token.to_string(),
         }
     }
 
     /// Creates a new `APIClient` with the provided token and the default hyper
     /// client.
-    pub fn new_default(token: String) -> Self {
+    pub fn new_default<T: ToString>(token: T) -> Self {
         Self {
             hyper_client: hyper::Client::builder().build(hyper_tls::HttpsConnector::new()),
-            token,
+            token: token.to_string(),
         }
     }
 

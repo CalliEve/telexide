@@ -32,6 +32,9 @@ pub struct UnbanChatMember {
     pub chat_id: i64,
     /// Unique identifier of the target user
     pub user_id: i64,
+    /// Do nothing if the user is not banned
+    #[serde(default)]
+    pub only_if_banned: bool,
 }
 
 /// struct for holding data needed to call
@@ -66,6 +69,9 @@ pub struct PromoteChatMember {
     pub chat_id: i64,
     /// Unique identifier of the target user
     pub user_id: i64,
+    /// Pass True, if the administrator's presence in the chat is hidden
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub is_anonymous: Option<bool>,
     /// if the administrator can create channel posts, channels only
     #[serde(skip_serializing_if = "Option::is_none")]
     pub can_post_messages: Option<bool>,
@@ -103,6 +109,7 @@ impl PromoteChatMember {
         Self {
             chat_id,
             user_id,
+            is_anonymous: None,
             can_post_messages: None,
             can_edit_messages: None,
             can_delete_messages: None,
@@ -229,6 +236,21 @@ pub struct PinChatMessage {
 pub struct UnpinChatMessage {
     /// Unique identifier for the target chat
     pub chat_id: i64,
+    /// Identifier of a message to unpin. If not specified, the most recent
+    /// pinned message (by sending date) will be unpinned.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub message_id: Option<i64>,
+}
+
+/// struct for holding data needed to call
+/// [`unpin_all_chat_messages`]
+///
+/// [`unpin_all_chat_messages`]:
+/// ../../api/trait.API.html#method.unpin_all_chat_message
+#[derive(Serialize, Deserialize, Debug, Clone, PartialEq)]
+pub struct UnpinAllChatMessages {
+    /// Unique identifier for the target chat
+    pub chat_id: i64,
 }
 
 /// struct for holding data needed to call
@@ -326,7 +348,7 @@ macro_rules! impl_from_chat {
 
 impl_from_chat!(ExportChatInviteLink);
 impl_from_chat!(DeleteChatPhoto);
-impl_from_chat!(UnpinChatMessage);
+impl_from_chat!(UnpinAllChatMessages);
 impl_from_chat!(LeaveChat);
 impl_from_chat!(GetChat);
 impl_from_chat!(GetChatAdministrators);

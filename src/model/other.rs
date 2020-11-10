@@ -156,4 +156,6 @@ pub struct WebhookInfo {
     /// A list of update types the bot is subscribed to. Defaults to all update
     /// types
     pub allowed_updates: Option<Vec<UpdateType>>,
+    /// Currently used webhook IP address
+    pub ip_address: Option<String>,
 }

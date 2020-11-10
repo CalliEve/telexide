@@ -1,5 +1,5 @@
 use super::{
-    message::RawMessage,
+    raw::RawUpdate,
     CallbackQuery,
     ChosenInlineResult,
     InlineQuery,
@@ -10,23 +10,6 @@ use super::{
     ShippingQuery,
 };
 use serde::{Deserialize, Deserializer, Serialize, Serializer};
-
-/// The raw update, for most usages the [`Update`] object is easier to use
-#[derive(Serialize, Deserialize, Debug, Clone, PartialEq)]
-pub struct RawUpdate {
-    pub update_id: i64,
-    pub message: Option<RawMessage>,
-    pub edited_message: Option<RawMessage>,
-    pub channel_post: Option<RawMessage>,
-    pub edited_channel_post: Option<RawMessage>,
-    pub inline_query: Option<InlineQuery>,
-    pub chosen_inline_result: Option<ChosenInlineResult>,
-    pub callback_query: Option<CallbackQuery>,
-    pub shipping_query: Option<ShippingQuery>,
-    pub pre_checkout_query: Option<PreCheckoutQuery>,
-    pub poll: Option<Poll>,
-    pub poll_answer: Option<PollAnswer>,
-}
 
 /// This object represents an incoming update
 #[derive(Debug, Clone, PartialEq)]

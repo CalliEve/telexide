@@ -1,6 +1,14 @@
 use super::{InputFile, InputMedia};
 use crate::{
-    model::{utils::unix_date_formatting, ChatAction, ParseMode, PhotoSize, PollType, ReplyMarkup},
+    model::{
+        utils::unix_date_formatting,
+        ChatAction,
+        MessageEntity,
+        ParseMode,
+        PhotoSize,
+        PollType,
+        ReplyMarkup,
+    },
     prelude::Message,
     utils::result::Result,
 };
@@ -23,6 +31,10 @@ pub struct SendMessage {
     /// fixed-width text or inline URLs in your bot's message.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub parse_mode: Option<ParseMode>,
+    /// List of special entities that appear in message text, which can be
+    /// specified instead of parse_mode
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub enitites: Option<Vec<MessageEntity>>,
     /// Disables link previews for links in this message
     pub disable_web_page_preview: bool,
     /// Sends the message silently. Users will receive a notification with no
@@ -31,6 +43,9 @@ pub struct SendMessage {
     /// If the message is a reply, ID of the original message
     #[serde(skip_serializing_if = "Option::is_none")]
     pub reply_to_message_id: Option<i64>,
+    /// Pass True, if the message should be sent even if the specified
+    /// replied-to message is not found
+    pub allow_sending_without_reply: bool,
     /// Additional interface options.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub reply_markup: Option<ReplyMarkup>,
@@ -42,9 +57,11 @@ impl SendMessage {
             chat_id,
             text: text.to_owned(),
             parse_mode: None,
+            enitites: None,
             disable_notification: false,
             disable_web_page_preview: false,
             reply_to_message_id: None,
+            allow_sending_without_reply: false,
             reply_markup: None,
         }
     }
@@ -123,6 +140,74 @@ impl ForwardMessage {
     }
 }
 
+/// struct for holding data needed to call [`copy_message`]
+///
+/// [`copy_message`]: ../../api/trait.API.html#method.copy_message
+#[derive(Serialize, Deserialize, Debug, Clone, PartialEq)]
+pub struct CopyMessage {
+    /// Unique identifier for the target chat
+    pub chat_id: i64,
+    /// Unique identifier for the chat where the original message was sent.
+    pub from_chat_id: i64,
+    /// Message identifier in the chat specified in from_chat_id
+    pub message_id: i64,
+    /// New caption for media, 0-1024 characters after entities parsing. If not
+    /// specified, the original caption is kept
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub caption: Option<String>,
+    /// List of special entities that appear in the new caption, which can be
+    /// specified instead of parse_mode
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub caption_entities: Option<Vec<MessageEntity>>,
+    /// Mode for parsing entities in the new caption.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub parse_mode: Option<ParseMode>,
+    /// Sends the message silently. Users will receive a notification with no
+    /// sound.
+    pub disable_notification: bool,
+    /// If the message is a reply, ID of the original message
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub reply_to_message_id: Option<i64>,
+    /// Pass True, if the message should be sent even if the specified
+    /// replied-to message is not found
+    pub allow_sending_without_reply: bool,
+    /// Additional interface options.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub reply_markup: Option<ReplyMarkup>,
+}
+
+impl CopyMessage {
+    pub fn new(chat_id: i64, from_chat_id: i64, message_id: i64) -> Self {
+        Self {
+            chat_id,
+            from_chat_id,
+            message_id,
+            caption: None,
+            caption_entities: None,
+            parse_mode: None,
+            disable_notification: false,
+            reply_to_message_id: None,
+            allow_sending_without_reply: false,
+            reply_markup: None,
+        }
+    }
+
+    pub fn from_message(chat_id: i64, from: &Message) -> Self {
+        Self {
+            chat_id,
+            from_chat_id: from.chat.get_id(),
+            message_id: from.message_id,
+            caption: None,
+            caption_entities: None,
+            parse_mode: None,
+            disable_notification: false,
+            reply_to_message_id: None,
+            allow_sending_without_reply: false,
+            reply_markup: None,
+        }
+    }
+}
+
 /// struct for holding data needed to call
 /// [`send_photo`]
 ///
@@ -140,6 +225,10 @@ pub struct SendPhoto {
     /// 0-1024 characters after entities parsing
     #[serde(skip_serializing_if = "Option::is_none")]
     pub caption: Option<String>,
+    /// List of special entities that appear in the new caption, which can be
+    /// specified instead of parse_mode
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub caption_entities: Option<Vec<MessageEntity>>,
     /// Send Markdown or HTML, if you want Telegram apps to show bold, italic,
     /// fixed-width text or inline URLs in your bot's message.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -150,6 +239,9 @@ pub struct SendPhoto {
     /// If the message is a reply, ID of the original message
     #[serde(skip_serializing_if = "Option::is_none")]
     pub reply_to_message_id: Option<i64>,
+    /// Pass True, if the message should be sent even if the specified
+    /// replied-to message is not found
+    pub allow_sending_without_reply: bool,
     /// Additional interface options.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub reply_markup: Option<ReplyMarkup>,
@@ -161,9 +253,11 @@ impl SendPhoto {
             chat_id,
             photo: InputFile::String(photo),
             caption: None,
+            caption_entities: None,
             parse_mode: None,
             disable_notification: false,
             reply_to_message_id: None,
+            allow_sending_without_reply: false,
             reply_markup: None,
         }
     }
@@ -173,9 +267,11 @@ impl SendPhoto {
             chat_id,
             photo: InputFile::String(photo.file_id.clone()),
             caption: None,
+            caption_entities: None,
             parse_mode: None,
             disable_notification: false,
             reply_to_message_id: None,
+            allow_sending_without_reply: false,
             reply_markup: None,
         }
     }
@@ -185,9 +281,11 @@ impl SendPhoto {
             chat_id,
             photo: InputFile::from_path(path)?,
             caption: None,
+            caption_entities: None,
             parse_mode: None,
             disable_notification: false,
             reply_to_message_id: None,
+            allow_sending_without_reply: false,
             reply_markup: None,
         })
     }
@@ -217,6 +315,10 @@ pub struct SendAudio {
     /// 0-1024 characters after entities parsing
     #[serde(skip_serializing_if = "Option::is_none")]
     pub caption: Option<String>,
+    /// List of special entities that appear in the new caption, which can be
+    /// specified instead of parse_mode
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub caption_entities: Option<Vec<MessageEntity>>,
     /// Duration of the audio in seconds
     #[serde(skip_serializing_if = "Option::is_none")]
     pub duration: Option<i64>,
@@ -236,6 +338,9 @@ pub struct SendAudio {
     /// If the message is a reply, ID of the original message
     #[serde(skip_serializing_if = "Option::is_none")]
     pub reply_to_message_id: Option<i64>,
+    /// Pass True, if the message should be sent even if the specified
+    /// replied-to message is not found
+    pub allow_sending_without_reply: bool,
     /// Additional interface options.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub reply_markup: Option<ReplyMarkup>,
@@ -248,12 +353,14 @@ impl SendAudio {
             audio: InputFile::String(audio),
             thumb: None,
             caption: None,
+            caption_entities: None,
             parse_mode: None,
             performer: None,
             duration: None,
             title: None,
             disable_notification: false,
             reply_to_message_id: None,
+            allow_sending_without_reply: false,
             reply_markup: None,
         }
     }
@@ -264,12 +371,14 @@ impl SendAudio {
             audio: InputFile::from_path(path)?,
             thumb: None,
             caption: None,
+            caption_entities: None,
             performer: None,
             duration: None,
             title: None,
             parse_mode: None,
             disable_notification: false,
             reply_to_message_id: None,
+            allow_sending_without_reply: false,
             reply_markup: None,
         })
     }
@@ -299,16 +408,26 @@ pub struct SendDocument {
     /// 0-1024 characters after entities parsing
     #[serde(skip_serializing_if = "Option::is_none")]
     pub caption: Option<String>,
+    /// List of special entities that appear in the new caption, which can be
+    /// specified instead of parse_mode
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub caption_entities: Option<Vec<MessageEntity>>,
     /// Send Markdown or HTML, if you want Telegram apps to show bold, italic,
     /// fixed-width text or inline URLs in your bot's message.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub parse_mode: Option<ParseMode>,
+    /// Disables automatic server-side content type detection for files uploaded
+    /// using multipart/form-data
+    pub disable_content_type_detection: bool,
     /// Sends the message silently. Users will receive a notification with no
     /// sound.
     pub disable_notification: bool,
     /// If the message is a reply, ID of the original message
     #[serde(skip_serializing_if = "Option::is_none")]
     pub reply_to_message_id: Option<i64>,
+    /// Pass True, if the message should be sent even if the specified
+    /// replied-to message is not found
+    pub allow_sending_without_reply: bool,
     /// Additional interface options.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub reply_markup: Option<ReplyMarkup>,
@@ -321,9 +440,12 @@ impl SendDocument {
             document: InputFile::String(document),
             thumb: None,
             caption: None,
+            caption_entities: None,
             parse_mode: None,
             disable_notification: false,
+            disable_content_type_detection: false,
             reply_to_message_id: None,
+            allow_sending_without_reply: false,
             reply_markup: None,
         }
     }
@@ -334,9 +456,12 @@ impl SendDocument {
             document: InputFile::from_path(path)?,
             thumb: None,
             caption: None,
+            caption_entities: None,
             parse_mode: None,
             disable_notification: false,
+            disable_content_type_detection: false,
             reply_to_message_id: None,
+            allow_sending_without_reply: false,
             reply_markup: None,
         })
     }
@@ -366,6 +491,10 @@ pub struct SendVideo {
     /// 0-1024 characters after entities parsing
     #[serde(skip_serializing_if = "Option::is_none")]
     pub caption: Option<String>,
+    /// List of special entities that appear in the new caption, which can be
+    /// specified instead of parse_mode
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub caption_entities: Option<Vec<MessageEntity>>,
     /// Duration of the video in seconds
     #[serde(skip_serializing_if = "Option::is_none")]
     pub duration: Option<i64>,
@@ -393,6 +522,9 @@ pub struct SendVideo {
     /// If the message is a reply, ID of the original message
     #[serde(skip_serializing_if = "Option::is_none")]
     pub reply_to_message_id: Option<i64>,
+    /// Pass True, if the message should be sent even if the specified
+    /// replied-to message is not found
+    pub allow_sending_without_reply: bool,
     /// Additional interface options.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub reply_markup: Option<ReplyMarkup>,
@@ -405,6 +537,7 @@ impl SendVideo {
             video: InputFile::String(video),
             thumb: None,
             caption: None,
+            caption_entities: None,
             duration: None,
             width: None,
             height: None,
@@ -414,6 +547,7 @@ impl SendVideo {
             parse_mode: None,
             disable_notification: false,
             reply_to_message_id: None,
+            allow_sending_without_reply: false,
             reply_markup: None,
         }
     }
@@ -424,6 +558,7 @@ impl SendVideo {
             video: InputFile::from_path(path)?,
             thumb: None,
             caption: None,
+            caption_entities: None,
             duration: None,
             width: None,
             height: None,
@@ -433,6 +568,7 @@ impl SendVideo {
             parse_mode: None,
             disable_notification: false,
             reply_to_message_id: None,
+            allow_sending_without_reply: false,
             reply_markup: None,
         })
     }
@@ -462,6 +598,10 @@ pub struct SendAnimation {
     /// file_id), 0-1024 characters after entities parsing
     #[serde(skip_serializing_if = "Option::is_none")]
     pub caption: Option<String>,
+    /// List of special entities that appear in the new caption, which can be
+    /// specified instead of parse_mode
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub caption_entities: Option<Vec<MessageEntity>>,
     /// Duration of the animation in seconds
     #[serde(skip_serializing_if = "Option::is_none")]
     pub duration: Option<i64>,
@@ -487,6 +627,9 @@ pub struct SendAnimation {
     /// If the message is a reply, ID of the original message
     #[serde(skip_serializing_if = "Option::is_none")]
     pub reply_to_message_id: Option<i64>,
+    /// Pass True, if the message should be sent even if the specified
+    /// replied-to message is not found
+    pub allow_sending_without_reply: bool,
     /// Additional interface options.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub reply_markup: Option<ReplyMarkup>,
@@ -499,6 +642,7 @@ impl SendAnimation {
             animation: InputFile::String(animation),
             thumb: None,
             caption: None,
+            caption_entities: None,
             duration: None,
             width: None,
             height: None,
@@ -507,6 +651,7 @@ impl SendAnimation {
             parse_mode: None,
             disable_notification: false,
             reply_to_message_id: None,
+            allow_sending_without_reply: false,
             reply_markup: None,
         }
     }
@@ -517,6 +662,7 @@ impl SendAnimation {
             animation: InputFile::from_path(path)?,
             thumb: None,
             caption: None,
+            caption_entities: None,
             duration: None,
             width: None,
             height: None,
@@ -525,6 +671,7 @@ impl SendAnimation {
             parse_mode: None,
             disable_notification: false,
             reply_to_message_id: None,
+            allow_sending_without_reply: false,
             reply_markup: None,
         })
     }
@@ -547,6 +694,10 @@ pub struct SendVoice {
     /// 0-1024 characters after entities parsing
     #[serde(skip_serializing_if = "Option::is_none")]
     pub caption: Option<String>,
+    /// List of special entities that appear in the new caption, which can be
+    /// specified instead of parse_mode
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub caption_entities: Option<Vec<MessageEntity>>,
     /// Duration of the voice message in seconds
     #[serde(skip_serializing_if = "Option::is_none")]
     pub duration: Option<i64>,
@@ -560,6 +711,9 @@ pub struct SendVoice {
     /// If the message is a reply, ID of the original message
     #[serde(skip_serializing_if = "Option::is_none")]
     pub reply_to_message_id: Option<i64>,
+    /// Pass True, if the message should be sent even if the specified
+    /// replied-to message is not found
+    pub allow_sending_without_reply: bool,
     /// Additional interface options.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub reply_markup: Option<ReplyMarkup>,
@@ -571,10 +725,12 @@ impl SendVoice {
             chat_id,
             voice: InputFile::String(voice),
             caption: None,
+            caption_entities: None,
             duration: None,
             parse_mode: None,
             disable_notification: false,
             reply_to_message_id: None,
+            allow_sending_without_reply: false,
             reply_markup: None,
         }
     }
@@ -585,9 +741,11 @@ impl SendVoice {
             voice: InputFile::from_path(path)?,
             duration: None,
             caption: None,
+            caption_entities: None,
             parse_mode: None,
             disable_notification: false,
             reply_to_message_id: None,
+            allow_sending_without_reply: false,
             reply_markup: None,
         })
     }
@@ -625,6 +783,9 @@ pub struct SendVideoNote {
     /// If the message is a reply, ID of the original message
     #[serde(skip_serializing_if = "Option::is_none")]
     pub reply_to_message_id: Option<i64>,
+    /// Pass True, if the message should be sent even if the specified
+    /// replied-to message is not found
+    pub allow_sending_without_reply: bool,
     /// Additional interface options.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub reply_markup: Option<ReplyMarkup>,
@@ -640,6 +801,7 @@ impl SendVideoNote {
             length: None,
             disable_notification: false,
             reply_to_message_id: None,
+            allow_sending_without_reply: false,
             reply_markup: None,
         }
     }
@@ -653,12 +815,13 @@ impl SendVideoNote {
             length: None,
             disable_notification: false,
             reply_to_message_id: None,
+            allow_sending_without_reply: false,
             reply_markup: None,
         })
     }
 }
 
-/// struct for holding data needed to call
+/// struct for sending photos, videos, documents or audios as an album
 /// [`send_media_group`]
 ///
 /// [`send_media_group`]:
@@ -667,7 +830,8 @@ impl SendVideoNote {
 pub struct SendMediaGroup {
     /// Unique identifier for the target chat
     pub chat_id: i64,
-    /// Photos or videos to be send, amount must be 2-10
+    /// Photos, videos, documents or audios as an album to be send, amount must
+    /// be 2-10
     pub media: Vec<InputMedia>,
     /// Sends the message silently. Users will receive a notification with no
     /// sound.
@@ -675,6 +839,9 @@ pub struct SendMediaGroup {
     /// If the message is a reply, ID of the original message
     #[serde(skip_serializing_if = "Option::is_none")]
     pub reply_to_message_id: Option<i64>,
+    /// Pass True, if the message should be sent even if the specified
+    /// replied-to message is not found
+    pub allow_sending_without_reply: bool,
 }
 
 impl SendMediaGroup {
@@ -684,6 +851,7 @@ impl SendMediaGroup {
             media,
             disable_notification: false,
             reply_to_message_id: None,
+            allow_sending_without_reply: false,
         }
     }
 }
@@ -704,12 +872,24 @@ pub struct SendLocation {
     /// Period in seconds for which the location will be updated
     #[serde(skip_serializing_if = "Option::is_none")]
     pub live_period: Option<i64>,
+    /// For live locations, a direction in which the user is moving, in degrees.
+    /// Must be between 1 and 360 if specified.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub heading: Option<i64>,
+    /// For live locations, a maximum distance for proximity alerts about
+    /// approaching another chat member, in meters. Must be between 1 and
+    /// 100000 if specified.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub proximity_alert_radius: Option<i64>,
     /// Sends the message silently. Users will receive a notification with no
     /// sound.
     pub disable_notification: bool,
     /// If the message is a reply, ID of the original message
     #[serde(skip_serializing_if = "Option::is_none")]
     pub reply_to_message_id: Option<i64>,
+    /// Pass True, if the message should be sent even if the specified
+    /// replied-to message is not found
+    pub allow_sending_without_reply: bool,
     /// Additional interface options.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub reply_markup: Option<ReplyMarkup>,
@@ -746,6 +926,9 @@ pub struct SendVenue {
     /// If the message is a reply, ID of the original message
     #[serde(skip_serializing_if = "Option::is_none")]
     pub reply_to_message_id: Option<i64>,
+    /// Pass True, if the message should be sent even if the specified
+    /// replied-to message is not found
+    pub allow_sending_without_reply: bool,
     /// Additional interface options.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub reply_markup: Option<ReplyMarkup>,
@@ -776,6 +959,9 @@ pub struct SendContact {
     /// If the message is a reply, ID of the original message
     #[serde(skip_serializing_if = "Option::is_none")]
     pub reply_to_message_id: Option<i64>,
+    /// Pass True, if the message should be sent even if the specified
+    /// replied-to message is not found
+    pub allow_sending_without_reply: bool,
     /// Additional interface options.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub reply_markup: Option<ReplyMarkup>,
@@ -792,7 +978,7 @@ pub struct SendPoll {
     pub chat_id: i64,
     /// Poll question, 1-255 characters
     pub question: String,
-    /// A JSON-serialized list of answer options, 2-10 strings 1-100 characters
+    /// A JSON-serialized list of answer options, 2-10 strings 1-300 characters
     /// each
     pub options: Vec<String>,
     /// True, if the poll needs to be anonymous, defaults to True
@@ -814,9 +1000,15 @@ pub struct SendPoll {
     /// feeds after entities parsing
     pub explanation: Option<String>,
     /// Mode for parsing entities in the explanation.
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub explanation_parse_mode: Option<ParseMode>,
+    /// List of special entities that appear in the poll explanation, which can
+    /// be specified instead of parse_mode
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub explanation_enitites: Option<Vec<MessageEntity>>,
     /// Amount of time in seconds the poll will be active after creation, 5-600.
     /// Can't be used together with close_date.
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub open_period: Option<i64>,
     /// Point in time (Unix timestamp) when the poll will be automatically
     /// closed. Must be at least 5 and no more than 600 seconds in the future.
@@ -831,6 +1023,9 @@ pub struct SendPoll {
     /// If the message is a reply, ID of the original message
     #[serde(skip_serializing_if = "Option::is_none")]
     pub reply_to_message_id: Option<i64>,
+    /// Pass True, if the message should be sent even if the specified
+    /// replied-to message is not found
+    pub allow_sending_without_reply: bool,
     /// Additional interface options.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub reply_markup: Option<ReplyMarkup>,
@@ -856,6 +1051,9 @@ pub struct SendDice {
     /// If the message is a reply, ID of the original message
     #[serde(skip_serializing_if = "Option::is_none")]
     pub reply_to_message_id: Option<i64>,
+    /// Pass True, if the message should be sent even if the specified
+    /// replied-to message is not found
+    pub allow_sending_without_reply: bool,
     /// Additional interface options.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub reply_markup: Option<ReplyMarkup>,

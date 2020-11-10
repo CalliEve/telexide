@@ -1,4 +1,4 @@
-use crate::model::{InlineKeyboardMarkup, ParseMode};
+use crate::model::{InlineKeyboardMarkup, ParseMode, MessageEntity};
 use serde::{Deserialize, Serialize};
 
 /// struct for holding data needed to call
@@ -151,6 +151,10 @@ pub struct InlineQueryResultPhoto {
     /// fixed-width text or inline URLs in your bot's message.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub parse_mode: Option<ParseMode>,
+    /// List of special entities that appear in the caption, which can be
+    /// specified instead of parse_mode
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub caption_entities: Option<Vec<MessageEntity>>,
 }
 
 /// Represents a link to an animated GIF file. By default,
@@ -163,7 +167,8 @@ pub struct InlineQueryResultGif {
     pub id: String,
     /// A valid URL for the GIF file. File size must not exceed 1MB
     pub gif_url: String,
-    /// URL of the static (JPEG or GIF) or animated (MPEG4) thumbnail for the result
+    /// URL of the static (JPEG or GIF) or animated (MPEG4) thumbnail for the
+    /// result
     pub thumb_url: String,
     /// Width of the GIF
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -194,6 +199,10 @@ pub struct InlineQueryResultGif {
     /// fixed-width text or inline URLs in your bot's message.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub parse_mode: Option<ParseMode>,
+    /// List of special entities that appear in the caption, which can be
+    /// specified instead of parse_mode
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub caption_entities: Option<Vec<MessageEntity>>,
 }
 
 /// Represents a link to a video animation (H.264/MPEG-4 AVC video without
@@ -239,6 +248,10 @@ pub struct InlineQueryResultMpeg4Gif {
     /// fixed-width text or inline URLs in your bot's message.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub parse_mode: Option<ParseMode>,
+    /// List of special entities that appear in the caption, which can be
+    /// specified instead of parse_mode
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub caption_entities: Option<Vec<MessageEntity>>,
 }
 
 /// Represents a link to a page containing an embedded video player or a video
@@ -283,6 +296,10 @@ pub struct InlineQueryResultVideo {
     /// fixed-width text or inline URLs in your bot's message.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub parse_mode: Option<ParseMode>,
+    /// List of special entities that appear in the caption, which can be
+    /// specified instead of parse_mode
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub caption_entities: Option<Vec<MessageEntity>>,
 }
 
 /// Represents a link to an MP3 audio file. By default, this audio file will be
@@ -316,6 +333,10 @@ pub struct InlineQueryResultAudio {
     /// Inline keyboard attached to the message
     #[serde(skip_serializing_if = "Option::is_none")]
     pub reply_markup: Option<InlineKeyboardMarkup>,
+    /// List of special entities that appear in the caption, which can be
+    /// specified instead of parse_mode
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub caption_entities: Option<Vec<MessageEntity>>,
 }
 
 /// Represents a link to a voice recording in an .OGG container encoded with
@@ -347,6 +368,10 @@ pub struct InlineQueryResultVoice {
     /// Inline keyboard attached to the message
     #[serde(skip_serializing_if = "Option::is_none")]
     pub reply_markup: Option<InlineKeyboardMarkup>,
+    /// List of special entities that appear in the caption, which can be
+    /// specified instead of parse_mode
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub caption_entities: Option<Vec<MessageEntity>>,
 }
 
 /// Represents a link to a file. By default, this file will be sent by the user
@@ -378,6 +403,10 @@ pub struct InlineQueryResultDocument {
     /// fixed-width text or inline URLs in your bot's message.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub parse_mode: Option<ParseMode>,
+    /// List of special entities that appear in the caption, which can be
+    /// specified instead of parse_mode
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub caption_entities: Option<Vec<MessageEntity>>,
     /// Content of the message to be sent instead of the document
     #[serde(skip_serializing_if = "Option::is_none")]
     pub input_message_content: Option<InputMessageContent>,
@@ -412,6 +441,18 @@ pub struct InlineQueryResultLocation {
     /// between 60 and 86400.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub live_period: Option<i64>,
+    /// For live locations, a direction in which the user is moving, in degrees.
+    /// Must be between 1 and 360 if specified.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub heading: Option<i64>,
+    /// For live locations, a maximum distance for proximity alerts about
+    /// approaching another chat member, in meters. Must be between 1 and
+    /// 100000 if specified.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub proximity_alert_radius: Option<i64>,
+    /// The radius of uncertainty for the location, measured in meters; 0-1500
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub horizontal_accuracy: Option<f64>,
     /// Content of the message to be sent instead of the location
     #[serde(skip_serializing_if = "Option::is_none")]
     pub input_message_content: Option<InputMessageContent>,
@@ -452,6 +493,14 @@ pub struct InlineQueryResultVenue {
     /// “arts_entertainment/aquarium” or “food/icecream”.)
     #[serde(skip_serializing_if = "Option::is_none")]
     pub foursquare_type: Option<String>,
+    /// Google Places identifier of the venue
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub google_place_id: Option<String>,
+    /// Google Places type of the venue. (See [supported types].)
+    ///
+    /// [supported types]: https://developers.google.com/places/web-service/supported_types
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub google_place_type: Option<String>,
     /// Period in seconds for which the location can be updated, should be
     /// between 60 and 86400.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -554,6 +603,17 @@ pub struct InputLocationMessageContent {
     /// Period in seconds for which the location can be updated, should be
     /// between 60 and 86400.
     pub live_period: i64,
+    /// The radius of uncertainty for the location, measured in meters; 0-1500
+    pub horizontal_accuracy: Option<f64>,
+    /// For live locations, a direction in which the user is moving, in degrees.
+    /// Must be between 1 and 360 if specified.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub heading: Option<i64>,
+    /// For live locations, a maximum distance for proximity alerts about
+    /// approaching another chat member, in meters. Must be between 1 and
+    /// 100000 if specified.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub proximity_alert_radius: Option<i64>,
 }
 
 /// Represents the content of a venue message to be sent as the result of an
@@ -576,6 +636,14 @@ pub struct InputVenueMessageContent {
     /// “arts_entertainment/aquarium” or “food/icecream”.)
     #[serde(skip_serializing_if = "Option::is_none")]
     pub foursquare_type: Option<String>,
+    /// Google Places identifier of the venue
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub google_place_id: Option<String>,
+    /// Google Places type of the venue. (See [supported types].)
+    ///
+    /// [supported types]: https://developers.google.com/places/web-service/supported_types
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub google_place_type: Option<String>,
 }
 
 /// Represents the content of a contact message to be sent as the result of an

@@ -39,6 +39,25 @@ pub trait API: Sync {
         self.get(APIEndpoint::GetMe, None).await?.into()
     }
 
+    /// Use this method to log out from the cloud Bot API server before
+    /// launching the bot locally. You **must** log out the bot before
+    /// running it locally, otherwise there is no guarantee that
+    /// the bot will receive updates. After a successful call, you will not be
+    /// able to log in again using the same token for 10 minutes. Returns
+    /// True on success.
+    async fn log_out(&self) -> Result<bool> {
+        self.post(APIEndpoint::LogOut, None).await?.into()
+    }
+
+    /// Use this method to close the bot instance before moving it from one
+    /// local server to another. You need to delete the webhook before
+    /// calling this method to ensure that the bot isn't launched again
+    /// after server restart. The method will return error 429 in the first 10
+    /// minutes after the bot is launched.
+    async fn close(&self) -> Result<bool> {
+        self.post(APIEndpoint::Close, None).await?.into()
+    }
+
     /// (**WARNING:** this method should not be used by the library user
     /// themselves as this gets handled by the [`Client`] object,
     /// to handle an update event, please subscribe to those using
@@ -68,8 +87,13 @@ pub trait API: Sync {
 
     /// Use this method to remove webhook integration if you decide to switch
     /// back to using [API::get_updates]. Returns True on success.
-    async fn delete_webhook(&self) -> Result<bool> {
-        self.get(APIEndpoint::DeleteWebhook, None).await?.into()
+    async fn delete_webhook(&self, data: DeleteWebhook) -> Result<bool> {
+        self.get(
+            APIEndpoint::DeleteWebhook,
+            Some(serde_json::to_value(data)?),
+        )
+        .await?
+        .into()
     }
 
     /// Use this method to get current webhook status. On success, returns a
@@ -113,6 +137,18 @@ pub trait API: Sync {
         )
         .await?
         .into()
+    }
+
+    /// Use this method to copy messages of any kind. The method is analogous to
+    /// the method [`forward_message`], but the copied message doesn't have
+    /// a link to the original message. Returns the [`MessageId`] of the
+    /// sent message on success.
+    ///
+    /// [`forward_message`]: API::forward_message
+    async fn copy_message(&self, data: CopyMessage) -> Result<MessageId> {
+        self.post(APIEndpoint::CopyMessage, Some(serde_json::to_value(data)?))
+            .await?
+            .into()
     }
 
     /// Use this method to send photos. On success, the sent [`Message`] is
@@ -677,14 +713,28 @@ pub trait API: Sync {
         .into()
     }
 
-    /// Use this method to unpin a message in a group, a supergroup, or a
-    /// channel. The bot must be an administrator in the chat for this to
-    /// work and must have the ‘can_pin_messages’ admin right in the supergroup
-    /// or ‘can_edit_messages’ admin right in the channel. Returns True on
-    /// success.
+    /// Use this method to remove a message from the list of pinned messages in
+    /// a chat. If the chat is not a private chat, the bot must be an
+    /// administrator in the chat for this to work and must have the
+    /// 'can_pin_messages' admin right in a supergroup or 'can_edit_messages'
+    /// admin right in a channel. Returns True on success.
     async fn unpin_chat_message(&self, data: UnpinChatMessage) -> Result<bool> {
         self.post(
             APIEndpoint::UnpinChatMessage,
+            Some(serde_json::to_value(data)?),
+        )
+        .await?
+        .into()
+    }
+
+    /// Use this method to clear the list of pinned messages in a chat. If the
+    /// chat is not a private chat, the bot must be an administrator in the
+    /// chat for this to work and must have the 'can_pin_messages' admin
+    /// right in a supergroup or 'can_edit_messages' admin right in a
+    /// channel. Returns True on success.
+    async fn unpin_all_chat_messages(&self, data: UnpinAllChatMessages) -> Result<bool> {
+        self.post(
+            APIEndpoint::UnpinAllChatMessages,
             Some(serde_json::to_value(data)?),
         )
         .await?

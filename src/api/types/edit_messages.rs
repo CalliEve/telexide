@@ -1,5 +1,5 @@
 use super::InputMedia;
-use crate::model::{InlineKeyboardMarkup, Message, ParseMode};
+use crate::model::{InlineKeyboardMarkup, Message, MessageEntity, ParseMode};
 use serde::{Deserialize, Serialize};
 
 /// struct for holding data needed to call
@@ -24,6 +24,10 @@ pub struct EditMessageText {
     /// fixed-width text or inline URLs in your bot's message.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub parse_mode: Option<ParseMode>,
+    /// List of special entities that appear in message text, which can be
+    /// specified instead of parse_mode
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub entities: Option<Vec<MessageEntity>>,
     /// Disables link previews for links in this message
     pub disable_web_page_preview: bool,
     /// Inline keyboard
@@ -39,6 +43,7 @@ impl EditMessageText {
             text: new_text.to_owned(),
             inline_message_id: None,
             parse_mode: None,
+            entities: None,
             disable_web_page_preview: false,
             reply_markup: None,
         }
@@ -51,6 +56,7 @@ impl EditMessageText {
             text: new_text.to_owned(),
             inline_message_id: None,
             parse_mode: None,
+            entities: None,
             disable_web_page_preview: false,
             reply_markup: None,
         }
@@ -80,6 +86,10 @@ pub struct EditMessageCaption {
     /// fixed-width text or inline URLs in your bot's message.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub parse_mode: Option<ParseMode>,
+    /// List of special entities that appear in the caption, which can be
+    /// specified instead of parse_mode
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub caption_entities: Option<Vec<MessageEntity>>,
     /// Inline keyboard
     #[serde(skip_serializing_if = "Option::is_none")]
     pub reply_markup: Option<InlineKeyboardMarkup>,
@@ -93,6 +103,7 @@ impl EditMessageCaption {
             caption: new_text.map(ToString::to_string),
             inline_message_id: None,
             parse_mode: None,
+            caption_entities: None,
             reply_markup: None,
         }
     }
@@ -104,6 +115,7 @@ impl EditMessageCaption {
             caption: new_text.map(ToString::to_string),
             inline_message_id: None,
             parse_mode: None,
+            caption_entities: None,
             reply_markup: None,
         }
     }
@@ -281,6 +293,17 @@ pub struct EditMessageLiveLocation {
     pub latitude: f64,
     /// Longitude of the location
     pub longitude: f64,
+    /// The radius of uncertainty for the location, measured in meters; 0-1500
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub horizontal_accuracy: Option<f64>,
+    /// Direction in which the user is moving, in degrees. Must be between 1 and
+    /// 360 if specified.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub heading: Option<i64>,
+    /// Maximum distance for proximity alerts about approaching another chat
+    /// member, in meters. Must be between 1 and 100000 if specified.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub proximity_alert_radius: Option<i64>,
 }
 
 /// struct for holding data needed to call

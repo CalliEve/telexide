@@ -24,26 +24,32 @@ type FutureUpdate = Pin<Box<dyn Future<Output = Result<Vec<Update>>>>>;
 ///
 /// ## Example
 /// ```rust,no_run
-/// use std::sync::Arc;
+/// # use std::sync::Arc;
+/// use futures::StreamExt;
 /// use telexide::{
 ///     api::APIClient,
 ///     client::UpdatesStream
 /// };
 ///
-/// let mut stream = UpdatesStream::new(
-///     Arc::new(
-///         Box::new(
-///             APIClient::new_default(your_token)
-///         )
-///     )
-/// );
+/// #[tokio::main]
+/// async fn main() {
+///     # let token = "test token";
 ///
-/// while let Some(poll) = stream.next().await {
-///     match poll {
-///         Ok(update) => {
-///             fire_update_handlers(update);
-///         },
-///         Err(err) => return Err(err),
+///     let mut stream = UpdatesStream::new(
+///         Arc::new(
+///             Box::new(
+///                 APIClient::new_default(token)
+///             )
+///         )
+///     );
+///
+///     while let Some(poll) = stream.next().await {
+///         match poll {
+///             Ok(update) => {
+///                 println!("ID of the update received: {}", update.update_id);
+///             },
+///             Err(err) => return,
+///         }
 ///     }
 /// }
 /// ```

@@ -1,82 +1,18 @@
-use super::utils::unix_date_formatting;
 use chrono::{DateTime, Utc};
 use serde::{Deserialize, Deserializer, Serialize, Serializer};
 
-use super::{Game, Invoice, PassportData, Sticker, SuccessfulPayment, User};
-
-pub use super::{message_contents::*, message_entity::*, InlineKeyboardMarkup};
-
-/// The raw message, for most usages the [`Message`] object is easier to use
-#[derive(Serialize, Deserialize, Debug, Clone, PartialEq)]
-pub struct RawMessage {
-    pub message_id: i64,
-    pub from: Option<super::User>,
-    #[serde(with = "unix_date_formatting")]
-    pub date: DateTime<Utc>,
-    pub chat: super::chat::RawChat,
-
-    pub forward_from: Option<super::User>,
-    pub forward_from_chat: Option<super::chat::RawChat>,
-    pub forward_from_message_id: Option<i64>,
-    pub forward_signature: Option<String>,
-    pub forward_sender_name: Option<String>,
-    #[serde(default)]
-    #[serde(with = "unix_date_formatting::optional")]
-    pub forward_date: Option<DateTime<Utc>>,
-
-    pub reply_to_message: Option<Box<RawMessage>>,
-    pub via_bot: Option<User>,
-
-    #[serde(default)]
-    #[serde(with = "unix_date_formatting::optional")]
-    pub edit_date: Option<DateTime<Utc>>,
-
-    pub media_group_id: Option<String>,
-    pub author_signature: Option<String>,
-
-    pub text: Option<String>,
-    pub entities: Option<Vec<MessageEntity>>,
-    pub caption_entities: Option<Vec<MessageEntity>>,
-    pub audio: Option<Audio>,
-    pub document: Option<Document>,
-    pub animation: Option<Animation>,
-    pub game: Option<Game>,
-    pub photo: Option<Vec<PhotoSize>>,
-    pub sticker: Option<Sticker>,
-    pub video: Option<Video>,
-    pub voice: Option<Voice>,
-    pub video_note: Option<VideoNote>,
-    pub caption: Option<String>,
-    pub contact: Option<Contact>,
-    pub location: Option<Location>,
-    pub venue: Option<Venue>,
-    pub poll: Option<Poll>,
-    pub dice: Option<Dice>,
-    pub new_chat_members: Option<Vec<User>>,
-    pub left_chat_member: Option<User>,
-    pub new_chat_title: Option<String>,
-    pub new_chat_photo: Option<Vec<PhotoSize>>,
-
-    #[serde(default)]
-    pub delete_chat_photo: bool,
-    #[serde(default)]
-    pub group_chat_created: bool,
-    #[serde(default)]
-    pub supergroup_chat_created: bool,
-    #[serde(default)]
-    pub channel_chat_created: bool,
-
-    pub migrate_to_chat_id: Option<i64>,
-    pub migrate_from_chat_id: Option<i64>,
-
-    pub pinned_message: Option<Box<RawMessage>>,
-    pub invoice: Option<Invoice>,
-    pub successful_payment: Option<SuccessfulPayment>,
-
-    pub connected_website: Option<String>,
-    pub passport_data: Option<PassportData>,
-    pub reply_markup: Option<InlineKeyboardMarkup>,
-}
+use super::{
+    message_contents::*,
+    message_entity::*,
+    raw::*,
+    Game,
+    InlineKeyboardMarkup,
+    Invoice,
+    PassportData,
+    Sticker,
+    SuccessfulPayment,
+    User,
+};
 
 /// This object represents a message.
 #[derive(Debug, Clone, PartialEq)]
@@ -85,6 +21,11 @@ pub struct Message {
     pub message_id: i64,
     /// Sender, empty for messages sent to channels
     pub from: Option<super::User>,
+    /// Sender of the message, sent on behalf of a chat. The channel itself for
+    /// channel messages. The supergroup itself for messages from anonymous
+    /// group administrators. The linked channel for messages automatically
+    /// forwarded to the discussion group
+    pub sender_chat: Option<super::Chat>,
     /// Date the message was sent
     pub date: DateTime<Utc>,
     /// Conversation the message belongs to
@@ -93,9 +34,6 @@ pub struct Message {
     /// Data about what message it was forwarded from
     pub forward_data: Option<ForwardData>,
 
-    /// For replies, the original message.
-    /// Note that the Message object in this field will not contain further
-    /// reply_to_message fields even if it itself is a reply.
     pub reply_to_message: Option<Box<Message>>,
     /// Bot through which the message was sent
     pub via_bot: Option<User>,
@@ -267,6 +205,9 @@ pub enum MessageContent {
         /// about the payment.
         content: SuccessfulPayment,
     },
+    ProximityAlertTriggered {
+        content: ProximityAlertTriggered,
+    },
 
     /// Service message: the chat photo was deleted
     DeleteChatPhoto,
@@ -343,6 +284,7 @@ impl From<RawMessage> for Message {
     fn from(raw: RawMessage) -> Message {
         let message_id = raw.message_id;
         let from = raw.from;
+        let sender_chat = raw.sender_chat.map(|c| c.into());
         let date = raw.date;
         let chat = raw.chat.into();
         let reply_to_message = raw.reply_to_message.map(|r| Box::new((*r).into()));
@@ -369,6 +311,7 @@ impl From<RawMessage> for Message {
         let fill_in_content = |content: MessageContent| Self {
             message_id,
             from,
+            sender_chat,
             date,
             chat,
             forward_data,
@@ -458,6 +401,7 @@ impl From<RawMessage> for Message {
         content!(raw.migrate_from_chat_id, MigrateFromChatID);
         content!(raw.invoice, Invoice);
         content!(raw.successful_payment, SuccessfulPayment);
+        content!(raw.proximity_alert_triggered, ProximityAlertTriggered);
 
         bool_content!(raw.delete_chat_photo, DeleteChatPhoto);
         bool_content!(raw.group_chat_created, GroupChatCreated);
@@ -474,6 +418,7 @@ impl From<Message> for RawMessage {
         let mut ret = Self {
             message_id: message.message_id,
             from: message.from,
+            sender_chat: message.sender_chat.map(|c| c.into()),
             date: message.date,
             chat: message.chat.into(),
             reply_to_message: message.reply_to_message.map(|r| Box::new((*r).into())),
@@ -520,6 +465,7 @@ impl From<Message> for RawMessage {
             pinned_message: None,
             invoice: None,
             successful_payment: None,
+            proximity_alert_triggered: None,
 
             connected_website: message.connected_website,
             passport_data: message.passport_data,
@@ -710,6 +656,12 @@ impl From<Message> for RawMessage {
                 ret.pinned_message = Some(Box::new((*content).into()));
                 ret
             },
+            MessageContent::ProximityAlertTriggered {
+                content,
+            } => {
+                ret.proximity_alert_triggered = Some(content);
+                ret
+            },
             MessageContent::DeleteChatPhoto => {
                 ret.delete_chat_photo = true;
                 ret
@@ -749,4 +701,11 @@ impl Serialize for Message {
     {
         RawMessage::from(self.to_owned()).serialize(serializer)
     }
+}
+
+/// This object represents a unique message identifier.
+#[derive(Serialize, Deserialize, Debug, Clone, PartialEq)]
+pub struct MessageId {
+    /// Unique message identifier
+    pub message_id: i64,
 }
