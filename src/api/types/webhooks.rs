@@ -26,4 +26,18 @@ pub struct SetWebhook {
     /// the call to the set_webhook, so unwanted updates may be received for
     /// a short period of time.
     pub allowed_updates: Option<Vec<UpdateType>>,
+    /// The fixed IP address which will be used to send webhook requests instead
+    /// of the IP address resolved through DNS
+    pub ip_address: Option<String>,
+    /// Pass True to drop all pending updates
+    pub drop_pending_updates: Option<bool>,
+}
+
+/// Struct for holding data needed to call [`delete_webhook`]
+///
+/// [`delete_webhook`]: ../../api/trait.API.html#method.delete_webhook
+#[derive(Serialize, Deserialize, Debug, Clone, PartialEq, Default)]
+pub struct DeleteWebhook {
+    /// Pass True to drop all pending updates
+    pub drop_pending_updates: Option<bool>,
 }

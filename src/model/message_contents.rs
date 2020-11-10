@@ -20,6 +20,8 @@ pub struct Audio {
     pub performer: Option<String>,
     /// Title of the audio as defined by sender or by audio tags
     pub title: Option<String>,
+    /// Original filename as defined by sender
+    pub file_name: Option<String>,
     /// MIME type of the file as defined by sender
     pub mime_type: Option<String>,
     /// File size
@@ -112,6 +114,8 @@ pub struct Video {
     pub duration: usize,
     /// Video thumbnail
     pub thumb: Option<PhotoSize>,
+    /// Original filename as defined by sender
+    pub file_name: Option<String>,
     /// Mime type of a file as defined by sender
     pub mime_type: Option<String>,
     /// File size
@@ -181,6 +185,17 @@ pub struct Location {
     pub longitude: f64,
     /// Latitude as defined by sender
     pub latitude: f64,
+    /// The radius of uncertainty for the location, measured in meters; 0-1500.
+    pub horizontal_accuracy: Option<f64>,
+    /// Time relative to the message sending date, during which the location can
+    /// be updated, in seconds. For active live locations only.
+    pub live_period: Option<i64>,
+    /// The direction in which user is moving, in degrees; 1-360. For active
+    /// live locations only.
+    pub heading: Option<i64>,
+    /// Maximum distance for proximity alerts about approaching another chat
+    /// member, in meters. For sent live locations only.
+    pub proximity_alert_radius: Option<i64>,
 }
 
 /// This object represents a venue.
@@ -198,6 +213,12 @@ pub struct Venue {
     /// (For example, “arts_entertainment/default”,
     /// “arts_entertainment/aquarium” or “food/icecream”.)
     pub foursquare_type: Option<String>,
+    /// Google Places identifier of the venue
+    pub google_place_id: Option<String>,
+    /// Google Places type of the venue. (See [supported types].)
+    ///
+    /// [supported types]: https://developers.google.com/places/web-service/supported_types
+    pub google_place_type: Option<String>,
 }
 
 /// This object contains information about a poll.
@@ -319,4 +340,16 @@ pub struct LoginUrl {
     /// user.
     #[serde(default)]
     pub request_write_access: bool,
+}
+
+/// This object represents the content of a service message, sent whenever a
+/// user in the chat triggers a proximity alert set by another user.
+#[derive(Serialize, Deserialize, Debug, Clone, PartialEq)]
+pub struct ProximityAlertTriggered {
+    /// User that triggered the alert
+    pub traveler: User,
+    /// User that set the alert
+    pub watcher: User,
+    /// The distance between the users
+    pub distance: i64,
 }

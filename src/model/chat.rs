@@ -1,70 +1,11 @@
-use super::{utils::unix_date_formatting, User};
 use chrono::{DateTime, Utc};
 use serde::{Deserialize, Serialize};
 
-/// The raw chat, for most usages the [`Chat`] object is easier to use
-#[derive(Serialize, Deserialize, Debug, Clone, PartialEq)]
-pub struct RawChat {
-    /// Unique identifier for this chat
-    pub id: i64,
-    #[serde(rename = "type")]
-    pub chat_type: ChatType,
-    /// Title, for supergroups, channels and group chats
-    pub title: Option<String>,
-    /// Username, for private chats, supergroups and channels if available
-    pub username: Option<String>,
-    /// First name of the other party in a private chat
-    pub first_name: Option<String>,
-    /// Last name of the other party in a private chat
-    pub last_name: Option<String>,
-    /// Chat photo. Returned only in getChat.
-    pub photo: Option<ChatPhoto>,
-    /// Description, for groups, supergroups and channel chats. Returned only in
-    /// [`get_chat`].
-    ///
-    /// [`get_chat`]: ../../api/trait.API.html#method.get_chat
-    pub description: Option<String>,
-    /// Chat invite link, for groups, supergroups and channel chats.
-    pub invite_link: Option<String>,
-    /// Pinned message, for groups, supergroups and channels. Returned only in
-    /// [`get_chat`].
-    ///
-    /// [`get_chat`]: ../../api/trait.API.html#method.get_chat
-    pub pinned_message: Option<Box<super::message::RawMessage>>,
-    /// Default chat member permissions, for groups and supergroups. Returned
-    /// only in [`get_chat`].
-    ///
-    /// [`get_chat`]: ../../api/trait.API.html#method.get_chat
-    pub permissions: Option<super::ChatPermissions>,
-    /// For supergroups, the minimum allowed delay between consecutive messages
-    /// sent by each unpriviledged user. Returned only in [`get_chat`].
-    ///
-    /// [`get_chat`]: ../../api/trait.API.html#method.get_chat
-    pub slow_mode_delay: Option<usize>,
-    /// For supergroups, name of group sticker set. Returned only in
-    /// [`get_chat`].
-    ///
-    /// [`get_chat`]: ../../api/trait.API.html#method.get_chat
-    pub sticker_set_name: Option<String>,
-    /// True, if the bot can change the group sticker set. Returned only in
-    /// [`get_chat`].
-    ///
-    /// [`get_chat`]: ../../api/trait.API.html#method.get_chat
-    pub can_set_sticker_set: Option<bool>,
-}
-
-/// The type of chat for use in [`RawChat`]
-#[derive(Serialize, Deserialize, Debug, Clone, PartialEq)]
-pub enum ChatType {
-    #[serde(rename = "private")]
-    Private,
-    #[serde(rename = "group")]
-    Group,
-    #[serde(rename = "supergroup")]
-    SuperGroup,
-    #[serde(rename = "channel")]
-    Channel,
-}
+use super::{
+    raw::{ChatType, RawChat},
+    utils::unix_date_formatting,
+    User,
+};
 
 /// A private chat object, also known as a DM, between the bot and an user
 #[derive(Serialize, Deserialize, Debug, Clone, PartialEq)]
@@ -75,6 +16,10 @@ pub struct PrivateChat {
     pub username: Option<String>,
     /// First name of the other party
     pub first_name: Option<String>,
+    /// Bio of the other party in a private chat. Returned only in [`get_chat`].
+    ///
+    /// [`get_chat`]: ../../api/trait.API.html#method.get_chat
+    pub bio: Option<String>,
     /// Last name of the other party
     pub last_name: Option<String>,
     /// Chat photo. Returned only in [`get_chat`].
@@ -149,6 +94,17 @@ pub struct SuperGroupChat {
     ///
     /// [`get_chat`]: ../../api/trait.API.html#method.get_chat
     pub can_set_sticker_set: Option<bool>,
+    /// Unique identifier for the linked chat, i.e. the discussion group
+    /// identifier for a channel and vice versa; for supergroups and channel
+    /// chats. Returned only in [`get_chat`].
+    ///
+    /// [`get_chat`]: ../../api/trait.API.html#method.get_chat
+    pub linked_chat_id: Option<i64>,
+    /// For supergroups, the location to which the supergroup is connected.
+    /// Returned only in [`get_chat`].
+    ///
+    /// [`get_chat`]: ../../api/trait.API.html#method.get_chat
+    pub location: Option<ChatLocation>,
 }
 
 /// A Channel object
@@ -173,6 +129,12 @@ pub struct ChannelChat {
     ///
     /// [`get_chat`]: ../../api/trait.API.html#method.get_chat
     pub pinned_message: Option<Box<super::Message>>,
+    /// Unique identifier for the linked chat, i.e. the discussion group
+    /// identifier for a channel and vice versa; for supergroups and channel
+    /// chats. Returned only in [`get_chat`].
+    ///
+    /// [`get_chat`]: ../../api/trait.API.html#method.get_chat
+    pub linked_chat_id: Option<i64>,
 }
 
 /// This object represents a chat. It can be a private, group, supergroup or
@@ -188,6 +150,16 @@ pub enum Chat {
     SuperGroup(SuperGroupChat),
     #[serde(rename = "channel")]
     Channel(ChannelChat),
+}
+
+/// Represents a location to which a chat is connected.
+#[derive(Serialize, Deserialize, Debug, Clone, PartialEq)]
+pub struct ChatLocation {
+    /// The location to which the supergroup is connected. Can't be a live
+    /// location.
+    pub location: super::Location,
+    /// Location address; 1-64 characters, as defined by the chat owner
+    pub address: String,
 }
 
 /// Describes actions that a non-administrator user is allowed to take in a
@@ -271,6 +243,7 @@ impl From<RawChat> for Chat {
                 description: raw.description,
                 pinned_message: raw.pinned_message.map(|m| Box::new((*m).into())),
                 invite_link: raw.invite_link,
+                linked_chat_id: raw.linked_chat_id,
             }),
             ChatType::Private => Chat::Private(PrivateChat {
                 id: raw.id,
@@ -278,6 +251,7 @@ impl From<RawChat> for Chat {
                 last_name: raw.last_name,
                 username: raw.username,
                 photo: raw.photo,
+                bio: raw.bio,
             }),
             ChatType::Group => Chat::Group(GroupChat {
                 id: raw.id,
@@ -300,6 +274,8 @@ impl From<RawChat> for Chat {
                 sticker_set_name: raw.sticker_set_name,
                 can_set_sticker_set: raw.can_set_sticker_set,
                 slow_mode_delay: raw.slow_mode_delay,
+                linked_chat_id: raw.linked_chat_id,
+                location: raw.location,
             }),
         }
     }
@@ -315,6 +291,7 @@ impl From<Chat> for RawChat {
                 id: c.id,
                 username: c.username,
                 photo: c.photo,
+                bio: c.bio,
                 title: None,
                 description: None,
                 pinned_message: None,
@@ -323,6 +300,8 @@ impl From<Chat> for RawChat {
                 sticker_set_name: None,
                 can_set_sticker_set: None,
                 slow_mode_delay: None,
+                linked_chat_id: None,
+                location: None,
             },
             Chat::Group(c) => RawChat {
                 chat_type: ChatType::Group,
@@ -339,6 +318,9 @@ impl From<Chat> for RawChat {
                 slow_mode_delay: None,
                 first_name: None,
                 last_name: None,
+                bio: None,
+                linked_chat_id: None,
+                location: None,
             },
             Chat::SuperGroup(c) => RawChat {
                 chat_type: ChatType::SuperGroup,
@@ -353,6 +335,9 @@ impl From<Chat> for RawChat {
                 sticker_set_name: c.sticker_set_name,
                 can_set_sticker_set: c.can_set_sticker_set,
                 slow_mode_delay: c.slow_mode_delay,
+                linked_chat_id: c.linked_chat_id,
+                location: c.location,
+                bio: None,
                 first_name: None,
                 last_name: None,
             },
@@ -365,12 +350,15 @@ impl From<Chat> for RawChat {
                 description: c.description,
                 pinned_message: c.pinned_message.map(|m| Box::new((*m).into())),
                 invite_link: c.invite_link,
+                linked_chat_id: c.linked_chat_id,
                 permissions: None,
                 sticker_set_name: None,
                 can_set_sticker_set: None,
                 slow_mode_delay: None,
                 first_name: None,
                 last_name: None,
+                bio: None,
+                location: None,
             },
         }
     }
@@ -401,6 +389,10 @@ pub struct CreatorMemberStatus {
     pub user: User,
     /// Custom title for this user
     pub custom_title: Option<String>,
+    /// Owner and administrators only. True, if the user's presence in the chat
+    /// is hidden
+    #[serde(default)]
+    pub is_anonymous: bool,
 }
 
 /// Represents a [`ChatMember`] who is an Admin of the [`Chat`].
@@ -410,39 +402,26 @@ pub struct AdministratorMemberStatus {
     pub user: User,
     /// Custom title for this user
     pub custom_title: Option<String>,
+    /// Owner and administrators only. True, if the user's presence in the chat
+    /// is hidden
+    #[serde(default)]
+    pub is_anonymous: bool,
     /// True, if the bot is allowed to edit administrator privileges of that use
     #[serde(default)]
     pub can_be_edited: bool,
     /// True, if the administrator can post in the channel; channels only
     #[serde(default)]
-    pub can_post_messages: bool,
-    /// True, if the administrator can edit messages of other users and can pin
-    /// messages; channels only
+    pub can_send_media_messages: bool,
+    /// True, if the user is allowed to send polls
     #[serde(default)]
-    pub can_edit_messages: bool,
-    /// True, if the administrator can delete messages of other users
+    pub can_send_polls: bool,
+    /// True, if the user is allowed to send animations, games, stickers and use
+    /// inline bots
     #[serde(default)]
-    pub can_delete_messages: bool,
-    /// True, if the administrator can restrict, ban or unban chat members
+    pub can_send_other_messages: bool,
+    /// True, if the user is allowed to add web page previews to their messages
     #[serde(default)]
-    pub can_restrict_members: bool,
-    /// True, if the administrator can add new administrators with a subset of
-    /// his own privileges or demote administrators that he has promoted,
-    /// directly or indirectly (promoted by administrators that were
-    /// appointed by the user)
-    #[serde(default)]
-    pub can_promote_members: bool,
-    /// True, if the user is allowed to change the chat title, photo and other
-    /// settings
-    #[serde(default)]
-    pub can_change_info: bool,
-    /// True, if the user is allowed to invite new users to the chat
-    #[serde(default)]
-    pub can_invite_users: bool,
-    ///  True, if the user is allowed to pin messages; groups and supergroups
-    /// only
-    #[serde(default)]
-    pub can_pin_messages: bool,
+    pub can_add_web_page_previews: bool,
 }
 
 /// Represents a [`ChatMember`] who is a normal member of the [`Chat`] without

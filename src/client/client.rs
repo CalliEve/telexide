@@ -179,6 +179,8 @@ impl Client {
                     certificate: None,
                     max_connections: None,
                     allowed_updates: Some(self.allowed_updates.clone()),
+                    drop_pending_updates: None,
+                    ip_address: None, // TODO: add opts for these
                 })
                 .await?;
         }
