@@ -22,4 +22,4 @@ jobs:
         run: scripts/build_examples.sh
 
       - name: Test
-        run: cargo test --tests --verbose
+        run: cargo test --verbose

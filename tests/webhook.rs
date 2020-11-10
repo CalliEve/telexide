@@ -1,18 +1,18 @@
 use hyper;
 use std::sync::atomic::{AtomicUsize, Ordering};
 use telexide::{
-    client::{ClientBuilder, Context, Webhook, WebhookOptions},
+    client::{Webhook, WebhookOptions},
     model::{Update, UpdateContent},
     Result,
 };
 use tokio::sync::mpsc::Receiver;
 
-static atomic: AtomicUsize = AtomicUsize::new(0);
+static ATOMIC: AtomicUsize = AtomicUsize::new(0);
 
 async fn webhook_receiver_handler(mut receiver: Receiver<Result<Update>>) {
     while let Some(u_res) = receiver.recv().await {
         if let Ok(u) = u_res {
-            atomic.fetch_add(u.update_id as usize, Ordering::Acquire);
+            ATOMIC.fetch_add(u.update_id as usize, Ordering::Acquire);
         } else {
             panic!("returned error from receiver")
         }
@@ -40,6 +40,6 @@ async fn webhook_gets_called() -> Result<()> {
     client.request(req).await?;
 
     tokio::time::delay_for(tokio::time::Duration::from_millis(150)).await;
-    assert_eq!(atomic.load(Ordering::Relaxed), 10);
+    assert_eq!(ATOMIC.load(Ordering::Relaxed), 10);
     Ok(())
 }

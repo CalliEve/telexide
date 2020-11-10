@@ -16,11 +16,11 @@ use telexide::{
     Result,
 };
 
-static macro_b: AtomicUsize = AtomicUsize::new(0);
+static MACRO_B: AtomicUsize = AtomicUsize::new(0);
 
 #[prepare_listener]
 async fn testing_macro(_c: Context, u: Update) {
-    macro_b.fetch_add(u.update_id as usize, Ordering::Acquire);
+    MACRO_B.fetch_add(u.update_id as usize, Ordering::Acquire);
 }
 
 #[tokio::test]
@@ -36,22 +36,22 @@ async fn test_using_macro_to_prepare() -> Result<()> {
 
     tokio::time::delay_for(tokio::time::Duration::from_millis(50)).await;
 
-    assert_eq!(macro_b.load(Ordering::Relaxed), 10);
+    assert_eq!(MACRO_B.load(Ordering::Relaxed), 10);
     Ok(())
 }
 
-static command_b: AtomicUsize = AtomicUsize::new(0);
+static COMMAND_B: AtomicUsize = AtomicUsize::new(0);
 
 #[command(description = "testing")]
 async fn testing_command(_c: Context, m: Message) -> CommandResult {
     println!("{}", m.message_id);
-    command_b.fetch_add(m.message_id as usize, Ordering::Acquire);
+    COMMAND_B.fetch_add(m.message_id as usize, Ordering::Acquire);
     Ok(())
 }
 
 #[tokio::test]
 async fn test_using_command() -> Result<()> {
-    let mut c = ClientBuilder::new()
+    let c = ClientBuilder::new()
         .set_token("test")
         .set_framework(create_framework!("test_bot", testing_command))
         .build();
@@ -66,9 +66,11 @@ async fn test_using_command() -> Result<()> {
                 id: 40,
                 username: None,
                 first_name: None,
+                bio: None,
                 last_name: None,
                 photo: None,
             }),
+            sender_chat: None,
             forward_data: None,
             reply_to_message: None,
             via_bot: None,
@@ -83,7 +85,7 @@ async fn test_using_command() -> Result<()> {
 
     tokio::time::delay_for(tokio::time::Duration::from_millis(50)).await;
 
-    assert_eq!(command_b.load(Ordering::Relaxed), 0);
+    assert_eq!(COMMAND_B.load(Ordering::Relaxed), 0);
 
     c.fire_handlers(Update {
         update_id: 10,
@@ -95,9 +97,11 @@ async fn test_using_command() -> Result<()> {
                 id: 40,
                 username: None,
                 first_name: None,
+                bio: None,
                 last_name: None,
                 photo: None,
             }),
+            sender_chat: None,
             forward_data: None,
             reply_to_message: None,
             via_bot: None,
@@ -118,6 +122,6 @@ async fn test_using_command() -> Result<()> {
 
     tokio::time::delay_for(tokio::time::Duration::from_millis(50)).await;
 
-    assert_eq!(command_b.load(Ordering::Relaxed), 30);
+    assert_eq!(COMMAND_B.load(Ordering::Relaxed), 30);
     Ok(())
 }
