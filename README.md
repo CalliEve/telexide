@@ -85,7 +85,7 @@ Add the following to your `Cargo.toml` file:
 
 ```toml
 [dependencies]
-telexide = "0.1.3"
+telexide = "0.1.4"
 ```
 
 [examples]: https://github.com/Baev1/telexide/blob/master/examples
