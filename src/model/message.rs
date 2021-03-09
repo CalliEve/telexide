@@ -177,6 +177,10 @@ pub enum MessageContent {
         /// A chat photo was change to this value
         content: Vec<PhotoSize>,
     },
+    MessageAutoDeleteTimerChanged {
+        /// Service message: auto-delete timer settings changed in the chat
+        content: MessageAutoDeleteTimerChanged,
+    },
     MigrateToChatID {
         /// The group has been migrated to a supergroup with the specified
         /// identifier.
@@ -206,7 +210,21 @@ pub enum MessageContent {
         content: SuccessfulPayment,
     },
     ProximityAlertTriggered {
+        /// Service message. A user in the chat triggered another user's
+        /// proximity alert while sharing Live Location.
         content: ProximityAlertTriggered,
+    },
+    VoiceChatStarted {
+        /// Service message: voice chat started
+        content: VoiceChatStarted,
+    },
+    VoiceChatEnded {
+        /// Service message: voice chat ended
+        content: VoiceChatEnded,
+    },
+    VoiceChatParticipantsInvited {
+        /// Service message: new participants invited to a voice chat
+        content: VoiceChatParticipantsInvited,
     },
 
     /// Service message: the chat photo was deleted
@@ -397,11 +415,21 @@ impl From<RawMessage> for Message {
         content!(raw.left_chat_member, LeftChatMember);
         content!(raw.new_chat_title, NewChatTitle);
         content!(raw.new_chat_photo, NewChatPhoto);
+        content!(
+            raw.message_auto_delete_timer_changed,
+            MessageAutoDeleteTimerChanged
+        );
         content!(raw.migrate_to_chat_id, MigrateToChatID);
         content!(raw.migrate_from_chat_id, MigrateFromChatID);
         content!(raw.invoice, Invoice);
         content!(raw.successful_payment, SuccessfulPayment);
         content!(raw.proximity_alert_triggered, ProximityAlertTriggered);
+        content!(raw.voice_chat_started, VoiceChatStarted);
+        content!(raw.voice_chat_ended, VoiceChatEnded);
+        content!(
+            raw.voice_chat_participants_invited,
+            VoiceChatParticipantsInvited
+        );
 
         bool_content!(raw.delete_chat_photo, DeleteChatPhoto);
         bool_content!(raw.group_chat_created, GroupChatCreated);
@@ -460,12 +488,16 @@ impl From<Message> for RawMessage {
             group_chat_created: false,
             supergroup_chat_created: false,
             channel_chat_created: false,
+            message_auto_delete_timer_changed: None,
             migrate_to_chat_id: None,
             migrate_from_chat_id: None,
             pinned_message: None,
             invoice: None,
             successful_payment: None,
             proximity_alert_triggered: None,
+            voice_chat_started: None,
+            voice_chat_ended: None,
+            voice_chat_participants_invited: None,
 
             connected_website: message.connected_website,
             passport_data: message.passport_data,
@@ -626,6 +658,12 @@ impl From<Message> for RawMessage {
                 ret.new_chat_photo = Some(content);
                 ret
             },
+            MessageContent::MessageAutoDeleteTimerChanged {
+                content,
+            } => {
+                ret.message_auto_delete_timer_changed = Some(content);
+                ret
+            },
             MessageContent::MigrateToChatID {
                 content,
             } => {
@@ -662,6 +700,24 @@ impl From<Message> for RawMessage {
                 ret.proximity_alert_triggered = Some(content);
                 ret
             },
+            MessageContent::VoiceChatStarted {
+                content,
+            } => {
+                ret.voice_chat_started = Some(content);
+                ret
+            },
+            MessageContent::VoiceChatEnded {
+                content,
+            } => {
+                ret.voice_chat_ended = Some(content);
+                ret
+            },
+            MessageContent::VoiceChatParticipantsInvited {
+                content,
+            } => {
+                ret.voice_chat_participants_invited = Some(content);
+                ret
+            },
             MessageContent::DeleteChatPhoto => {
                 ret.delete_chat_photo = true;
                 ret
@@ -678,7 +734,7 @@ impl From<Message> for RawMessage {
                 ret.channel_chat_created = true;
                 ret
             },
-            _ => ret,
+            MessageContent::Unknown => ret,
         }
     }
 }

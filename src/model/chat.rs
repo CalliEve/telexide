@@ -406,9 +406,16 @@ pub struct AdministratorMemberStatus {
     /// is hidden
     #[serde(default)]
     pub is_anonymous: bool,
-    /// True, if the bot is allowed to edit administrator privileges of that use
+    /// True, if the bot is allowed to edit administrator privileges of that
+    /// user
     #[serde(default)]
     pub can_be_edited: bool,
+    /// True, if the administrator can access the chat event log, chat
+    /// statistics, message statistics in channels, see channel members, see
+    /// anonymous administrators in supergroups and ignore slow mode.
+    /// Implied by any other administrator privilege
+    #[serde(default)]
+    pub can_manage_chat: bool,
     /// True, if the administrator can post in the channel; channels only
     #[serde(default)]
     pub can_send_media_messages: bool,
@@ -422,6 +429,9 @@ pub struct AdministratorMemberStatus {
     /// True, if the user is allowed to add web page previews to their messages
     #[serde(default)]
     pub can_add_web_page_previews: bool,
+    /// True, if the administrator can manage voice chats
+    #[serde(default)]
+    pub can_manage_voice_chats: bool,
 }
 
 /// Represents a [`ChatMember`] who is a normal member of the [`Chat`] without
@@ -503,4 +513,44 @@ impl ChatMember {
             ChatMember::Restricted(m) => &m.user,
         }
     }
+}
+
+/// Represents an invite link for a chat.
+#[derive(Serialize, Deserialize, Debug, Clone, PartialEq)]
+pub struct ChatInviteLink {
+    /// The invite link. If the link was created by another chat administrator,
+    /// then the second part of the link will be replaced with “…”.
+    pub invite_link: String,
+    /// Creator of the link
+    pub creator: User,
+    /// If the link is primary
+    pub is_primary: bool,
+    /// If the link is revoked
+    pub is_revoked: bool,
+    /// When the link will expire or has been expired
+    #[serde(with = "unix_date_formatting::optional")]
+    pub expire_date: Option<DateTime<Utc>>,
+    /// Maximum number of users that can be members of the chat simultaneously
+    /// after joining the chat via this invite link; 1-99999
+    #[serde(default)]
+    pub member_limit: Option<i32>,
+}
+
+/// Represents changes in the status of a chat member.
+#[derive(Serialize, Deserialize, Debug, Clone, PartialEq)]
+pub struct ChatMemberUpdated {
+    /// Chat the user belongs to
+    pub chat: Chat,
+    /// Performer of the action, which resulted in the change
+    pub from: User,
+    /// Date the change was done
+    #[serde(with = "unix_date_formatting")]
+    pub date: DateTime<Utc>,
+    /// Previous information about the chat member
+    pub old_chat_member: ChatMember,
+    /// New information about the chat member
+    pub new_chat_member: ChatMember,
+    /// Chat invite link, which was used by the user to join the chat; for
+    /// joining by invite link events only.
+    pub invite_link: Option<ChatInviteLink>,
 }

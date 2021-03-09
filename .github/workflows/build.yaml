@@ -11,8 +11,8 @@ jobs:
 
       - name: Prepare
         run: |
-          rustup toolchain install 1.41.0 --force
-          rustup override set 1.41.0
+          rustup toolchain install 1.45.0 --force
+          rustup override set 1.45.0
           sudo chmod +x scripts/build_examples.sh
 
       - name: Build

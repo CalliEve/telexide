@@ -269,8 +269,8 @@ pub struct Poll {
 pub struct Dice {
     /// Emoji on which the dice throw animation is based
     pub emoji: String,
-    /// Value of the dice, 1-6 for “🎲” and “🎯” base emoji, 1-5 for “🏀” base
-    /// emoji
+    /// Value of the dice, 1-6 for “🎲”, “🎯” and “🎳” base emoji, 1-5 for “🏀”
+    /// and “⚽” base emoji, 1-64 for “🎰” base emoji
     pub value: u8,
 }
 
@@ -352,4 +352,34 @@ pub struct ProximityAlertTriggered {
     pub watcher: User,
     /// The distance between the users
     pub distance: i64,
+}
+
+/// This object represents a service message about a voice chat started in the
+/// chat. Currently holds no information.
+#[derive(Serialize, Deserialize, Debug, Clone, PartialEq)]
+pub struct VoiceChatStarted {}
+
+/// This object represents a service message about a voice chat ended in the
+/// chat.
+#[derive(Serialize, Deserialize, Debug, Clone, PartialEq)]
+pub struct VoiceChatEnded {
+    /// Voice chat duration; in seconds
+    pub duration: i64,
+}
+
+/// This object represents a service message about new members invited to a
+/// voice chat.
+#[derive(Serialize, Deserialize, Debug, Clone, PartialEq)]
+pub struct VoiceChatParticipantsInvited {
+    /// New members that were invited to the voice chat.
+    #[serde(default)]
+    pub users: Option<Vec<User>>,
+}
+
+/// This object represents a service message about a change in auto-delete timer
+/// settings.
+#[derive(Serialize, Deserialize, Debug, Clone, PartialEq)]
+pub struct MessageAutoDeleteTimerChanged {
+    /// New auto-delete time for messages in the chat
+    pub message_auto_delete_time: i64,
 }

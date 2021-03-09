@@ -1,27 +1,30 @@
-use super::utils::unix_date_formatting;
 use chrono::{DateTime, Utc};
 use serde::{Deserialize, Serialize};
 
 use super::{
     message_contents::*,
     message_entity::*,
+    utils::unix_date_formatting,
+    CallbackQuery,
     ChatLocation,
+    ChatMemberUpdated,
     ChatPhoto,
+    ChosenInlineResult,
     Game,
     InlineKeyboardMarkup,
+    InlineQuery,
     Invoice,
     PassportData,
+    PreCheckoutQuery,
+    ShippingQuery,
     Sticker,
     SuccessfulPayment,
     User,
-    InlineQuery,
-    CallbackQuery,
-    ShippingQuery,
-    PreCheckoutQuery,
-    ChosenInlineResult
 };
 
 /// The raw message, for most usages the [`Message`] object is easier to use
+///
+/// [`Message`]: super::Message
 #[derive(Serialize, Deserialize, Debug, Clone, PartialEq)]
 pub struct RawMessage {
     pub message_id: i64,
@@ -82,6 +85,8 @@ pub struct RawMessage {
     #[serde(default)]
     pub channel_chat_created: bool,
 
+    pub message_auto_delete_timer_changed: Option<MessageAutoDeleteTimerChanged>,
+
     pub migrate_to_chat_id: Option<i64>,
     pub migrate_from_chat_id: Option<i64>,
 
@@ -93,9 +98,15 @@ pub struct RawMessage {
     pub passport_data: Option<PassportData>,
     pub proximity_alert_triggered: Option<ProximityAlertTriggered>,
     pub reply_markup: Option<InlineKeyboardMarkup>,
+
+    pub voice_chat_started: Option<VoiceChatStarted>,
+    pub voice_chat_ended: Option<VoiceChatEnded>,
+    pub voice_chat_participants_invited: Option<VoiceChatParticipantsInvited>,
 }
 
 /// The raw chat, for most usages the [`Chat`] object is easier to use
+///
+/// [`Chat`]: super::Chat
 #[derive(Serialize, Deserialize, Debug, Clone, PartialEq)]
 pub struct RawChat {
     /// Unique identifier for this chat
@@ -179,19 +190,47 @@ pub enum ChatType {
 }
 
 /// The raw update, for most usages the [`Update`] object is easier to use
+///
+/// [`Update`]: super::Update
 #[derive(Serialize, Deserialize, Debug, Clone, PartialEq)]
 pub struct RawUpdate {
+    /// The update's unique identifier. Update identifiers start from a certain
+    /// positive number and increase sequentially. If there are no new
+    /// updates for at least a week, then identifier of the next update will
+    /// be chosen randomly instead of sequentially.
     pub update_id: i64,
+    /// New incoming message of any kind — text, photo, sticker, etc.
     pub message: Option<RawMessage>,
+    /// New version of a message that is known to the bot and was edited.
     pub edited_message: Option<RawMessage>,
+    /// New incoming channel post of any kind — text, photo, sticker, etc.
     pub channel_post: Option<RawMessage>,
+    /// New version of a channel post that is known to the bot and was edited.
     pub edited_channel_post: Option<RawMessage>,
+    /// New incoming inline query.
     pub inline_query: Option<InlineQuery>,
+    /// The result of an inline query that was chosen by a user and sent to
+    /// their chat partner.
     pub chosen_inline_result: Option<ChosenInlineResult>,
+    /// New incoming callback query.
     pub callback_query: Option<CallbackQuery>,
+    /// New incoming shipping query. Only for invoices with flexible price.
     pub shipping_query: Option<ShippingQuery>,
+    /// New incoming pre-checkout query. Contains full information about
+    /// checkout.
     pub pre_checkout_query: Option<PreCheckoutQuery>,
+    /// New poll state. Bots receive only updates about stopped polls and polls,
+    /// which are sent by the bot.
     pub poll: Option<Poll>,
+    /// A user changed their answer in a non-anonymous poll. Bots receive new
+    /// votes only in polls that were sent by the bot itself.
     pub poll_answer: Option<PollAnswer>,
+    /// The bot's chat member status was updated in a chat. For private chats,
+    /// this update is received only when the bot is blocked or unblocked by
+    /// the user.
+    pub my_chat_member: Option<ChatMemberUpdated>,
+    /// A chat member's status was updated in a chat. The bot must be an
+    /// administrator in the chat and must explicitly specify “chat_member”
+    /// in the list of allowed_updates to receive these updates.
+    pub chat_member: Option<ChatMemberUpdated>,
 }
-

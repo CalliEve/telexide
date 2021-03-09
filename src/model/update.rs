@@ -1,6 +1,7 @@
 use super::{
     raw::RawUpdate,
     CallbackQuery,
+    ChatMemberUpdated,
     ChosenInlineResult,
     InlineQuery,
     Message,
@@ -60,6 +61,14 @@ pub enum UpdateContent {
     /// An user changed their answer in a non-anonymous poll.
     /// Bots receive new votes only in polls that were sent by the bot itself.
     PollAnswer(PollAnswer),
+    /// The bot's chat member status was updated in a chat. For private chats,
+    /// this update is received only when the bot is blocked or unblocked by
+    /// the user.
+    MyChatMember(ChatMemberUpdated),
+    /// A chat member's status was updated in a chat. The bot must be an
+    /// administrator in the chat and must explicitly specify “chat_member”
+    /// in the list of allowed_updates to receive these updates.
+    ChatMember(ChatMemberUpdated),
     /// An unknown update content
     Unknown,
 }
@@ -91,6 +100,8 @@ impl From<RawUpdate> for Update {
         set_content!(raw.pre_checkout_query, PreCheckoutQuery);
         set_content!(raw.poll, Poll);
         set_content!(raw.poll_answer, PollAnswer);
+        set_content!(raw.my_chat_member, MyChatMember);
+        set_content!(raw.chat_member, ChatMember);
 
         make_update(UpdateContent::Unknown)
     }
@@ -111,6 +122,8 @@ impl From<Update> for RawUpdate {
             pre_checkout_query: None,
             poll: None,
             poll_answer: None,
+            my_chat_member: None,
+            chat_member: None,
         };
 
         match update.content {
@@ -158,7 +171,15 @@ impl From<Update> for RawUpdate {
                 ret.poll_answer = Some(c);
                 ret
             },
-            _ => ret,
+            UpdateContent::MyChatMember(c) => {
+                ret.my_chat_member = Some(c);
+                ret
+            },
+            UpdateContent::ChatMember(c) => {
+                ret.chat_member = Some(c);
+                ret
+            },
+            UpdateContent::Unknown => ret,
         }
     }
 }

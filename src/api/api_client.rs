@@ -18,7 +18,7 @@ static TELEGRAM_API: &str = "https://api.telegram.org/bot";
 /// also allows you to configure your own [`hyper::Client`] for it to use.
 ///
 /// Using the default `APIClient` is as easy as:
-/// ```rust,no_run
+/// ```no_run
 /// use telexide::api::{APIClient, API, types::SendMessage};
 ///
 /// # #[tokio::main]
@@ -48,16 +48,16 @@ impl APIClient {
         hyper_client: Option<Client<hyper_tls::HttpsConnector<HttpConnector>>>,
         token: T,
     ) -> Self {
-        let client = if let Some(c) = hyper_client {
-            c
-        } else {
-            hyper::Client::builder().build(hyper_tls::HttpsConnector::new())
-        };
-
-        Self {
-            hyper_client: client,
-            token: token.to_string(),
-        }
+        hyper_client.map_or_else(
+            || Self {
+                hyper_client: hyper::Client::builder().build(hyper_tls::HttpsConnector::new()),
+                token: token.to_string(),
+            },
+            |c| Self {
+                hyper_client: c,
+                token: token.to_string(),
+            },
+        )
     }
 
     /// Creates a new `APIClient` with the provided token and the default hyper

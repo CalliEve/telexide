@@ -77,7 +77,7 @@ pub struct CreateNewStickerSet {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub png_sticker: Option<InputFile>,
     /// TGS animation with the sticker, uploaded using multipart/form-data.
-    /// See https://core.telegram.org/animated_stickers#technical-requirements for technical requirements
+    /// See <https://core.telegram.org/animated_stickers#technical-requirements> for technical requirements
     #[serde(skip_serializing_if = "Option::is_none")]
     pub tgs_sticker: Option<InputFile>,
     /// One or more emoji corresponding to the sticker
@@ -108,7 +108,7 @@ pub struct AddStickerToSet {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub png_sticker: Option<InputFile>,
     /// TGS animation with the sticker, uploaded using multipart/form-data.
-    /// See https://core.telegram.org/animated_stickers#technical-requirements for technical requirements
+    /// See <https://core.telegram.org/animated_stickers#technical-requirements> for technical requirements
     #[serde(skip_serializing_if = "Option::is_none")]
     pub tgs_sticker: Option<InputFile>,
     /// One or more emoji corresponding to the sticker
@@ -155,7 +155,7 @@ pub struct SetStickerSetThumb {
     pub user_id: i64,
     /// A PNG image with the thumbnail, must be up to 128 kilobytes in size and
     /// have width and height exactly 100px, or a TGS animation with the
-    /// thumbnail up to 32 kilobytes in size; see https://core.telegram.org/animated_stickers#technical-requirements for animated sticker technical requirements.
+    /// thumbnail up to 32 kilobytes in size; see <https://core.telegram.org/animated_stickers#technical-requirements> for animated sticker technical requirements.
     /// Pass a file_id as a String to send a file that already exists on the
     /// Telegram servers, pass an HTTP URL as a String for Telegram to get a
     /// file from the Internet, or upload a new one. Animated sticker set

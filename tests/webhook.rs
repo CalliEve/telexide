@@ -28,7 +28,7 @@ async fn webhook_gets_called() -> Result<()> {
 
     let update_receiver = Webhook::new(&webhook_opts).start();
     tokio::spawn(webhook_receiver_handler(update_receiver));
-    tokio::time::delay_for(tokio::time::Duration::from_millis(150)).await;
+    tokio::time::sleep(tokio::time::Duration::from_millis(150)).await;
 
     let req = hyper::Request::post("http://localhost:8006/testing/webhook")
         .header("content-type", "application/json")
@@ -39,7 +39,7 @@ async fn webhook_gets_called() -> Result<()> {
         })?))?;
     client.request(req).await?;
 
-    tokio::time::delay_for(tokio::time::Duration::from_millis(150)).await;
+    tokio::time::sleep(tokio::time::Duration::from_millis(150)).await;
     assert_eq!(ATOMIC.load(Ordering::Relaxed), 10);
     Ok(())
 }
