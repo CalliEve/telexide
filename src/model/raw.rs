@@ -23,6 +23,8 @@ use super::{
 };
 
 /// The raw message, for most usages the [`Message`] object is easier to use
+///
+/// [`Message`]: super::Message
 #[derive(Serialize, Deserialize, Debug, Clone, PartialEq)]
 pub struct RawMessage {
     pub message_id: i64,
@@ -103,6 +105,8 @@ pub struct RawMessage {
 }
 
 /// The raw chat, for most usages the [`Chat`] object is easier to use
+///
+/// [`Chat`]: super::Chat
 #[derive(Serialize, Deserialize, Debug, Clone, PartialEq)]
 pub struct RawChat {
     /// Unique identifier for this chat
@@ -186,6 +190,8 @@ pub enum ChatType {
 }
 
 /// The raw update, for most usages the [`Update`] object is easier to use
+///
+/// [`Update`]: super::Update
 #[derive(Serialize, Deserialize, Debug, Clone, PartialEq)]
 pub struct RawUpdate {
     /// The update's unique identifier. Update identifiers start from a certain

@@ -30,7 +30,7 @@ use std::pin::Pin;
 pub use builder::ClientBuilder;
 pub use client::Client;
 pub use context::Context;
-pub(crate) use event_handlers::{EventHandlerFunc, RawEventHandlerFunc};
+pub use event_handlers::{EventHandlerFunc, RawEventHandlerFunc};
 pub use stream::UpdatesStream;
 pub use webhook_handling::{Webhook, WebhookOptions};
 
