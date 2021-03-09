@@ -46,23 +46,23 @@ impl APIClient {
     /// it is Some).
     pub fn new<T: ToString>(
         hyper_client: Option<Client<hyper_tls::HttpsConnector<HttpConnector>>>,
-        token: T,
+        token: &T,
     ) -> Self {
-        let client = if let Some(c) = hyper_client {
-            c
-        } else {
-            hyper::Client::builder().build(hyper_tls::HttpsConnector::new())
-        };
-
-        Self {
-            hyper_client: client,
-            token: token.to_string(),
-        }
+        hyper_client.map_or_else(
+            || Self {
+                hyper_client: hyper::Client::builder().build(hyper_tls::HttpsConnector::new()),
+                token: token.to_string(),
+            },
+            |c| Self {
+                hyper_client: c,
+                token: token.to_string(),
+            },
+        )
     }
 
     /// Creates a new `APIClient` with the provided token and the default hyper
     /// client.
-    pub fn new_default<T: ToString>(token: T) -> Self {
+    pub fn new_default<T: ToString>(token: &T) -> Self {
         Self {
             hyper_client: hyper::Client::builder().build(hyper_tls::HttpsConnector::new()),
             token: token.to_string(),

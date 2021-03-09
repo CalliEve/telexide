@@ -638,6 +638,47 @@ pub trait API: Sync {
         .into()
     }
 
+    /// Use this method to create an additional invite link for a chat. The bot
+    /// must be an administrator in the chat for this to work and must have
+    /// the appropriate admin rights. The link can be revoked using the
+    /// method [`API::revoke_chat_invite_link`]. Returns the new invite link as
+    /// [`ChatInviteLink`] object.
+    async fn create_chat_invite_link(&self, data: CreateChatInviteLink) -> Result<ChatInviteLink> {
+        self.post(
+            APIEndpoint::CreateChatInviteLink,
+            Some(serde_json::to_value(data)?),
+        )
+        .await?
+        .into()
+    }
+
+    /// Use this method to edit a non-primary invite link created by the bot.
+    /// The bot must be an administrator in the chat for this to work and
+    /// must have the appropriate admin rights. Returns the edited invite
+    /// link as a [`ChatInviteLink`] object.
+    async fn edit_chat_invite_link(&self, data: EditChatInviteLink) -> Result<ChatInviteLink> {
+        self.post(
+            APIEndpoint::EditChatInviteLink,
+            Some(serde_json::to_value(data)?),
+        )
+        .await?
+        .into()
+    }
+
+    /// Use this method to revoke an invite link created by the bot. If the
+    /// primary link is revoked, a new link is automatically generated. The
+    /// bot must be an administrator in the chat for this to work and must
+    /// have the appropriate admin rights. Returns the revoked invite link
+    /// as [`ChatInviteLink`] object.
+    async fn revoke_chat_invite_link(&self, data: RevokeChatInviteLink) -> Result<ChatInviteLink> {
+        self.post(
+            APIEndpoint::RevokeChatInviteLink,
+            Some(serde_json::to_value(data)?),
+        )
+        .await?
+        .into()
+    }
+
     /// Use this method to set a new profile photo for the chat. Photos can't be
     /// changed for private chats. The bot must be an administrator in the
     /// chat for this to work and must have the appropriate admin rights.

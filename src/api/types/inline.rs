@@ -1,4 +1,4 @@
-use crate::model::{InlineKeyboardMarkup, ParseMode, MessageEntity};
+use crate::model::{InlineKeyboardMarkup, MessageEntity, ParseMode};
 use serde::{Deserialize, Serialize};
 
 /// struct for holding data needed to call

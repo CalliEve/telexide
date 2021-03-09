@@ -106,36 +106,35 @@ impl ClientBuilder {
 
     /// Creates the [`Client`] object from the settings set in the
     /// [`ClientBuilder`] object
-    pub fn build(&mut self) -> Client {
+    pub fn build(mut self) -> Client {
         if self.framework.is_some() && !self.allowed_updates.contains(&UpdateType::Message) {
             self.allowed_updates.push(UpdateType::Message)
         }
 
-        if let Some(c) = self.api_client.clone() {
-            Client {
-                api_client: c,
-                event_handlers: self.event_handler_funcs.clone(),
-                raw_event_handlers: self.raw_event_handler_funcs.clone(),
-                data: Arc::new(RwLock::new(ShareMap::custom())),
-                framework: self.framework.clone(),
-                webhook_opts: self.webhook.clone(),
-                allowed_updates: self.allowed_updates.clone(),
-            }
-        } else {
-            Client {
+        self.api_client.clone().map_or_else(
+            || Client {
                 api_client: Arc::new(Box::new(APIClient::new(
                     self.hyper_client.clone(),
                     self.token
-                        .clone()
+                        .as_ref()
                         .expect("A token must be provided for the telegram bot to work"),
                 ))),
+                event_handlers: self.event_handler_funcs.clone(),
+                raw_event_handlers: self.raw_event_handler_funcs.clone(),
+                data: Arc::new(RwLock::new(ShareMap::custom())),
+                framework: self.framework.clone(),
+                webhook_opts: self.webhook.clone(),
+                allowed_updates: self.allowed_updates.clone(),
+            },
+            |c| Client {
+                api_client: c,
                 event_handlers: self.event_handler_funcs.clone(),
                 webhook_opts: self.webhook.clone(),
                 raw_event_handlers: self.raw_event_handler_funcs.clone(),
                 data: Arc::new(RwLock::new(ShareMap::custom())),
                 framework: self.framework.clone(),
                 allowed_updates: self.allowed_updates.clone(),
-            }
-        }
+            },
+        )
     }
 }

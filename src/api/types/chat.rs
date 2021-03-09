@@ -19,6 +19,12 @@ pub struct KickChatMember {
     /// the current time they are considered to be banned forever
     #[serde(skip_serializing_if = "Option::is_none")]
     pub until_date: Option<i64>,
+    /// Pass True to delete all messages from the chat for the user that is
+    /// being removed. If False, the user will be able to see messages in
+    /// the group that were sent before the user was removed. Always True
+    /// for supergroups and channels.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub revoke_messages: Option<bool>,
 }
 
 /// struct for holding data needed to call
@@ -69,37 +75,46 @@ pub struct PromoteChatMember {
     pub chat_id: i64,
     /// Unique identifier of the target user
     pub user_id: i64,
-    /// Pass True, if the administrator's presence in the chat is hidden
+    /// If the administrator's presence in the chat is hidden
     #[serde(skip_serializing_if = "Option::is_none")]
     pub is_anonymous: Option<bool>,
-    /// if the administrator can create channel posts, channels only
+    /// If the administrator can create channel posts, channels only
     #[serde(skip_serializing_if = "Option::is_none")]
     pub can_post_messages: Option<bool>,
-    /// if the administrator can edit messages of other users and can pin
+    /// If the administrator can edit messages of other users and can pin
     /// messages, channels only
     #[serde(skip_serializing_if = "Option::is_none")]
     pub can_edit_messages: Option<bool>,
-    /// if the administrator can delete messages of other users
+    /// If the administrator can delete messages of other users
     #[serde(skip_serializing_if = "Option::is_none")]
     pub can_delete_messages: Option<bool>,
-    /// if the administrator can restrict, ban or unban chat members
+    /// If the administrator can restrict, ban or unban chat members
     #[serde(skip_serializing_if = "Option::is_none")]
     pub can_restrict_members: Option<bool>,
-    /// if the administrator can add new administrators with a subset of his own
+    /// If the administrator can add new administrators with a subset of his own
     /// privileges or demote administrators that he has promoted, directly
     /// or indirectly (promoted by administrators that were appointed by
     /// him)
     #[serde(skip_serializing_if = "Option::is_none")]
     pub can_promote_members: Option<bool>,
-    /// if the administrator can change chat title, photo and other settings
+    /// If the administrator can change chat title, photo and other settings
     #[serde(skip_serializing_if = "Option::is_none")]
     pub can_change_info: Option<bool>,
-    /// if the administrator can invite new users to the chat
+    /// If the administrator can invite new users to the chat
     #[serde(skip_serializing_if = "Option::is_none")]
     pub can_invite_users: Option<bool>,
-    /// if the administrator can pin messages, supergroups only
+    /// If the administrator can pin messages, supergroups only
     #[serde(skip_serializing_if = "Option::is_none")]
     pub can_pin_messages: Option<bool>,
+    /// If the administrator can manage voice chats, supergroups only
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub can_manage_voice_chats: Option<bool>,
+    /// If the administrator can access the chat event log, chat statistics,
+    /// message statistics in channels, see channel members, see anonymous
+    /// administrators in supergroups and ignore slow mode. Implied by any
+    /// other administrator privilege.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub can_manage_chat: Option<bool>,
 }
 
 impl PromoteChatMember {
@@ -110,6 +125,7 @@ impl PromoteChatMember {
             chat_id,
             user_id,
             is_anonymous: None,
+            can_manage_chat: None,
             can_post_messages: None,
             can_edit_messages: None,
             can_delete_messages: None,
@@ -118,6 +134,7 @@ impl PromoteChatMember {
             can_change_info: None,
             can_invite_users: None,
             can_pin_messages: None,
+            can_manage_voice_chats: None,
         }
     }
 }
@@ -332,6 +349,50 @@ pub struct SetChatStickerSet {
 pub struct DeleteChatStickerSet {
     /// Unique identifier for the target chat
     pub chat_id: i64,
+}
+
+/// struct for holding data needed to call [`create_chat_invite_link`]
+///
+/// [`create_chat_invite_link`]:
+/// ../../api/trait.API.html#method.create_chat_invite_link
+#[derive(Serialize, Deserialize, Debug, Clone, PartialEq)]
+pub struct CreateChatInviteLink {
+    /// Unique identifier for the target chat
+    pub chat_id: i64,
+    /// Point in time (Unix timestamp) when the link will expire
+    pub expire_date: Option<i64>,
+    /// Maximum number of users that can be members of the chat simultaneously
+    /// after joining the chat via this invite link; 1-99999
+    pub member_limit: Option<i32>,
+}
+
+/// struct for holding data needed to call [`edit_chat_invite_link`]
+///
+/// [`edit_chat_invite_link`]:
+/// ../../api/trait.API.html#method.edit_chat_invite_link
+#[derive(Serialize, Deserialize, Debug, Clone, PartialEq)]
+pub struct EditChatInviteLink {
+    /// Unique identifier for the target chat
+    pub chat_id: i64,
+    /// The invite link to edit
+    pub invite_link: String,
+    /// Point in time (Unix timestamp) when the link will expire
+    pub expire_date: Option<i64>,
+    /// Maximum number of users that can be members of the chat simultaneously
+    /// after joining the chat via this invite link; 1-99999
+    pub member_limit: Option<i32>,
+}
+
+/// struct for holding data needed to call [`revoke_chat_invite_link`]
+///
+/// [`revoke_chat_invite_link`]:
+/// ../../api/trait.API.html#method.revoke_chat_invite_link
+#[derive(Serialize, Deserialize, Debug, Clone, PartialEq)]
+pub struct RevokeChatInviteLink {
+    /// Unique identifier for the target chat
+    pub chat_id: i64,
+    /// The invite link to revoke
+    pub invite_link: String,
 }
 
 macro_rules! impl_from_chat {

@@ -1041,8 +1041,9 @@ pub struct SendDice {
     /// Unique identifier for the target chat
     pub chat_id: i64,
     /// Emoji on which the dice throw animation is based.
-    /// Currently, must be one of “🎲”, “🎯”, or “🏀”.
-    /// Dice can have values 1-6 for “🎲” and “🎯”, and values 1-5 for “🏀”.
+    /// Currently, must be one of “🎲”, “🎯”, “🏀”, “⚽”, “🎳”, or “🎰”.
+    /// Dice can have values 1-6 for “🎲”, “🎯” and “🎳”, values 1-5 for “🏀”
+    /// and “⚽”, and values 1-64 for “🎰”.
     /// Defauts to “🎲”
     pub emoji: Option<String>,
     /// Sends the message silently. Users will receive a notification with no

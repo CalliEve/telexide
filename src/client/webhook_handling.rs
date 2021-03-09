@@ -47,7 +47,7 @@ impl Webhook {
 }
 
 async fn handle_update(
-    mut payload: HandlingPayload,
+    payload: HandlingPayload,
     req: Request<Body>,
 ) -> TelegramResult<Response<Body>> {
     let mut response = Response::new(Body::empty());
@@ -76,12 +76,12 @@ async fn handle_req(
 
     match (req.method(), req.uri().path()) {
         (&Method::POST, path) if path == payload.path => {
-            let res = handle_update(payload, req).await;
+            let result = handle_update(payload, req).await;
 
-            if res.is_err() {
+            if result.is_err() {
                 *response.status_mut() = StatusCode::INTERNAL_SERVER_ERROR;
             } else {
-                response = res.unwrap()
+                response = result.unwrap()
             }
         },
         _ => {
@@ -94,7 +94,7 @@ async fn handle_req(
 
 async fn start_ws(
     opts: WebhookOptions,
-    mut chan: Sender<TelegramResult<Update>>,
+    chan: Sender<TelegramResult<Update>>,
 ) -> TelegramResult<()> {
     let addr = SocketAddr::from((opts.ip, opts.port));
 
@@ -176,11 +176,9 @@ impl WebhookOptions {
     }
 
     fn get_path(&self) -> &str {
-        if let Some(url) = &self.url {
-            url.path()
-        } else {
-            self.path.as_str()
-        }
+        self.url
+            .as_ref()
+            .map_or_else(|| self.path.as_str(), |url| url.path())
     }
 }
 

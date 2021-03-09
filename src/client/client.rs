@@ -92,7 +92,7 @@ pub struct Client {
 
 impl Client {
     /// Creates a Client object with default values and no framework
-    pub fn new<T: ToString>(token: T) -> Self {
+    pub fn new<T: ToString>(token: &T) -> Self {
         Self {
             api_client: Arc::new(Box::new(APIClient::new(None, token))),
             event_handlers: Vec::new(),
@@ -105,7 +105,7 @@ impl Client {
     }
 
     /// Creates a Client object with default values, but with a [`Framework`]
-    pub fn with_framework<T: ToString>(fr: Arc<Framework>, token: T) -> Self {
+    pub fn with_framework<T: ToString>(fr: Arc<Framework>, token: &T) -> Self {
         Self {
             api_client: Arc::new(Box::new(APIClient::new(None, token))),
             event_handlers: Vec::new(),
