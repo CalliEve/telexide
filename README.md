@@ -88,6 +88,10 @@ Add the following to your `Cargo.toml` file:
 telexide = "0.1.4"
 ```
 
+## Supported Rust Versions
+
+The minimum supported version is 1.45. The current Telexide version is not guaranteed to build on Rust versions earlier than the minimum supported version.
+
 [examples]: https://github.com/Baev1/telexide/blob/master/examples
 [client]: https://docs.rs/telexide/*/telexide/client/index.html
 [`clientbuilder`]: https://docs.rs/telexide/*/telexide/client/struct.ClientBuilder.html
