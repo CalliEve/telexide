@@ -21,7 +21,7 @@ async fn update_handler_gets_called() -> Result<()> {
         content: UpdateContent::Unknown,
     });
 
-    tokio::time::delay_for(tokio::time::Duration::from_millis(50)).await;
+    tokio::time::sleep(tokio::time::Duration::from_millis(50)).await;
 
     assert_eq!(B.load(Ordering::Relaxed), 10);
     Ok(())
@@ -49,7 +49,7 @@ async fn test_using_func() -> Result<()> {
         content: UpdateContent::Unknown,
     });
 
-    tokio::time::delay_for(tokio::time::Duration::from_millis(50)).await;
+    tokio::time::sleep(tokio::time::Duration::from_millis(50)).await;
 
     assert_eq!(FUNC_B.load(Ordering::Relaxed), 10);
     Ok(())

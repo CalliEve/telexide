@@ -34,7 +34,7 @@ async fn test_using_macro_to_prepare() -> Result<()> {
         content: UpdateContent::Unknown,
     });
 
-    tokio::time::delay_for(tokio::time::Duration::from_millis(50)).await;
+    tokio::time::sleep(tokio::time::Duration::from_millis(50)).await;
 
     assert_eq!(MACRO_B.load(Ordering::Relaxed), 10);
     Ok(())
@@ -83,7 +83,7 @@ async fn test_using_command() -> Result<()> {
         }),
     });
 
-    tokio::time::delay_for(tokio::time::Duration::from_millis(50)).await;
+    tokio::time::sleep(tokio::time::Duration::from_millis(50)).await;
 
     assert_eq!(COMMAND_B.load(Ordering::Relaxed), 0);
 
@@ -120,7 +120,7 @@ async fn test_using_command() -> Result<()> {
         }),
     });
 
-    tokio::time::delay_for(tokio::time::Duration::from_millis(50)).await;
+    tokio::time::sleep(tokio::time::Duration::from_millis(50)).await;
 
     assert_eq!(COMMAND_B.load(Ordering::Relaxed), 30);
     Ok(())

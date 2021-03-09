@@ -6,6 +6,6 @@ edition = "2018"
 
 [dependencies]
 telexide = { path = "../../" }
-tokio = { version = "^0.2" }
-typemap = "^0.3"
-parking_lot = "^0.10"
+tokio = { version = "1", features = ["full"] }
+typemap = "0.3"
+parking_lot = "0.11"

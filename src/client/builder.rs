@@ -106,7 +106,7 @@ impl ClientBuilder {
 
     /// Creates the [`Client`] object from the settings set in the
     /// [`ClientBuilder`] object
-    pub fn build(mut self) -> Client {
+    pub fn build(&mut self) -> Client {
         if self.framework.is_some() && !self.allowed_updates.contains(&UpdateType::Message) {
             self.allowed_updates.push(UpdateType::Message)
         }
