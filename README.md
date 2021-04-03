@@ -1,6 +1,6 @@
 [![Crate](https://img.shields.io/crates/v/telexide?style=flat-square)](https://crates.io/crates/telexide)
 [![Docs](https://docs.rs/telexide/badge.svg)](https://docs.rs/telexide)
-[![Build Status](https://img.shields.io/endpoint.svg?url=https%3A%2F%2Factions-badge.atrox.dev%2Fbaev1%2Ftelexide%2Fbadge&style=flat-square)](https://actions-badge.atrox.dev/baev1/telexide/goto)
+[![Build Status](https://img.shields.io/endpoint.svg?url=https%3A%2F%2Factions-badge.atrox.dev%2Fcallieve%2Ftelexide%2Fbadge&style=flat-square)](https://actions-badge.atrox.dev/callieve/telexide/goto)
 [![Rust Version](https://img.shields.io/badge/rust-1.41.0+-93450a.svg?style=flat-square)](https://blog.rust-lang.org/2020/01/30/Rust-1.41.0.html)
 
 # telexide
@@ -92,7 +92,7 @@ telexide = "0.1.5"
 
 The minimum supported version is 1.45. The current Telexide version is not guaranteed to build on Rust versions earlier than the minimum supported version.
 
-[examples]: https://github.com/Baev1/telexide/blob/master/examples
+[examples]: https://github.com/callieve/telexide/blob/master/examples
 [client]: https://docs.rs/telexide/*/telexide/client/index.html
 [`clientbuilder`]: https://docs.rs/telexide/*/telexide/client/struct.ClientBuilder.html
 [`client`]: https://docs.rs/telexide/*/telexide/client/struct.Client.html

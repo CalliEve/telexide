@@ -5,8 +5,8 @@ authors = ["Callidus <callidusumbra@gmail.com>"]
 edition = "2018"
 description = "macros for subscribing to events in telexide"
 license = "MIT"
-repository = "https://github.com/baev1/telexide"
-homepage = "https://github.com/baev1/telexide"
+repository = "https://github.com/callieve/telexide"
+homepage = "https://github.com/callieve/telexide"
 
 [lib]
 proc-macro = true

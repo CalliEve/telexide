@@ -37,8 +37,8 @@
 //! telexide = "0.1"
 //! ```
 //!
-//! [examples]: https://github.com/Baev1/telexide/tree/master/examples
-//! [Github Repository]: https://github.com/Baev1/telexide
+//! [examples]: https://github.com/callieve/telexide/tree/master/examples
+//! [Github Repository]: https://github.com/callieve/telexide
 //! [crates.io]: https://crates.io/crates/telexide
 //! [tg docs]: https://core.telegram.org/bots/api
 //! [client]: client/index.html

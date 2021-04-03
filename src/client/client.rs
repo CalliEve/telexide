@@ -79,7 +79,7 @@ pub struct Client {
     /// Refer to the [repeat_image_bot] example for an example on using the
     /// `data` field
     ///
-    /// [repeat_image_bot]: https://github.com/Baev1/telexide/tree/master/examples/repeat_image_bot.rs
+    /// [repeat_image_bot]: https://github.com/callieve/telexide/tree/master/examples/repeat_image_bot.rs
     pub data: Arc<RwLock<ShareMap>>,
     pub(super) event_handlers: Vec<EventHandlerFunc>,
     pub(super) raw_event_handlers: Vec<RawEventHandlerFunc>,
