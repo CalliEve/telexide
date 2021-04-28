@@ -1,7 +1,7 @@
 [![Crate](https://img.shields.io/crates/v/telexide?style=flat-square)](https://crates.io/crates/telexide)
 [![Docs](https://docs.rs/telexide/badge.svg)](https://docs.rs/telexide)
 [![Build Status](https://img.shields.io/endpoint.svg?url=https%3A%2F%2Factions-badge.atrox.dev%2Fcallieve%2Ftelexide%2Fbadge&style=flat-square)](https://actions-badge.atrox.dev/callieve/telexide/goto)
-[![Rust Version](https://img.shields.io/badge/rust-1.41.0+-93450a.svg?style=flat-square)](https://blog.rust-lang.org/2020/01/30/Rust-1.41.0.html)
+[![Rust Version](https://img.shields.io/badge/rust-1.46.0+-93450a.svg?style=flat-square)](https://blog.rust-lang.org/2020/01/30/Rust-1.46.0.html)
 
 # telexide
 
@@ -85,7 +85,7 @@ Add the following to your `Cargo.toml` file:
 
 ```toml
 [dependencies]
-telexide = "0.1.5"
+telexide = "0.1.6"
 ```
 
 ## Supported Rust Versions
