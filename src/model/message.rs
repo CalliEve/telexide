@@ -214,6 +214,10 @@ pub enum MessageContent {
         /// proximity alert while sharing Live Location.
         content: ProximityAlertTriggered,
     },
+    VoiceChatScheduled {
+        /// Service message: voice chat scheduled
+        content: VoiceChatScheduled,
+    },
     VoiceChatStarted {
         /// Service message: voice chat started
         content: VoiceChatStarted,
@@ -424,6 +428,7 @@ impl From<RawMessage> for Message {
         content!(raw.invoice, Invoice);
         content!(raw.successful_payment, SuccessfulPayment);
         content!(raw.proximity_alert_triggered, ProximityAlertTriggered);
+        content!(raw.voice_chat_scheduled, VoiceChatScheduled);
         content!(raw.voice_chat_started, VoiceChatStarted);
         content!(raw.voice_chat_ended, VoiceChatEnded);
         content!(
@@ -495,6 +500,7 @@ impl From<Message> for RawMessage {
             invoice: None,
             successful_payment: None,
             proximity_alert_triggered: None,
+            voice_chat_scheduled: None,
             voice_chat_started: None,
             voice_chat_ended: None,
             voice_chat_participants_invited: None,
@@ -698,6 +704,12 @@ impl From<Message> for RawMessage {
                 content,
             } => {
                 ret.proximity_alert_triggered = Some(content);
+                ret
+            },
+            MessageContent::VoiceChatScheduled {
+                content,
+            } => {
+                ret.voice_chat_scheduled = Some(content);
                 ret
             },
             MessageContent::VoiceChatStarted {

@@ -74,24 +74,34 @@ pub enum ParseMode {
 #[derive(Serialize, Deserialize, Debug, Clone, PartialEq)]
 pub enum ChatAction {
     /// for a text message
+    #[serde(rename = "typing")]
     Typing,
     /// for a photo
+    #[serde(rename = "upload_photo")]
     UploadPhoto,
     /// for a video
+    #[serde(rename = "record_video")]
     RecordVideo,
     /// for a video
+    #[serde(rename = "upload_video")]
     UploadVideo,
     /// for an audio file
-    RecordAudio,
+    #[serde(rename = "record_voice")]
+    RecordVoice,
     /// for an audio file
-    UploadAudio,
+    #[serde(rename = "upload_voice")]
+    UploadVoice,
     /// for a general file
+    #[serde(rename = "upload_document")]
     UploadDocument,
     /// for a location
+    #[serde(rename = "find_location")]
     FindLocation,
     /// for a video note
+    #[serde(rename = "record_video_note")]
     RecordVideoNote,
     /// for a video note
+    #[serde(rename = "upload_video_note")]
     UploadVideoNote,
 }
 

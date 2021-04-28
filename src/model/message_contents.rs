@@ -354,6 +354,15 @@ pub struct ProximityAlertTriggered {
     pub distance: i64,
 }
 
+/// This object represents a service message about a voice chat scheduled in the chat.
+#[derive(Serialize, Deserialize, Debug, Clone, PartialEq)]
+pub struct VoiceChatScheduled {
+    /// Point in time when the voice chat is supposed to be started by a chat
+    /// administrator
+    #[serde(with = "unix_date_formatting")]
+    pub start_date: DateTime<Utc>,
+}
+
 /// This object represents a service message about a voice chat started in the
 /// chat. Currently holds no information.
 #[derive(Serialize, Deserialize, Debug, Clone, PartialEq)]

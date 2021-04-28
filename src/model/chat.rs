@@ -2,7 +2,7 @@ use chrono::{DateTime, Utc};
 use serde::{Deserialize, Serialize};
 
 use super::{
-    raw::{ChatType, RawChat},
+    raw::RawChat,
     utils::unix_date_formatting,
     User,
 };
@@ -277,6 +277,7 @@ impl From<RawChat> for Chat {
                 linked_chat_id: raw.linked_chat_id,
                 location: raw.location,
             }),
+            ChatType::Sender => unreachable!(),
         }
     }
 }
@@ -554,3 +555,19 @@ pub struct ChatMemberUpdated {
     /// joining by invite link events only.
     pub invite_link: Option<ChatInviteLink>,
 }
+
+/// The type of chat
+#[derive(Serialize, Deserialize, Debug, Clone, PartialEq)]
+pub enum ChatType {
+    #[serde(rename = "private")]
+    Private,
+    #[serde(rename = "group")]
+    Group,
+    #[serde(rename = "supergroup")]
+    SuperGroup,
+    #[serde(rename = "channel")]
+    Channel,
+    #[serde(rename = "sender")]
+    Sender,
+}
+

@@ -5,6 +5,7 @@ use super::{
     message_contents::*,
     message_entity::*,
     utils::unix_date_formatting,
+    ChatType,
     CallbackQuery,
     ChatLocation,
     ChatMemberUpdated,
@@ -99,6 +100,7 @@ pub struct RawMessage {
     pub proximity_alert_triggered: Option<ProximityAlertTriggered>,
     pub reply_markup: Option<InlineKeyboardMarkup>,
 
+    pub voice_chat_scheduled: Option<VoiceChatScheduled>,
     pub voice_chat_started: Option<VoiceChatStarted>,
     pub voice_chat_ended: Option<VoiceChatEnded>,
     pub voice_chat_participants_invited: Option<VoiceChatParticipantsInvited>,
@@ -174,19 +176,6 @@ pub struct RawChat {
     ///
     /// [`get_chat`]: ../../api/trait.API.html#method.get_chat
     pub location: Option<ChatLocation>,
-}
-
-/// The type of chat for use in [`RawChat`]
-#[derive(Serialize, Deserialize, Debug, Clone, PartialEq)]
-pub enum ChatType {
-    #[serde(rename = "private")]
-    Private,
-    #[serde(rename = "group")]
-    Group,
-    #[serde(rename = "supergroup")]
-    SuperGroup,
-    #[serde(rename = "channel")]
-    Channel,
 }
 
 /// The raw update, for most usages the [`Update`] object is easier to use

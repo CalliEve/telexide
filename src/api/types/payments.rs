@@ -19,9 +19,25 @@ pub struct SendInvoice {
     pub payload: String,
     /// Payments provider token, obtained via [Botfather](https://t.me/botfather)
     pub provider_token: String,
-    /// Unique deep-linking parameter that can be used to generate this invoice
-    /// when used as a start parameter
-    pub start_parameter: String,
+    /// The maximum accepted amount for tips in the smallest units of the currency (integer, not
+    /// float/double). For example, for a maximum tip of `US$ 1.45` pass `max_tip_amount = 145`. See
+    /// the exp parameter in [currencies.json](https://core.telegram.org/bots/payments/currencies.json),
+    /// it shows the number of digits past the decimal point
+    /// for each currency (2 for the majority of currencies). Defaults to 0
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub max_tip_amount: Option<i64>,
+    /// A vec of suggested amounts of tips in the smallest units of the currency (integer, not
+    /// float/double). At most 4 suggested tip amounts can be specified. The suggested tip amounts
+    /// must be positive, passed in a strictly increased order and must not exceed max_tip_amount.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub suggested_tip_amounts: Option<Vec<i64>>,
+    /// Unique deep-linking parameter. If left empty, forwarded copies of the sent message will
+    /// have a Pay button, allowing multiple users to pay directly from the forwarded message,
+    /// using the same invoice. If non-empty, forwarded copies of the sent message will have a URL
+    /// button with a deep link to the bot (instead of a Pay button), with the value used as the
+    /// start parameter.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub start_parameter: Option<String>,
     /// Three-letter ISO 4217 currency code
     pub currency: String,
     /// Price breakdown, a list of components (e.g. product price, tax,
