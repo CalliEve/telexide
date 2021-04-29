@@ -1,0 +1,26 @@
+version: 2
+updates:
+- package-ecosystem: cargo
+  directory: "/"
+  schedule:
+    interval: weekly
+  open-pull-requests-limit: 10
+  ignore:
+  - dependency-name: tokio
+    versions:
+    - 0.2.24
+    - 0.2.25
+  - dependency-name: hyper-tls
+    versions:
+    - 0.5.0
+  - dependency-name: hyper
+    versions:
+    - 0.14.1
+  - dependency-name: paste
+    versions:
+    - 1.0.0
+- package-ecosystem: cargo
+  directory: "/subscription_macros"
+  schedule:
+    interval: daily
+  open-pull-requests-limit: 10
