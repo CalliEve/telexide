@@ -5,14 +5,14 @@ pub fn serialize<S>(date: &DateTime<Utc>, serializer: S) -> Result<S::Ok, S::Err
 where
     S: Serializer,
 {
-    serializer.serialize_i64(date.timestamp_millis())
+    serializer.serialize_i64(date.timestamp())
 }
 
 pub fn deserialize<'de, D>(deserializer: D) -> Result<DateTime<Utc>, D::Error>
 where
     D: Deserializer<'de>,
 {
-    Ok(Utc.timestamp_millis(i64::deserialize(deserializer)?))
+    Ok(Utc.timestamp(i64::deserialize(deserializer)?, 0))
 }
 
 pub mod optional {
@@ -23,7 +23,7 @@ pub mod optional {
         S: Serializer,
     {
         match date {
-            Some(d) => serializer.serialize_i64(d.timestamp_millis()),
+            Some(d) => serializer.serialize_i64(d.timestamp()),
             None => serializer.serialize_none(),
         }
     }
@@ -32,6 +32,6 @@ pub mod optional {
     where
         D: Deserializer<'de>,
     {
-        Ok(Some(Utc.timestamp_millis(i64::deserialize(deserializer)?)))
+        Ok(Some(Utc.timestamp(i64::deserialize(deserializer)?, 0)))
     }
 }
