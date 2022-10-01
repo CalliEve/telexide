@@ -38,7 +38,7 @@ pub enum MessageEntity {
     #[serde(rename = "underline")]
     Underline(TextBlock),
     /// strikethrough text
-    #[serde(rename = "strike_through")]
+    #[serde(rename = "strikethrough")]
     StrikeThrough(TextBlock),
     /// A monowidth code string
     #[serde(rename = "code")]
