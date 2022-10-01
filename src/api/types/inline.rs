@@ -1,11 +1,13 @@
-use crate::model::{InlineKeyboardMarkup, MessageEntity, ParseMode, LabeledPrice};
+use crate::model::{InlineKeyboardMarkup, LabeledPrice, MessageEntity, ParseMode};
 use serde::{Deserialize, Serialize};
+use telexide_proc_macros::build_struct;
 
 /// struct for holding data needed to call
 /// [`answer_inline_query`]
 ///
 /// [`answer_inline_query`]:
 /// ../../api/trait.API.html#method.answer_inline_query
+#[build_struct]
 #[derive(Serialize, Deserialize, Debug, Clone, PartialEq)]
 pub struct AnswerInlineQuery {
     /// Unique identifier for the answered query
@@ -19,7 +21,8 @@ pub struct AnswerInlineQuery {
     /// Pass True, if results may be cached on the server side only for the user
     /// that sent the query. By default, results may be returned to any user
     /// who sends the same query
-    pub is_personal: bool,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub is_personal: Option<bool>,
     /// Pass the offset that a client should send in the next query with the
     /// same text to receive more results. Pass an empty string if there are
     /// no more results or if you don‘t support pagination. Offset length
@@ -82,6 +85,7 @@ pub enum InlineQueryResult {
 // variant?
 
 /// Represents a link to an article or web page.
+#[build_struct]
 #[derive(Serialize, Deserialize, Debug, Clone, PartialEq)]
 pub struct InlineQueryResultArticle {
     /// Unique identifier for this result, 1-64 Bytes
@@ -97,7 +101,8 @@ pub struct InlineQueryResultArticle {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub url: Option<String>,
     /// Pass True, if you don't want the URL to be shown in the message
-    pub hide_url: bool,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub hide_url: Option<bool>,
     /// Short description of the result
     #[serde(skip_serializing_if = "Option::is_none")]
     pub description: Option<String>,
@@ -116,6 +121,7 @@ pub struct InlineQueryResultArticle {
 /// user with optional caption. Alternatively, you can use
 /// `input_message_content` to send a message with the specified content instead
 /// of the photo.
+#[build_struct]
 #[derive(Serialize, Deserialize, Debug, Clone, PartialEq)]
 pub struct InlineQueryResultPhoto {
     /// Unique identifier for this result, 1-64 Bytes
@@ -161,6 +167,7 @@ pub struct InlineQueryResultPhoto {
 /// this animated GIF file will be sent by the user with optional caption.
 /// Alternatively, you can use `input_message_content` to send a message with
 /// the specified content instead of the animation.
+#[build_struct]
 #[derive(Serialize, Deserialize, Debug, Clone, PartialEq)]
 pub struct InlineQueryResultGif {
     /// Unique identifier for this result, 1-64 Bytes
@@ -209,6 +216,7 @@ pub struct InlineQueryResultGif {
 /// sound). By default, this animated MPEG-4 file will be sent by the user with
 /// optional caption. Alternatively, you can use `input_message_content` to send
 /// a message with the specified content instead of the animation.
+#[build_struct]
 #[derive(Serialize, Deserialize, Debug, Clone, PartialEq)]
 pub struct InlineQueryResultMpeg4Gif {
     /// Unique identifier for this result, 1-64 Bytes
@@ -258,6 +266,7 @@ pub struct InlineQueryResultMpeg4Gif {
 /// file. By default, this video file will be sent by the user with an optional
 /// caption. Alternatively, you can use `input_message_content` to send a
 /// message with the specified content instead of the video.
+#[build_struct]
 #[derive(Serialize, Deserialize, Debug, Clone, PartialEq)]
 pub struct InlineQueryResultVideo {
     /// Unique identifier for this result, 1-64 Bytes
@@ -305,6 +314,7 @@ pub struct InlineQueryResultVideo {
 /// Represents a link to an MP3 audio file. By default, this audio file will be
 /// sent by the user. Alternatively, you can use `input_message_content` to send
 /// a message with the specified content instead of the audio.
+#[build_struct]
 #[derive(Serialize, Deserialize, Debug, Clone, PartialEq)]
 pub struct InlineQueryResultAudio {
     /// Unique identifier for this result, 1-64 bytes
@@ -343,6 +353,7 @@ pub struct InlineQueryResultAudio {
 /// OPUS. By default, this voice recording will be sent by the user.
 /// Alternatively, you can use `input_message_content` to send a message with
 /// the specified content instead of the the voice message.
+#[build_struct]
 #[derive(Serialize, Deserialize, Debug, Clone, PartialEq)]
 pub struct InlineQueryResultVoice {
     /// Unique identifier for this result, 1-64 bytes
@@ -378,6 +389,7 @@ pub struct InlineQueryResultVoice {
 /// with an optional caption. Alternatively, you can use `input_message_content`
 /// to send a message with the specified content instead of the file. Currently,
 /// only .PDF and .ZIP files can be sent using this method.
+#[build_struct]
 #[derive(Serialize, Deserialize, Debug, Clone, PartialEq)]
 pub struct InlineQueryResultDocument {
     /// Unique identifier for this result, 1-64 bytes
@@ -427,6 +439,7 @@ pub struct InlineQueryResultDocument {
 /// Represents a location on a map. By default, the location will be sent by the
 /// user. Alternatively, you can use `input_message_content` to send a message
 /// with the specified content instead of the location.
+#[build_struct]
 #[derive(Serialize, Deserialize, Debug, Clone, PartialEq)]
 pub struct InlineQueryResultLocation {
     /// Unique identifier for this result, 1-64 bytes
@@ -473,6 +486,7 @@ pub struct InlineQueryResultLocation {
 /// Represents a venue. By default, the venue will be sent by the user.
 /// Alternatively, you can use `input_message_content` to send a message with
 /// the specified content instead of the venue.
+#[build_struct]
 #[derive(Serialize, Deserialize, Debug, Clone, PartialEq)]
 pub struct InlineQueryResultVenue {
     /// Unique identifier for this result, 1-64 bytes
@@ -525,6 +539,7 @@ pub struct InlineQueryResultVenue {
 /// Represents a contact with a phone number. By default, this contact will be
 /// sent by the user. Alternatively, you can use `input_message_content` to send
 /// a message with the specified content instead of the contact.
+#[build_struct]
 #[derive(Serialize, Deserialize, Debug, Clone, PartialEq)]
 pub struct InlineQueryResultContact {
     /// Unique identifier for this result, 1-64 bytes
@@ -557,6 +572,7 @@ pub struct InlineQueryResultContact {
 }
 
 /// Represents a Game.
+#[build_struct]
 #[derive(Serialize, Deserialize, Debug, Clone, PartialEq)]
 pub struct InlineQueryResultGame {
     /// Unique identifier for this result, 1-64 bytes
@@ -581,6 +597,7 @@ pub enum InputMessageContent {
 
 /// Represents the content of a text message to be sent as the result of an
 /// inline query.
+#[build_struct]
 #[derive(Serialize, Deserialize, Debug, Clone, PartialEq)]
 pub struct InputTextMessageContent {
     /// Text of the message to be sent, 1-4096 characters
@@ -590,11 +607,13 @@ pub struct InputTextMessageContent {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub parse_mode: Option<ParseMode>,
     /// Disables link previews for links in the sent message
-    pub disable_web_page_preview: bool,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub disable_web_page_preview: Option<bool>,
 }
 
 /// Represents the content of a location message to be sent as the result of an
 /// inline query.
+#[build_struct]
 #[derive(Serialize, Deserialize, Debug, Clone, PartialEq)]
 pub struct InputLocationMessageContent {
     /// Latitude of the location in degrees
@@ -619,6 +638,7 @@ pub struct InputLocationMessageContent {
 
 /// Represents the content of a venue message to be sent as the result of an
 /// inline query.
+#[build_struct]
 #[derive(Serialize, Deserialize, Debug, Clone, PartialEq)]
 pub struct InputVenueMessageContent {
     /// Latitude of the venue in degrees
@@ -649,6 +669,7 @@ pub struct InputVenueMessageContent {
 
 /// Represents the content of a contact message to be sent as the result of an
 /// inline query.
+#[build_struct]
 #[derive(Serialize, Deserialize, Debug, Clone, PartialEq)]
 pub struct InputContactMessageContent {
     /// Contact's phone number
@@ -664,6 +685,7 @@ pub struct InputContactMessageContent {
 }
 
 /// Represents the content of an invoice message to be sent as the result of an inline query.
+#[build_struct]
 #[derive(Serialize, Deserialize, Debug, Clone, PartialEq)]
 pub struct InputInvoiceMessageContent {
     /// Product name, 1-32 characters
@@ -711,19 +733,24 @@ pub struct InputInvoiceMessageContent {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub photo_height: Option<i64>,
     /// Pass True, if you require the user's full name to complete the order
-    pub need_name: bool,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub need_name: Option<bool>,
     /// Pass True, if you require the user's phone number to complete the order
-    pub need_phone_number: bool,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub need_phone_number: Option<bool>,
     /// Pass True, if you require the user's email address to complete the order
-    pub need_email: bool,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub need_email: Option<bool>,
     /// Pass True, if you require the user's shipping address to complete the order
-    pub need_shipping_address: bool,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub need_shipping_address: Option<bool>,
     /// Pass True, if user's phone number should be sent to provider
-    pub send_phone_number_to_provider: bool,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub send_phone_number_to_provider: Option<bool>,
     /// Pass True, if user's email address should be sent to provider
-    pub send_email_to_provider: bool,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub send_email_to_provider: Option<bool>,
     /// Pass True, if the final price depends on the shipping method
-    pub is_flexible: bool
-
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub is_flexible: Option<bool>,
 }
-

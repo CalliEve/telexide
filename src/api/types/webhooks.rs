@@ -1,5 +1,6 @@
 use super::{InputFile, UpdateType};
 use serde::{Deserialize, Serialize};
+use telexide_proc_macros::build_struct;
 
 /// struct for holding data needed to call [`set_webhook`]
 ///
@@ -7,6 +8,7 @@ use serde::{Deserialize, Serialize};
 ///
 /// [`get_updates`]: ../../api/trait.API.html#method.get_updates
 /// [`set_webhook`]: ../../api/trait.API.html#method.set_webhook
+#[build_struct]
 #[derive(Serialize, Deserialize, Debug, Clone, PartialEq)]
 pub struct SetWebhook {
     /// HTTPS url to send updates to. Use an empty string to remove webhook
@@ -30,14 +32,17 @@ pub struct SetWebhook {
     /// of the IP address resolved through DNS
     pub ip_address: Option<String>,
     /// Pass True to drop all pending updates
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub drop_pending_updates: Option<bool>,
 }
 
 /// Struct for holding data needed to call [`delete_webhook`]
 ///
 /// [`delete_webhook`]: ../../api/trait.API.html#method.delete_webhook
+#[build_struct]
 #[derive(Serialize, Deserialize, Debug, Clone, PartialEq, Default)]
 pub struct DeleteWebhook {
     /// Pass True to drop all pending updates
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub drop_pending_updates: Option<bool>,
 }

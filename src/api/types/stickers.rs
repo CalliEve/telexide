@@ -1,12 +1,14 @@
 use super::InputFile;
 use crate::model::{MaskPosition, ReplyMarkup};
 use serde::{Deserialize, Serialize};
+use telexide_proc_macros::build_struct;
 
 /// struct for holding data needed to call
 /// [`send_sticker`]
 ///
 /// [`send_sticker`]:
 /// ../../api/trait.API.html#method.send_sticker
+#[build_struct]
 #[derive(Serialize, Deserialize, Debug, Clone, PartialEq)]
 pub struct SendSticker {
     /// Unique identifier for the target chat
@@ -17,7 +19,8 @@ pub struct SendSticker {
     pub sticker: InputFile,
     /// Sends the message silently. Users will receive a notification with no
     /// sound.
-    pub disable_notification: bool,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub disable_notification: Option<bool>,
     /// If the message is a reply, ID of the original message
     #[serde(skip_serializing_if = "Option::is_none")]
     pub reply_to_message_id: Option<i64>,
@@ -31,6 +34,7 @@ pub struct SendSticker {
 ///
 /// [`get_sticker_set`]:
 /// ../../api/trait.API.html#method.get_sticker_set
+#[build_struct]
 #[derive(Serialize, Deserialize, Debug, Clone, PartialEq)]
 pub struct GetStickerSet {
     /// Name of the sticker set
@@ -42,6 +46,7 @@ pub struct GetStickerSet {
 ///
 /// [`upload_sticker_file`]:
 /// ../../api/trait.API.html#method.upload_sticker_file
+#[build_struct]
 #[derive(Serialize, Deserialize, Debug, Clone, PartialEq)]
 pub struct UploadStickerFile {
     /// User identifier of sticker file owner
@@ -57,6 +62,7 @@ pub struct UploadStickerFile {
 ///
 /// [`create_new_sticker_set`]:
 /// ../../api/trait.API.html#method.create_new_sticker_set
+#[build_struct]
 #[derive(Serialize, Deserialize, Debug, Clone, PartialEq)]
 pub struct CreateNewStickerSet {
     /// User identifier of created sticker set owner
@@ -83,7 +89,8 @@ pub struct CreateNewStickerSet {
     /// One or more emoji corresponding to the sticker
     pub emojis: String,
     /// Pass True, if a set of mask stickers should be created
-    pub contains_masks: bool,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub contains_masks: Option<bool>,
     /// position where the mask should be placed on faces
     #[serde(skip_serializing_if = "Option::is_none")]
     pub mask_position: Option<MaskPosition>,
@@ -94,6 +101,7 @@ pub struct CreateNewStickerSet {
 ///
 /// [`add_sticker_to_set`]:
 /// ../../api/trait.API.html#method.add_sticker_to_set
+#[build_struct]
 #[derive(Serialize, Deserialize, Debug, Clone, PartialEq)]
 pub struct AddStickerToSet {
     /// User identifier of sticker set owner
@@ -123,6 +131,7 @@ pub struct AddStickerToSet {
 ///
 /// [`set_sticker_position_in_set`]:
 /// ../../api/trait.API.html#method.set_sticker_position_in_set
+#[build_struct]
 #[derive(Serialize, Deserialize, Debug, Clone, PartialEq)]
 pub struct SetStickerPositionInSet {
     /// File identifier of the sticker
@@ -136,6 +145,7 @@ pub struct SetStickerPositionInSet {
 ///
 /// [`delete_sticker_from_set`]:
 /// ../../api/trait.API.html#method.delete_sticker_from_set
+#[build_struct]
 #[derive(Serialize, Deserialize, Debug, Clone, PartialEq)]
 pub struct DeleteStickerFromSet {
     /// File identifier of the sticker
@@ -147,6 +157,7 @@ pub struct DeleteStickerFromSet {
 ///
 /// [`set_sticker_set_thumb`]:
 /// ../../api/trait.API.html#method.set_sticker_set_thumb
+#[build_struct]
 #[derive(Serialize, Deserialize, Debug, Clone, PartialEq)]
 pub struct SetStickerSetThumb {
     /// Sticker set name

@@ -1,12 +1,6 @@
 use super::{
-    APIConnector,
-    ClientBuilder,
-    Context,
-    EventHandlerFunc,
-    RawEventHandlerFunc,
-    UpdatesStream,
-    Webhook,
-    WebhookOptions,
+    APIConnector, ClientBuilder, Context, EventHandlerFunc, RawEventHandlerFunc, UpdatesStream,
+    Webhook, WebhookOptions,
 };
 use crate::{
     api::{
@@ -20,7 +14,7 @@ use crate::{
 use futures::StreamExt;
 use parking_lot::RwLock;
 use std::sync::Arc;
-use typemap::ShareMap;
+use typemap_rev::TypeMap;
 
 /// The Client is the main object to manage your interaction with telegram.
 ///
@@ -70,7 +64,7 @@ pub struct Client {
     /// through the future and be accessible through other contexts. This is
     /// useful for anything that should "live" through the program: counters,
     /// database connections, custom user caches, etc.
-    /// Therefore this ShareMap requires all types it will contain to be Send +
+    /// Therefore this TypeMap requires all types it will contain to be Send +
     /// Sync.
     ///
     /// When using a [`Context`], this data will be available as
@@ -80,7 +74,7 @@ pub struct Client {
     /// `data` field
     ///
     /// [repeat_image_bot]: https://github.com/callieve/telexide/tree/master/examples/repeat_image_bot.rs
-    pub data: Arc<RwLock<ShareMap>>,
+    pub data: Arc<RwLock<TypeMap>>,
     pub(super) event_handlers: Vec<EventHandlerFunc>,
     pub(super) raw_event_handlers: Vec<RawEventHandlerFunc>,
     pub(super) framework: Option<Arc<Framework>>,
@@ -97,7 +91,7 @@ impl Client {
             api_client: Arc::new(Box::new(APIClient::new(None, token))),
             event_handlers: Vec::new(),
             raw_event_handlers: Vec::new(),
-            data: Arc::new(RwLock::new(ShareMap::custom())),
+            data: Arc::new(RwLock::new(TypeMap::custom())),
             framework: None,
             webhook_opts: None,
             allowed_updates: Vec::new(),
@@ -110,7 +104,7 @@ impl Client {
             api_client: Arc::new(Box::new(APIClient::new(None, token))),
             event_handlers: Vec::new(),
             raw_event_handlers: Vec::new(),
-            data: Arc::new(RwLock::new(ShareMap::custom())),
+            data: Arc::new(RwLock::new(TypeMap::custom())),
             webhook_opts: None,
             framework: Some(fr),
             allowed_updates: Vec::new(),
@@ -243,7 +237,7 @@ impl From<Box<APIConnector>> for Client {
             api_client: Arc::new(api),
             event_handlers: Vec::new(),
             raw_event_handlers: Vec::new(),
-            data: Arc::new(RwLock::new(ShareMap::custom())),
+            data: Arc::new(RwLock::new(TypeMap::custom())),
             framework: None,
             webhook_opts: None,
             allowed_updates: Vec::new(),

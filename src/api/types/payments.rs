@@ -1,11 +1,13 @@
 use crate::model::{LabeledPrice, ReplyMarkup, ShippingOption};
 use serde::{Deserialize, Serialize};
+use telexide_proc_macros::build_struct;
 
 /// struct for holding data needed to call
 /// [`send_invoice`]
 ///
 /// [`send_invoice`]:
 /// ../../api/trait.API.html#method.send_invoice
+#[build_struct]
 #[derive(Serialize, Deserialize, Debug, Clone, PartialEq)]
 pub struct SendInvoice {
     /// Unique identifier for the target private chat
@@ -63,23 +65,31 @@ pub struct SendInvoice {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub photo_height: Option<i64>,
     /// Pass True, if you require the user's full name to complete the order
-    pub need_name: bool,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub need_name: Option<bool>,
     /// Pass True, if you require the user's phone number to complete the order
-    pub need_phone_number: bool,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub need_phone_number: Option<bool>,
     /// Pass True, if you require the user's email address to complete the order
-    pub need_email: bool,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub need_email: Option<bool>,
     /// Pass True, if you require the user's shipping address to complete the
     /// order
-    pub need_shipping_address: bool,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub need_shipping_address: Option<bool>,
     /// Pass True, if user's phone number should be sent to provider
-    pub send_phone_number_to_provider: bool,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub send_phone_number_to_provider: Option<bool>,
     /// Pass True, if user's email address should be sent to provider
-    pub send_email_to_provider: bool,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub send_email_to_provider: Option<bool>,
     /// Pass True, if the final price depends on the shipping method
-    pub is_flexible: bool,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub is_flexible: Option<bool>,
     /// Sends the message silently. Users will receive a notification with no
     /// sound.
-    pub disable_notification: bool,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub disable_notification: Option<bool>,
     /// If the message is a reply, ID of the original message
     #[serde(skip_serializing_if = "Option::is_none")]
     pub reply_to_message_id: Option<i64>,
@@ -93,6 +103,7 @@ pub struct SendInvoice {
 ///
 /// [`answer_shipping_query`]:
 /// ../../api/trait.API.html#method.answer_shipping_query
+#[build_struct]
 #[derive(Serialize, Deserialize, Debug, Clone, PartialEq)]
 pub struct AnswerShippingQuery {
     /// Unique identifier for the query to be answered
@@ -100,7 +111,8 @@ pub struct AnswerShippingQuery {
     /// Specify True if delivery to the specified address is possible and
     /// False if there are any problems (for example, if delivery to the
     /// specified address is not possible)
-    pub ok: bool,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub ok: Option<bool>,
     /// Required if ok is True.
     /// A vec of available shipping options.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -118,6 +130,7 @@ pub struct AnswerShippingQuery {
 ///
 /// [`answer_pre_checkout_query`]:
 /// ../../api/trait.API.html#method.answer_pre_checkout_query
+#[build_struct]
 #[derive(Serialize, Deserialize, Debug, Clone, PartialEq)]
 pub struct AnswerPreCheckoutQuery {
     /// Unique identifier for the query to be answered
@@ -125,7 +138,8 @@ pub struct AnswerPreCheckoutQuery {
     /// Specify True if everything is alright (goods are available, etc.)
     /// and the bot is ready to proceed with the order. Use False if there are
     /// any problems.
-    pub ok: bool,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub ok: Option<bool>,
     /// Required if ok is False. Error message in human readable form that
     /// explains the reason for failure to proceed with the checkout (e.g.
     /// "Sorry, somebody just bought the last of our amazing black T-shirts

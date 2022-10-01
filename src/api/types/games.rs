@@ -1,11 +1,13 @@
 use crate::model::ReplyMarkup;
 use serde::{Deserialize, Serialize};
+use telexide_proc_macros::build_struct;
 
 /// struct for holding data needed to call
 /// [`send_game`]
 ///
 /// [`send_game`]:
 /// ../../api/trait.API.html#method.send_game
+#[build_struct]
 #[derive(Serialize, Deserialize, Debug, Clone, PartialEq)]
 pub struct SendGame {
     /// Unique identifier for the target chat
@@ -15,7 +17,8 @@ pub struct SendGame {
     pub game_short_name: String,
     /// Sends the message silently. Users will receive a notification with no
     /// sound.
-    pub disable_notification: bool,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub disable_notification: Option<bool>,
     /// If the message is a reply, ID of the original message
     #[serde(skip_serializing_if = "Option::is_none")]
     pub reply_to_message_id: Option<i64>,
@@ -29,6 +32,7 @@ pub struct SendGame {
 ///
 /// [`set_game_score`]:
 /// ../../api/trait.API.html#method.set_game_score
+#[build_struct]
 #[derive(Serialize, Deserialize, Debug, Clone, PartialEq)]
 pub struct SetGameScore {
     /// User identifier
@@ -37,10 +41,12 @@ pub struct SetGameScore {
     pub score: i64,
     /// Pass True, if the high score is allowed to decrease.
     /// This can be useful when fixing mistakes or banning cheaters
-    pub force: bool,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub force: Option<bool>,
     /// Pass True, if the game message should not be automatically edited to
     /// include the current scoreboard
-    pub disable_edit_message: bool,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub disable_edit_message: Option<bool>,
     /// Required if inline_message_id is not specified. Unique identifier for
     /// the target chat
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -60,6 +66,7 @@ pub struct SetGameScore {
 ///
 /// [`get_game_high_scores`]:
 /// ../../api/trait.API.html#method.get_game_high_scores
+#[build_struct]
 #[derive(Serialize, Deserialize, Debug, Clone, PartialEq)]
 pub struct GetGameHighScores {
     /// Target user id

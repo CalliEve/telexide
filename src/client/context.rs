@@ -1,7 +1,7 @@
 use super::APIConnector;
 use parking_lot::RwLock;
 use std::sync::Arc;
-use typemap::ShareMap;
+use typemap_rev::TypeMap;
 
 /// The context object is an utility object that gets passed to all event
 /// handlers, it provides access to the API client and to any custom data you
@@ -15,14 +15,11 @@ pub struct Context {
     /// A clone of [`Client::data`], see its documentation for more detail
     ///
     /// [`Client::data`]: struct.Client.html#structfield.data
-    pub data: Arc<RwLock<ShareMap>>,
+    pub data: Arc<RwLock<TypeMap>>,
 }
 
 impl Context {
-    pub fn new(api: Arc<Box<APIConnector>>, data: Arc<RwLock<ShareMap>>) -> Self {
-        Self {
-            api,
-            data,
-        }
+    pub fn new(api: Arc<Box<APIConnector>>, data: Arc<RwLock<TypeMap>>) -> Self {
+        Self { api, data }
     }
 }

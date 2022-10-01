@@ -5,7 +5,7 @@ use telexide::{
     model::{MessageContent, UpdateContent},
     prelude::*,
 };
-use typemap::Key as TypeMapKey;
+use typemap_rev::TypeMapKey;
 
 struct HashMapKey;
 impl TypeMapKey for HashMapKey {

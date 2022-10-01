@@ -1,8 +1,12 @@
 use proc_macro2::TokenStream as TokenStream2;
-use syn::parse::{Parse, ParseStream, Result};
-use syn::{Attribute, Ident, Stmt, Visibility, ReturnType, braced, FnArg, Token, Block, Type};
 use quote::{quote, ToTokens};
-use super::utils::ParenthesisedItems;
+use syn::{
+    braced,
+    parse::{Parse, ParseStream, Result},
+    Attribute, Block, FnArg, Ident, ItemStruct, ReturnType, Stmt, Token, Type, Visibility,
+};
+
+use super::utils::{BuildImplBlock, ParenthesisedItems};
 
 #[derive(Debug)]
 pub struct ListenerFunc {
@@ -32,11 +36,8 @@ impl Parse for ListenerFunc {
         let ParenthesisedItems(args) = input.parse::<ParenthesisedItems<FnArg>>()?;
 
         match input.parse::<ReturnType>()? {
-            ReturnType::Type(_, _) => {
-                return Err(input
-                    .error("expected a default return value"))
-            },
-            ReturnType::Default => ()
+            ReturnType::Type(_, _) => return Err(input.error("expected a default return value")),
+            ReturnType::Default => (),
         };
 
         let body_content;
@@ -107,11 +108,8 @@ impl Parse for CommandFunc {
         let ParenthesisedItems(args) = input.parse::<ParenthesisedItems<FnArg>>()?;
 
         let ret = match input.parse::<ReturnType>()? {
-            ReturnType::Type(_, t) => {
-                *t
-            },
-            ReturnType::Default => return Err(input
-                .error("expected a CommandResult return value"))
+            ReturnType::Type(_, t) => *t,
+            ReturnType::Default => return Err(input.error("expected a CommandResult return value")),
         };
 
         let body_content;
@@ -152,5 +150,48 @@ impl ToTokens for CommandFunc {
             })
             }
         });
+    }
+}
+
+#[derive(Debug)]
+pub struct BuildableStruct {
+    pub inner_struct: ItemStruct,
+    pub impl_block: BuildImplBlock,
+}
+
+impl Parse for BuildableStruct {
+    fn parse(input: ParseStream) -> Result<Self> {
+        let inner_struct = input.parse::<ItemStruct>()?;
+
+        let fields = if let syn::Fields::Named(fields) = &inner_struct.fields {
+            fields
+        } else {
+            return Err(input.error("expected a struct with named fields"));
+        };
+
+        let impl_block = BuildImplBlock::new(
+            fields.named.clone().into_iter().collect(),
+            inner_struct.ident.clone(),
+        )?;
+
+        Ok(Self {
+            inner_struct,
+            impl_block,
+        })
+    }
+}
+
+impl ToTokens for BuildableStruct {
+    fn to_tokens(&self, stream: &mut TokenStream2) {
+        let Self {
+            inner_struct,
+            impl_block,
+        } = self;
+
+        stream.extend(quote! {
+            #inner_struct
+
+            #impl_block
+        })
     }
 }

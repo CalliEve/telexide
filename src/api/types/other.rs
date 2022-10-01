@@ -4,12 +4,14 @@ use crate::utils::{
 };
 use serde::{Deserialize, Deserializer, Serialize, Serializer};
 use std::{fs::File, path::Path};
+use telexide_proc_macros::build_struct;
 
 /// struct for holding data needed to call
 /// [`get_user_profile_photos`]
 ///
 /// [`get_user_profile_photos`]:
 /// ../../api/trait.API.html#method.get_user_profile_photos
+#[build_struct]
 #[derive(Serialize, Deserialize, Debug, Clone, PartialEq)]
 pub struct GetUserProfilePhotos {
     /// Unique identifier of the target user
@@ -29,6 +31,7 @@ pub struct GetUserProfilePhotos {
 ///
 /// [`get_file`]:
 /// ../../api/trait.API.html#method.get_file
+#[build_struct]
 #[derive(Serialize, Deserialize, Debug, Clone, PartialEq)]
 pub struct GetFile {
     /// File identifier to get info about
@@ -40,6 +43,7 @@ pub struct GetFile {
 ///
 /// [`answer_callback_query`]:
 /// ../../api/trait.API.html#method.answer_callback_query
+#[build_struct]
 #[derive(Serialize, Deserialize, Debug, Clone, PartialEq)]
 pub struct AnswerCallbackQuery {
     /// Unique identifier for the query to be answered
@@ -50,7 +54,8 @@ pub struct AnswerCallbackQuery {
     pub text: Option<String>,
     /// If true, an alert will be shown by the client instead of a notification
     /// at the top of the chat screen. Defaults to false.
-    pub show_alert: bool,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub show_alert: Option<bool>,
     /// URL that will be opened by the user's client. If you have created a Game
     /// and accepted the conditions via @Botfather, specify the URL that
     /// opens your game – note that this will only work if the query comes from
