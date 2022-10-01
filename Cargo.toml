@@ -29,3 +29,4 @@ typemap_rev = "0.2"
 parking_lot = "0.12"
 paste = "1.0"
 log = "0.4"
+tonic = { version="0.8", features=["tls-roots"] }
