@@ -1,11 +1,13 @@
 use crate::model::TelegramPassportElement;
 use serde::{Deserialize, Serialize};
+use telexide_proc_macros::build_struct;
 
 /// struct for holding data needed to call
 /// [`set_passport_data_errors`]
 ///
 /// [`set_passport_data_errors`]:
 /// ../../api/trait.API.html#method.set_passport_data_errors
+#[build_struct]
 #[derive(Serialize, Deserialize, Debug, Clone, PartialEq)]
 pub struct SetPassportDataErrors {
     /// User identifier
@@ -41,6 +43,7 @@ pub enum PassportElementError {
 
 /// Represents an issue in one of the data fields that was provided by the user.
 /// The error is considered resolved when the field's value changes.
+#[build_struct]
 #[derive(Serialize, Deserialize, Debug, Clone, PartialEq)]
 pub struct PassportElementErrorDataField {
     /// The section of the user's Telegram Passport which has the error,
@@ -59,6 +62,7 @@ pub struct PassportElementErrorDataField {
 /// Represents an issue with the front side of a document.
 /// The error is considered resolved when the file with the front side of the
 /// document changes.
+#[build_struct]
 #[derive(Serialize, Deserialize, Debug, Clone, PartialEq)]
 pub struct PassportElementErrorFrontSide {
     /// The section of the user's Telegram Passport which has the issue,
@@ -75,6 +79,7 @@ pub struct PassportElementErrorFrontSide {
 /// Represents an issue with the reverse side of a document.
 /// The error is considered resolved when the file with reverse side of the
 /// document changes.
+#[build_struct]
 #[derive(Serialize, Deserialize, Debug, Clone, PartialEq)]
 pub struct PassportElementErrorReverseSide {
     /// The section of the user's Telegram Passport which has the issue,
@@ -89,6 +94,7 @@ pub struct PassportElementErrorReverseSide {
 
 /// Represents an issue with the selfie with a document.
 /// The error is considered resolved when the file with the selfie changes.
+#[build_struct]
 #[derive(Serialize, Deserialize, Debug, Clone, PartialEq)]
 pub struct PassportElementErrorSelfie {
     /// The section of the user's Telegram Passport which has the issue,
@@ -105,6 +111,7 @@ pub struct PassportElementErrorSelfie {
 /// Represents an issue with a document scan.
 /// The error is considered resolved when the file with the document scan
 /// changes.
+#[build_struct]
 #[derive(Serialize, Deserialize, Debug, Clone, PartialEq)]
 pub struct PassportElementErrorFile {
     /// The section of the user's Telegram Passport which has the issue
@@ -121,6 +128,7 @@ pub struct PassportElementErrorFile {
 /// Represents an issue with a list of scans.
 /// The error is considered resolved when the list of files containing the scans
 /// changes.
+#[build_struct]
 #[derive(Serialize, Deserialize, Debug, Clone, PartialEq)]
 pub struct PassportElementErrorFiles {
     /// The section of the user's Telegram Passport which has the issue,
@@ -136,6 +144,7 @@ pub struct PassportElementErrorFiles {
 
 /// Represents an issue with one of the files that constitute the translation of
 /// a document. The error is considered resolved when the file changes.
+#[build_struct]
 #[derive(Serialize, Deserialize, Debug, Clone, PartialEq)]
 pub struct PassportElementErrorTranslationFile {
     /// Type of element of the user's Telegram Passport which has the issue,
@@ -153,6 +162,7 @@ pub struct PassportElementErrorTranslationFile {
 /// Represents an issue with the translated version of a document.
 /// The error is considered resolved when a file with the document translation
 /// change.
+#[build_struct]
 #[derive(Serialize, Deserialize, Debug, Clone, PartialEq)]
 pub struct PassportElementErrorTranslationFiles {
     /// Type of element of the user's Telegram Passport which has the issue,
@@ -169,6 +179,7 @@ pub struct PassportElementErrorTranslationFiles {
 
 /// Represents an issue in an unspecified place.
 /// The error is considered resolved when new data is added.
+#[build_struct]
 #[derive(Serialize, Deserialize, Debug, Clone, PartialEq)]
 pub struct PassportElementErrorUnspecified {
     /// Type of element of the user's Telegram Passport which has the issue

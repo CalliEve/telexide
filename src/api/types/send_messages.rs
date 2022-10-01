@@ -1,12 +1,7 @@
 use super::{InputFile, InputMedia};
 use crate::{
     model::{
-        utils::unix_date_formatting,
-        ChatAction,
-        MessageEntity,
-        ParseMode,
-        PhotoSize,
-        PollType,
+        utils::unix_date_formatting, ChatAction, MessageEntity, ParseMode, PhotoSize, PollType,
         ReplyMarkup,
     },
     prelude::Message,
@@ -15,12 +10,14 @@ use crate::{
 use chrono::{DateTime, Utc};
 use serde::{Deserialize, Serialize};
 use std::path::Path;
+use telexide_proc_macros::build_struct;
 
 /// struct for holding data needed to call
 /// [`send_message`]
 ///
 /// [`send_message`]:
 /// ../../api/trait.API.html#method.send_message
+#[build_struct]
 #[derive(Serialize, Deserialize, Debug, Clone, PartialEq)]
 pub struct SendMessage {
     /// Unique identifier for the target chat
@@ -36,65 +33,22 @@ pub struct SendMessage {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub enitites: Option<Vec<MessageEntity>>,
     /// Disables link previews for links in this message
-    pub disable_web_page_preview: bool,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub disable_web_page_preview: Option<bool>,
     /// Sends the message silently. Users will receive a notification with no
     /// sound.
-    pub disable_notification: bool,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub disable_notification: Option<bool>,
     /// If the message is a reply, ID of the original message
     #[serde(skip_serializing_if = "Option::is_none")]
     pub reply_to_message_id: Option<i64>,
     /// Pass True, if the message should be sent even if the specified
     /// replied-to message is not found
-    pub allow_sending_without_reply: bool,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub allow_sending_without_reply: Option<bool>,
     /// Additional interface options.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub reply_markup: Option<ReplyMarkup>,
-}
-
-impl SendMessage {
-    pub fn new(chat_id: i64, text: &str) -> Self {
-        Self {
-            chat_id,
-            text: text.to_owned(),
-            parse_mode: None,
-            enitites: None,
-            disable_notification: false,
-            disable_web_page_preview: false,
-            reply_to_message_id: None,
-            allow_sending_without_reply: false,
-            reply_markup: None,
-        }
-    }
-
-    pub fn set_parse_mode(&mut self, mode: &ParseMode) -> &mut Self {
-        self.parse_mode = Some(mode.to_owned());
-        self
-    }
-
-    pub fn reply_to_message(&mut self, message: &Message) -> &mut Self {
-        self.reply_to_message_id = Some(message.message_id);
-        self
-    }
-
-    pub fn set_reply_to_message_id(&mut self, id: i64) -> &mut Self {
-        self.reply_to_message_id = Some(id);
-        self
-    }
-
-    pub fn set_reply_markup(&mut self, markup: &ReplyMarkup) -> &mut Self {
-        self.reply_markup = Some(markup.to_owned());
-        self
-    }
-
-    pub fn toggle_disable_notification(&mut self) -> &mut Self {
-        self.disable_notification = !self.disable_notification;
-        self
-    }
-
-    pub fn toggle_disable_web_page_preview(&mut self) -> &mut Self {
-        self.disable_web_page_preview = !self.disable_web_page_preview;
-        self
-    }
 }
 
 /// struct for holding data needed to call
@@ -102,6 +56,7 @@ impl SendMessage {
 ///
 /// [`forward_message`]:
 /// ../../api/trait.API.html#method.forward_message
+#[build_struct]
 #[derive(Serialize, Deserialize, Debug, Clone, PartialEq)]
 pub struct ForwardMessage {
     /// Unique identifier for the target chat
@@ -112,30 +67,17 @@ pub struct ForwardMessage {
     pub message_id: i64,
     /// Sends the message silently. Users will receive a notification with no
     /// sound.
-    pub disable_notification: bool,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub disable_notification: Option<bool>,
 }
 
 impl ForwardMessage {
-    pub fn new(chat_id: i64, from_chat_id: i64, message_id: i64) -> Self {
-        Self {
-            chat_id,
-            from_chat_id,
-            message_id,
-            disable_notification: false,
-        }
-    }
-
-    pub fn toggle_disable_notification(&mut self) -> &mut Self {
-        self.disable_notification = !self.disable_notification;
-        self
-    }
-
     pub fn from_message(chat_id: i64, message: &Message) -> Self {
         Self {
             chat_id,
             from_chat_id: message.chat.get_id(),
             message_id: message.message_id,
-            disable_notification: false,
+            disable_notification: None,
         }
     }
 }
@@ -143,6 +85,7 @@ impl ForwardMessage {
 /// struct for holding data needed to call [`copy_message`]
 ///
 /// [`copy_message`]: ../../api/trait.API.html#method.copy_message
+#[build_struct]
 #[derive(Serialize, Deserialize, Debug, Clone, PartialEq)]
 pub struct CopyMessage {
     /// Unique identifier for the target chat
@@ -164,34 +107,21 @@ pub struct CopyMessage {
     pub parse_mode: Option<ParseMode>,
     /// Sends the message silently. Users will receive a notification with no
     /// sound.
-    pub disable_notification: bool,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub disable_notification: Option<bool>,
     /// If the message is a reply, ID of the original message
     #[serde(skip_serializing_if = "Option::is_none")]
     pub reply_to_message_id: Option<i64>,
     /// Pass True, if the message should be sent even if the specified
     /// replied-to message is not found
-    pub allow_sending_without_reply: bool,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub allow_sending_without_reply: Option<bool>,
     /// Additional interface options.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub reply_markup: Option<ReplyMarkup>,
 }
 
 impl CopyMessage {
-    pub fn new(chat_id: i64, from_chat_id: i64, message_id: i64) -> Self {
-        Self {
-            chat_id,
-            from_chat_id,
-            message_id,
-            caption: None,
-            caption_entities: None,
-            parse_mode: None,
-            disable_notification: false,
-            reply_to_message_id: None,
-            allow_sending_without_reply: false,
-            reply_markup: None,
-        }
-    }
-
     pub fn from_message(chat_id: i64, from: &Message) -> Self {
         Self {
             chat_id,
@@ -200,9 +130,9 @@ impl CopyMessage {
             caption: None,
             caption_entities: None,
             parse_mode: None,
-            disable_notification: false,
+            disable_notification: None,
             reply_to_message_id: None,
-            allow_sending_without_reply: false,
+            allow_sending_without_reply: None,
             reply_markup: None,
         }
     }
@@ -213,6 +143,7 @@ impl CopyMessage {
 ///
 /// [`send_photo`]:
 /// ../../api/trait.API.html#method.send_photo
+#[build_struct]
 #[derive(Serialize, Deserialize, Debug, Clone, PartialEq)]
 pub struct SendPhoto {
     /// Unique identifier for the target chat
@@ -235,33 +166,21 @@ pub struct SendPhoto {
     pub parse_mode: Option<ParseMode>,
     /// Sends the message silently. Users will receive a notification with no
     /// sound.
-    pub disable_notification: bool,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub disable_notification: Option<bool>,
     /// If the message is a reply, ID of the original message
     #[serde(skip_serializing_if = "Option::is_none")]
     pub reply_to_message_id: Option<i64>,
     /// Pass True, if the message should be sent even if the specified
     /// replied-to message is not found
-    pub allow_sending_without_reply: bool,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub allow_sending_without_reply: Option<bool>,
     /// Additional interface options.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub reply_markup: Option<ReplyMarkup>,
 }
 
 impl SendPhoto {
-    pub fn new(chat_id: i64, photo: String) -> Self {
-        Self {
-            chat_id,
-            photo: InputFile::String(photo),
-            caption: None,
-            caption_entities: None,
-            parse_mode: None,
-            disable_notification: false,
-            reply_to_message_id: None,
-            allow_sending_without_reply: false,
-            reply_markup: None,
-        }
-    }
-
     pub fn from_photo_size(chat_id: i64, photo: &PhotoSize) -> Self {
         Self {
             chat_id,
@@ -269,9 +188,9 @@ impl SendPhoto {
             caption: None,
             caption_entities: None,
             parse_mode: None,
-            disable_notification: false,
+            disable_notification: None,
             reply_to_message_id: None,
-            allow_sending_without_reply: false,
+            allow_sending_without_reply: None,
             reply_markup: None,
         }
     }
@@ -283,9 +202,9 @@ impl SendPhoto {
             caption: None,
             caption_entities: None,
             parse_mode: None,
-            disable_notification: false,
+            disable_notification: None,
             reply_to_message_id: None,
-            allow_sending_without_reply: false,
+            allow_sending_without_reply: None,
             reply_markup: None,
         })
     }
@@ -296,6 +215,7 @@ impl SendPhoto {
 ///
 /// [`send_audio`]:
 /// ../../api/trait.API.html#method.send_audio
+#[build_struct]
 #[derive(Serialize, Deserialize, Debug, Clone, PartialEq)]
 pub struct SendAudio {
     /// Unique identifier for the target chat
@@ -334,37 +254,21 @@ pub struct SendAudio {
     pub parse_mode: Option<ParseMode>,
     /// Sends the message silently. Users will receive a notification with no
     /// sound.
-    pub disable_notification: bool,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub disable_notification: Option<bool>,
     /// If the message is a reply, ID of the original message
     #[serde(skip_serializing_if = "Option::is_none")]
     pub reply_to_message_id: Option<i64>,
     /// Pass True, if the message should be sent even if the specified
     /// replied-to message is not found
-    pub allow_sending_without_reply: bool,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub allow_sending_without_reply: Option<bool>,
     /// Additional interface options.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub reply_markup: Option<ReplyMarkup>,
 }
 
 impl SendAudio {
-    pub fn new(chat_id: i64, audio: String) -> Self {
-        Self {
-            chat_id,
-            audio: InputFile::String(audio),
-            thumb: None,
-            caption: None,
-            caption_entities: None,
-            parse_mode: None,
-            performer: None,
-            duration: None,
-            title: None,
-            disable_notification: false,
-            reply_to_message_id: None,
-            allow_sending_without_reply: false,
-            reply_markup: None,
-        }
-    }
-
     pub fn from_file<P: AsRef<Path>>(chat_id: i64, path: P) -> Result<Self> {
         Ok(Self {
             chat_id,
@@ -376,9 +280,9 @@ impl SendAudio {
             duration: None,
             title: None,
             parse_mode: None,
-            disable_notification: false,
+            disable_notification: None,
             reply_to_message_id: None,
-            allow_sending_without_reply: false,
+            allow_sending_without_reply: None,
             reply_markup: None,
         })
     }
@@ -389,6 +293,7 @@ impl SendAudio {
 ///
 /// [`send_document`]:
 /// ../../api/trait.API.html#method.send_document
+#[build_struct]
 #[derive(Serialize, Deserialize, Debug, Clone, PartialEq)]
 pub struct SendDocument {
     /// Unique identifier for the target chat
@@ -418,38 +323,25 @@ pub struct SendDocument {
     pub parse_mode: Option<ParseMode>,
     /// Disables automatic server-side content type detection for files uploaded
     /// using multipart/form-data
-    pub disable_content_type_detection: bool,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub disable_content_type_detection: Option<bool>,
     /// Sends the message silently. Users will receive a notification with no
     /// sound.
-    pub disable_notification: bool,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub disable_notification: Option<bool>,
     /// If the message is a reply, ID of the original message
     #[serde(skip_serializing_if = "Option::is_none")]
     pub reply_to_message_id: Option<i64>,
     /// Pass True, if the message should be sent even if the specified
     /// replied-to message is not found
-    pub allow_sending_without_reply: bool,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub allow_sending_without_reply: Option<bool>,
     /// Additional interface options.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub reply_markup: Option<ReplyMarkup>,
 }
 
 impl SendDocument {
-    pub fn new(chat_id: i64, document: String) -> Self {
-        Self {
-            chat_id,
-            document: InputFile::String(document),
-            thumb: None,
-            caption: None,
-            caption_entities: None,
-            parse_mode: None,
-            disable_notification: false,
-            disable_content_type_detection: false,
-            reply_to_message_id: None,
-            allow_sending_without_reply: false,
-            reply_markup: None,
-        }
-    }
-
     pub fn from_file<P: AsRef<Path>>(chat_id: i64, path: P) -> Result<Self> {
         Ok(Self {
             chat_id,
@@ -458,10 +350,10 @@ impl SendDocument {
             caption: None,
             caption_entities: None,
             parse_mode: None,
-            disable_notification: false,
-            disable_content_type_detection: false,
+            disable_notification: None,
+            disable_content_type_detection: None,
             reply_to_message_id: None,
-            allow_sending_without_reply: false,
+            allow_sending_without_reply: None,
             reply_markup: None,
         })
     }
@@ -472,6 +364,7 @@ impl SendDocument {
 ///
 /// [`send_video`]:
 /// ../../api/trait.API.html#method.send_video
+#[build_struct]
 #[derive(Serialize, Deserialize, Debug, Clone, PartialEq)]
 pub struct SendVideo {
     /// Unique identifier for the target chat
@@ -516,42 +409,24 @@ pub struct SendVideo {
     pub parse_mode: Option<ParseMode>,
     /// Sends the message silently. Users will receive a notification with no
     /// sound.
-    pub disable_notification: bool,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub disable_notification: Option<bool>,
     /// If the uploaded video is suitable for streaming
-    pub supports_streaming: bool,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub supports_streaming: Option<bool>,
     /// If the message is a reply, ID of the original message
     #[serde(skip_serializing_if = "Option::is_none")]
     pub reply_to_message_id: Option<i64>,
     /// Pass True, if the message should be sent even if the specified
     /// replied-to message is not found
-    pub allow_sending_without_reply: bool,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub allow_sending_without_reply: Option<bool>,
     /// Additional interface options.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub reply_markup: Option<ReplyMarkup>,
 }
 
 impl SendVideo {
-    pub fn new(chat_id: i64, video: String) -> Self {
-        Self {
-            chat_id,
-            video: InputFile::String(video),
-            thumb: None,
-            caption: None,
-            caption_entities: None,
-            duration: None,
-            width: None,
-            height: None,
-            performer: None,
-            title: None,
-            supports_streaming: false,
-            parse_mode: None,
-            disable_notification: false,
-            reply_to_message_id: None,
-            allow_sending_without_reply: false,
-            reply_markup: None,
-        }
-    }
-
     pub fn from_file<P: AsRef<Path>>(chat_id: i64, path: P) -> Result<Self> {
         Ok(Self {
             chat_id,
@@ -564,11 +439,11 @@ impl SendVideo {
             height: None,
             performer: None,
             title: None,
-            supports_streaming: false,
+            supports_streaming: None,
             parse_mode: None,
-            disable_notification: false,
+            disable_notification: None,
             reply_to_message_id: None,
-            allow_sending_without_reply: false,
+            allow_sending_without_reply: None,
             reply_markup: None,
         })
     }
@@ -579,6 +454,7 @@ impl SendVideo {
 ///
 /// [`send_animation`]:
 /// ../../api/trait.API.html#method.send_animation
+#[build_struct]
 #[derive(Serialize, Deserialize, Debug, Clone, PartialEq)]
 pub struct SendAnimation {
     /// Unique identifier for the target chat
@@ -623,39 +499,21 @@ pub struct SendAnimation {
     pub parse_mode: Option<ParseMode>,
     /// Sends the message silently. Users will receive a notification with no
     /// sound.
-    pub disable_notification: bool,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub disable_notification: Option<bool>,
     /// If the message is a reply, ID of the original message
     #[serde(skip_serializing_if = "Option::is_none")]
     pub reply_to_message_id: Option<i64>,
     /// Pass True, if the message should be sent even if the specified
     /// replied-to message is not found
-    pub allow_sending_without_reply: bool,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub allow_sending_without_reply: Option<bool>,
     /// Additional interface options.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub reply_markup: Option<ReplyMarkup>,
 }
 
 impl SendAnimation {
-    pub fn new(chat_id: i64, animation: String) -> Self {
-        Self {
-            chat_id,
-            animation: InputFile::String(animation),
-            thumb: None,
-            caption: None,
-            caption_entities: None,
-            duration: None,
-            width: None,
-            height: None,
-            performer: None,
-            title: None,
-            parse_mode: None,
-            disable_notification: false,
-            reply_to_message_id: None,
-            allow_sending_without_reply: false,
-            reply_markup: None,
-        }
-    }
-
     pub fn from_file<P: AsRef<Path>>(chat_id: i64, path: P) -> Result<Self> {
         Ok(Self {
             chat_id,
@@ -669,9 +527,9 @@ impl SendAnimation {
             performer: None,
             title: None,
             parse_mode: None,
-            disable_notification: false,
+            disable_notification: None,
             reply_to_message_id: None,
-            allow_sending_without_reply: false,
+            allow_sending_without_reply: None,
             reply_markup: None,
         })
     }
@@ -682,6 +540,7 @@ impl SendAnimation {
 ///
 /// [`send_voice`]:
 /// ../../api/trait.API.html#method.send_voice
+#[build_struct]
 #[derive(Serialize, Deserialize, Debug, Clone, PartialEq)]
 pub struct SendVoice {
     /// Unique identifier for the target chat
@@ -707,34 +566,21 @@ pub struct SendVoice {
     pub parse_mode: Option<ParseMode>,
     /// Sends the message silently. Users will receive a notification with no
     /// sound.
-    pub disable_notification: bool,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub disable_notification: Option<bool>,
     /// If the message is a reply, ID of the original message
     #[serde(skip_serializing_if = "Option::is_none")]
     pub reply_to_message_id: Option<i64>,
     /// Pass True, if the message should be sent even if the specified
     /// replied-to message is not found
-    pub allow_sending_without_reply: bool,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub allow_sending_without_reply: Option<bool>,
     /// Additional interface options.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub reply_markup: Option<ReplyMarkup>,
 }
 
 impl SendVoice {
-    pub fn new(chat_id: i64, voice: String) -> Self {
-        Self {
-            chat_id,
-            voice: InputFile::String(voice),
-            caption: None,
-            caption_entities: None,
-            duration: None,
-            parse_mode: None,
-            disable_notification: false,
-            reply_to_message_id: None,
-            allow_sending_without_reply: false,
-            reply_markup: None,
-        }
-    }
-
     pub fn from_file<P: AsRef<Path>>(chat_id: i64, path: P) -> Result<Self> {
         Ok(Self {
             chat_id,
@@ -743,9 +589,9 @@ impl SendVoice {
             caption: None,
             caption_entities: None,
             parse_mode: None,
-            disable_notification: false,
+            disable_notification: None,
             reply_to_message_id: None,
-            allow_sending_without_reply: false,
+            allow_sending_without_reply: None,
             reply_markup: None,
         })
     }
@@ -756,6 +602,7 @@ impl SendVoice {
 ///
 /// [`send_video_note`]:
 /// ../../api/trait.API.html#method.send_video_note
+#[build_struct]
 #[derive(Serialize, Deserialize, Debug, Clone, PartialEq)]
 pub struct SendVideoNote {
     /// Unique identifier for the target chat
@@ -779,33 +626,21 @@ pub struct SendVideoNote {
     pub length: Option<i64>,
     /// Sends the message silently. Users will receive a notification with no
     /// sound.
-    pub disable_notification: bool,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub disable_notification: Option<bool>,
     /// If the message is a reply, ID of the original message
     #[serde(skip_serializing_if = "Option::is_none")]
     pub reply_to_message_id: Option<i64>,
     /// Pass True, if the message should be sent even if the specified
     /// replied-to message is not found
-    pub allow_sending_without_reply: bool,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub allow_sending_without_reply: Option<bool>,
     /// Additional interface options.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub reply_markup: Option<ReplyMarkup>,
 }
 
 impl SendVideoNote {
-    pub fn new(chat_id: i64, note: String) -> Self {
-        Self {
-            chat_id,
-            video_note: InputFile::String(note),
-            thumb: None,
-            duration: None,
-            length: None,
-            disable_notification: false,
-            reply_to_message_id: None,
-            allow_sending_without_reply: false,
-            reply_markup: None,
-        }
-    }
-
     pub fn from_file<P: AsRef<Path>>(chat_id: i64, path: P) -> Result<Self> {
         Ok(Self {
             chat_id,
@@ -813,9 +648,9 @@ impl SendVideoNote {
             thumb: None,
             duration: None,
             length: None,
-            disable_notification: false,
+            disable_notification: None,
             reply_to_message_id: None,
-            allow_sending_without_reply: false,
+            allow_sending_without_reply: None,
             reply_markup: None,
         })
     }
@@ -826,6 +661,7 @@ impl SendVideoNote {
 ///
 /// [`send_media_group`]:
 /// ../../api/trait.API.html#method.send_media_group
+#[build_struct]
 #[derive(Serialize, Deserialize, Debug, Clone, PartialEq)]
 pub struct SendMediaGroup {
     /// Unique identifier for the target chat
@@ -835,25 +671,15 @@ pub struct SendMediaGroup {
     pub media: Vec<InputMedia>,
     /// Sends the message silently. Users will receive a notification with no
     /// sound.
-    pub disable_notification: bool,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub disable_notification: Option<bool>,
     /// If the message is a reply, ID of the original message
     #[serde(skip_serializing_if = "Option::is_none")]
     pub reply_to_message_id: Option<i64>,
     /// Pass True, if the message should be sent even if the specified
     /// replied-to message is not found
-    pub allow_sending_without_reply: bool,
-}
-
-impl SendMediaGroup {
-    pub fn new(chat_id: i64, media: Vec<InputMedia>) -> Self {
-        Self {
-            chat_id,
-            media,
-            disable_notification: false,
-            reply_to_message_id: None,
-            allow_sending_without_reply: false,
-        }
-    }
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub allow_sending_without_reply: Option<bool>,
 }
 
 /// struct for holding data needed to call
@@ -861,6 +687,7 @@ impl SendMediaGroup {
 ///
 /// [`send_location`]:
 /// ../../api/trait.API.html#method.send_location
+#[build_struct]
 #[derive(Serialize, Deserialize, Debug, Clone, PartialEq)]
 pub struct SendLocation {
     /// Unique identifier for the target chat
@@ -883,13 +710,15 @@ pub struct SendLocation {
     pub proximity_alert_radius: Option<i64>,
     /// Sends the message silently. Users will receive a notification with no
     /// sound.
-    pub disable_notification: bool,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub disable_notification: Option<bool>,
     /// If the message is a reply, ID of the original message
     #[serde(skip_serializing_if = "Option::is_none")]
     pub reply_to_message_id: Option<i64>,
     /// Pass True, if the message should be sent even if the specified
     /// replied-to message is not found
-    pub allow_sending_without_reply: bool,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub allow_sending_without_reply: Option<bool>,
     /// Additional interface options.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub reply_markup: Option<ReplyMarkup>,
@@ -900,6 +729,7 @@ pub struct SendLocation {
 ///
 /// [`send_venue`]:
 /// ../../api/trait.API.html#method.send_venue
+#[build_struct]
 #[derive(Serialize, Deserialize, Debug, Clone, PartialEq)]
 pub struct SendVenue {
     /// Unique identifier for the target chat
@@ -922,13 +752,15 @@ pub struct SendVenue {
     pub foursquare_type: Option<String>,
     /// Sends the message silently. Users will receive a notification with no
     /// sound.
-    pub disable_notification: bool,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub disable_notification: Option<bool>,
     /// If the message is a reply, ID of the original message
     #[serde(skip_serializing_if = "Option::is_none")]
     pub reply_to_message_id: Option<i64>,
     /// Pass True, if the message should be sent even if the specified
     /// replied-to message is not found
-    pub allow_sending_without_reply: bool,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub allow_sending_without_reply: Option<bool>,
     /// Additional interface options.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub reply_markup: Option<ReplyMarkup>,
@@ -939,6 +771,7 @@ pub struct SendVenue {
 ///
 /// [`send_contact`]:
 /// ../../api/trait.API.html#method.send_contact
+#[build_struct]
 #[derive(Serialize, Deserialize, Debug, Clone, PartialEq)]
 pub struct SendContact {
     /// Unique identifier for the target chat
@@ -955,13 +788,15 @@ pub struct SendContact {
     pub vcard: Option<String>,
     /// Sends the message silently. Users will receive a notification with no
     /// sound.
-    pub disable_notification: bool,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub disable_notification: Option<bool>,
     /// If the message is a reply, ID of the original message
     #[serde(skip_serializing_if = "Option::is_none")]
     pub reply_to_message_id: Option<i64>,
     /// Pass True, if the message should be sent even if the specified
     /// replied-to message is not found
-    pub allow_sending_without_reply: bool,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub allow_sending_without_reply: Option<bool>,
     /// Additional interface options.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub reply_markup: Option<ReplyMarkup>,
@@ -972,6 +807,7 @@ pub struct SendContact {
 ///
 /// [`send_poll`]:
 /// ../../api/trait.API.html#method.send_poll
+#[build_struct]
 #[derive(Serialize, Deserialize, Debug, Clone, PartialEq)]
 pub struct SendPoll {
     /// Unique identifier for the target chat
@@ -990,7 +826,8 @@ pub struct SendPoll {
     pub poll_type: Option<PollType>,
     /// True, if the poll allows multiple answers, ignored for polls in quiz
     /// mode
-    pub allows_multiple_answers: bool,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub allows_multiple_answers: Option<bool>,
     /// 0-based identifier of the correct answer option, required for polls in
     /// quiz mode
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -1016,16 +853,19 @@ pub struct SendPoll {
     #[serde(with = "unix_date_formatting::optional")]
     pub close_date: Option<DateTime<Utc>>,
     /// Pass True, if the poll needs to be immediately closed.
-    pub is_closed: bool,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub is_closed: Option<bool>,
     /// Sends the message silently. Users will receive a notification with no
     /// sound.
-    pub disable_notification: bool,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub disable_notification: Option<bool>,
     /// If the message is a reply, ID of the original message
     #[serde(skip_serializing_if = "Option::is_none")]
     pub reply_to_message_id: Option<i64>,
     /// Pass True, if the message should be sent even if the specified
     /// replied-to message is not found
-    pub allow_sending_without_reply: bool,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub allow_sending_without_reply: Option<bool>,
     /// Additional interface options.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub reply_markup: Option<ReplyMarkup>,
@@ -1036,6 +876,7 @@ pub struct SendPoll {
 ///
 /// [`send_dice`]:
 /// ../../api/trait.API.html#method.send_dice
+#[build_struct]
 #[derive(Serialize, Deserialize, Debug, Clone, PartialEq)]
 pub struct SendDice {
     /// Unique identifier for the target chat
@@ -1048,13 +889,15 @@ pub struct SendDice {
     pub emoji: Option<String>,
     /// Sends the message silently. Users will receive a notification with no
     /// sound.
-    pub disable_notification: bool,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub disable_notification: Option<bool>,
     /// If the message is a reply, ID of the original message
     #[serde(skip_serializing_if = "Option::is_none")]
     pub reply_to_message_id: Option<i64>,
     /// Pass True, if the message should be sent even if the specified
     /// replied-to message is not found
-    pub allow_sending_without_reply: bool,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub allow_sending_without_reply: Option<bool>,
     /// Additional interface options.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub reply_markup: Option<ReplyMarkup>,
@@ -1065,6 +908,7 @@ pub struct SendDice {
 ///
 /// [`send_chat_action`]:
 /// ../../api/trait.API.html#method.send_chat_action
+#[build_struct]
 #[derive(Serialize, Deserialize, Debug, Clone, PartialEq)]
 pub struct SendChatAction {
     /// Unique identifier for the target chat

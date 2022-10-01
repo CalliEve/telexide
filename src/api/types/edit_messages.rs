@@ -1,24 +1,26 @@
 use super::InputMedia;
 use crate::model::{InlineKeyboardMarkup, Message, MessageEntity, ParseMode};
 use serde::{Deserialize, Serialize};
+use telexide_proc_macros::build_struct;
 
 /// struct for holding data needed to call
 /// [`edit_message_text`]
 ///
 /// [`edit_message_text`]:
 /// ../../api/trait.API.html#method.edit_message_text
+#[build_struct]
 #[derive(Serialize, Deserialize, Debug, Clone, PartialEq)]
 pub struct EditMessageText {
-    /// Unique identifier for the target chat
+    /// Required if inline_message_id is not specified. Unique identifier for the target chat.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub chat_id: Option<i64>,
-    /// Identifier of the message to edit
+    /// Required if inline_message_id is not specified. Identifier of the message to edit.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub message_id: Option<i64>,
     /// Identifier of the inline message
     #[serde(skip_serializing_if = "Option::is_none")]
     pub inline_message_id: Option<String>,
-    /// New text of the message, 1-4096 characters after entities parsing
+    /// New text of the message, 1-4096 characters after entities parsing.
     pub text: String,
     /// Send Markdown or HTML, if you want Telegram apps to show bold, italic,
     /// fixed-width text or inline URLs in your bot's message.
@@ -29,26 +31,14 @@ pub struct EditMessageText {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub entities: Option<Vec<MessageEntity>>,
     /// Disables link previews for links in this message
-    pub disable_web_page_preview: bool,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub disable_web_page_preview: Option<bool>,
     /// Inline keyboard
     #[serde(skip_serializing_if = "Option::is_none")]
     pub reply_markup: Option<InlineKeyboardMarkup>,
 }
 
 impl EditMessageText {
-    fn new(chat_id: i64, message_id: i64, new_text: &str) -> Self {
-        Self {
-            chat_id: Some(chat_id),
-            message_id: Some(message_id),
-            text: new_text.to_owned(),
-            inline_message_id: None,
-            parse_mode: None,
-            entities: None,
-            disable_web_page_preview: false,
-            reply_markup: None,
-        }
-    }
-
     fn from_message(message: &Message, new_text: &str) -> Self {
         Self {
             chat_id: Some(message.chat.get_id()),
@@ -57,7 +47,7 @@ impl EditMessageText {
             inline_message_id: None,
             parse_mode: None,
             entities: None,
-            disable_web_page_preview: false,
+            disable_web_page_preview: None,
             reply_markup: None,
         }
     }
@@ -68,18 +58,19 @@ impl EditMessageText {
 ///
 /// [`edit_message_caption`]:
 /// ../../api/trait.API.html#method.edit_message_caption
+#[build_struct]
 #[derive(Serialize, Deserialize, Debug, Clone, PartialEq)]
 pub struct EditMessageCaption {
-    /// Unique identifier for the target chat
+    /// Required if inline_message_id is not specified. Unique identifier for the target chat.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub chat_id: Option<i64>,
-    /// Identifier of the message to edit
+    /// Required if inline_message_id is not specified. Identifier of the message to edit.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub message_id: Option<i64>,
-    /// Identifier of the inline message
+    /// Identifier of the inline message.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub inline_message_id: Option<String>,
-    /// New caption of the message, 0-1024 characters after entities parsing
+    /// New caption of the message, 0-1024 characters after entities parsing.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub caption: Option<String>,
     /// Send Markdown or HTML, if you want Telegram apps to show bold, italic,
@@ -96,23 +87,11 @@ pub struct EditMessageCaption {
 }
 
 impl EditMessageCaption {
-    fn new(chat_id: i64, message_id: i64, new_text: Option<&str>) -> Self {
-        Self {
-            chat_id: Some(chat_id),
-            message_id: Some(message_id),
-            caption: new_text.map(ToString::to_string),
-            inline_message_id: None,
-            parse_mode: None,
-            caption_entities: None,
-            reply_markup: None,
-        }
-    }
-
-    fn from_message(message: &Message, new_text: Option<&str>) -> Self {
+    fn from_message(message: &Message) -> Self {
         Self {
             chat_id: Some(message.chat.get_id()),
             message_id: Some(message.message_id),
-            caption: new_text.map(ToString::to_string),
+            caption: None,
             inline_message_id: None,
             parse_mode: None,
             caption_entities: None,
@@ -126,35 +105,26 @@ impl EditMessageCaption {
 ///
 /// [`edit_message_media`]:
 /// ../../api/trait.API.html#method.edit_message_media
+#[build_struct]
 #[derive(Serialize, Deserialize, Debug, Clone, PartialEq)]
 pub struct EditMessageMedia {
-    /// Unique identifier for the target chat
+    /// Required if inline_message_id is not specified. Unique identifier for the target chat.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub chat_id: Option<i64>,
-    /// Identifier of the message to edit
+    /// Required if inline_message_id is not specified. Identifier of the message to edit.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub message_id: Option<i64>,
-    /// Identifier of the inline message
+    /// Identifier of the inline message.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub inline_message_id: Option<String>,
-    /// new media content of the message
+    /// new media content of the message.
     pub media: InputMedia,
-    /// Inline keyboard
+    /// Inline keyboard.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub reply_markup: Option<InlineKeyboardMarkup>,
 }
 
 impl EditMessageMedia {
-    fn new(chat_id: i64, message_id: i64, new_media: &InputMedia) -> Self {
-        Self {
-            chat_id: Some(chat_id),
-            message_id: Some(message_id),
-            media: new_media.to_owned(),
-            inline_message_id: None,
-            reply_markup: None,
-        }
-    }
-
     fn from_message(message: &Message, new_media: &InputMedia) -> Self {
         Self {
             chat_id: Some(message.chat.get_id()),
@@ -171,38 +141,30 @@ impl EditMessageMedia {
 ///
 /// [`edit_message_reply_markup`]:
 /// ../../api/trait.API.html#method.edit_message_reply_markup
+#[build_struct]
 #[derive(Serialize, Deserialize, Debug, Clone, PartialEq)]
 pub struct EditMessageReplyMarkup {
-    /// Unique identifier for the target chat
+    /// Required if inline_message_id is not specified. Unique identifier for the target chat.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub chat_id: Option<i64>,
-    /// Identifier of the message to edit
+    /// Required if inline_message_id is not specified. Identifier of the message to edit.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub message_id: Option<i64>,
-    /// Identifier of the inline message
+    /// Required if inline_message_id is not specified. Identifier of the inline message.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub inline_message_id: Option<String>,
-    /// Inline keyboard
+    /// Inline keyboard.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub reply_markup: Option<InlineKeyboardMarkup>,
 }
 
 impl EditMessageReplyMarkup {
-    fn new(chat_id: i64, message_id: i64, new_markup: Option<&InlineKeyboardMarkup>) -> Self {
-        Self {
-            chat_id: Some(chat_id),
-            message_id: Some(message_id),
-            inline_message_id: None,
-            reply_markup: new_markup.cloned(),
-        }
-    }
-
-    fn from_message(message: &Message, new_markup: Option<&InlineKeyboardMarkup>) -> Self {
+    fn from_message(message: &Message) -> Self {
         Self {
             chat_id: Some(message.chat.get_id()),
             message_id: Some(message.message_id),
             inline_message_id: None,
-            reply_markup: new_markup.cloned(),
+            reply_markup: None,
         }
     }
 }
@@ -212,6 +174,7 @@ impl EditMessageReplyMarkup {
 ///
 /// [`stop_poll`]:
 /// ../../api/trait.API.html#method.stop_poll
+#[build_struct]
 #[derive(Serialize, Deserialize, Debug, Clone, PartialEq)]
 pub struct StopPoll {
     /// Unique identifier for the target chat
@@ -224,14 +187,6 @@ pub struct StopPoll {
 }
 
 impl StopPoll {
-    fn new(chat_id: i64, message_id: i64) -> Self {
-        Self {
-            chat_id,
-            message_id,
-            reply_markup: None,
-        }
-    }
-
     fn from_message(message: &Message) -> Self {
         Self {
             chat_id: message.chat.get_id(),
@@ -246,6 +201,7 @@ impl StopPoll {
 ///
 /// [`delete_message`]:
 /// ../../api/trait.API.html#method.delete_message
+#[build_struct]
 #[derive(Serialize, Deserialize, Debug, Clone, PartialEq)]
 pub struct DeleteMessage {
     /// Unique identifier for the target chat
@@ -255,13 +211,6 @@ pub struct DeleteMessage {
 }
 
 impl DeleteMessage {
-    fn new(chat_id: i64, message_id: i64) -> Self {
-        Self {
-            chat_id,
-            message_id,
-        }
-    }
-
     fn from_message(message: &Message) -> Self {
         Self {
             chat_id: message.chat.get_id(),
@@ -275,6 +224,7 @@ impl DeleteMessage {
 ///
 /// [`edit_message_live_location`]:
 /// ../../api/trait.API.html#method.edit_message_live_location
+#[build_struct]
 #[derive(Serialize, Deserialize, Debug, Clone, PartialEq)]
 pub struct EditMessageLiveLocation {
     /// Unique identifier for the target chat
@@ -311,6 +261,7 @@ pub struct EditMessageLiveLocation {
 ///
 /// [`stop_message_live_location`]:
 /// ../../api/trait.API.html#method.edit_message_live_location
+#[build_struct]
 #[derive(Serialize, Deserialize, Debug, Clone, PartialEq)]
 pub struct StopMessageLiveLocation {
     /// Unique identifier for the target chat

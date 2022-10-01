@@ -1,10 +1,12 @@
 use serde::{Deserialize, Serialize};
+use telexide_proc_macros::build_struct;
 
 /// struct for holding data needed to call
 /// [`get_updates`]
 ///
 /// [`get_updates`]:
 /// ../../api/trait.API.html#method.get_updates
+#[build_struct]
 #[derive(Serialize, Deserialize, Debug, Clone, PartialEq)]
 pub struct GetUpdates {
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -18,39 +20,7 @@ pub struct GetUpdates {
 }
 
 impl GetUpdates {
-    pub fn new() -> Self {
-        Self {
-            offset: None,
-            limit: None,
-            timeout: None,
-            allowed_updates: None,
-        }
-    }
-
-    pub fn set_offset(&mut self, offset: i64) -> &mut Self {
-        self.offset = Some(offset);
-        self
-    }
-
-    pub fn set_limit(&mut self, mut limit: usize) -> &mut Self {
-        if limit > 100 {
-            limit = 100;
-        }
-        self.limit = Some(limit);
-        self
-    }
-
-    pub fn set_timeout(&mut self, timeout: usize) -> &mut Self {
-        self.timeout = Some(timeout);
-        self
-    }
-
-    pub fn set_allowed_updates(&mut self, allowed_updates: Vec<UpdateType>) -> &mut Self {
-        self.allowed_updates = Some(allowed_updates);
-        self
-    }
-
-    pub fn add_allowed_updates(&mut self, allowed_update: UpdateType) -> &mut Self {
+    pub fn add_allowed_updates(mut self, allowed_update: UpdateType) -> Self {
         if let Some(ref mut a) = self.allowed_updates {
             a.push(allowed_update)
         } else {

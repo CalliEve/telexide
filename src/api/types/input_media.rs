@@ -1,6 +1,7 @@
 use super::InputFile;
 use crate::model::{MessageEntity, ParseMode};
 use serde::{Deserialize, Serialize};
+use telexide_proc_macros::build_struct;
 
 /// This object represents the content of a media message to be sent
 #[derive(Serialize, Deserialize, Debug, Clone, PartialEq)]
@@ -19,6 +20,7 @@ pub enum InputMedia {
 }
 
 /// Represents a photo to be sent.
+#[build_struct]
 #[derive(Serialize, Deserialize, Debug, Clone, PartialEq)]
 pub struct InputMediaPhoto {
     /// File to send. Pass a file_id to send a file that exists on the Telegram
@@ -39,6 +41,7 @@ pub struct InputMediaPhoto {
     pub caption_entities: Option<Vec<MessageEntity>>,
 }
 
+#[build_struct]
 #[derive(Serialize, Deserialize, Debug, Clone, PartialEq)]
 pub struct InputMediaVideo {
     /// File to send. Pass a file_id to send a file that exists on the Telegram
@@ -67,11 +70,13 @@ pub struct InputMediaVideo {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub height: Option<i64>,
     /// If the uploaded video is suitable for streaming
-    pub supports_streaming: bool,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub supports_streaming: Option<bool>,
 }
 
 /// Represents an animation file (GIF or H.264/MPEG-4 AVC video without sound)
 /// to be sent.
+#[build_struct]
 #[derive(Serialize, Deserialize, Debug, Clone, PartialEq)]
 pub struct InputMediaAnimation {
     /// File to send. Pass a file_id to send a file that exists on the Telegram
@@ -102,6 +107,7 @@ pub struct InputMediaAnimation {
 }
 
 /// Represents an audio file to be treated as music to be sent.
+#[build_struct]
 #[derive(Serialize, Deserialize, Debug, Clone, PartialEq)]
 pub struct InputMediaAudio {
     /// File to send. Pass a file_id to send a file that exists on the Telegram
@@ -132,6 +138,7 @@ pub struct InputMediaAudio {
 }
 
 /// Represents a general file to be sent.
+#[build_struct]
 #[derive(Serialize, Deserialize, Debug, Clone, PartialEq)]
 pub struct InputMediaDocument {
     /// File to send. Pass a file_id to send a file that exists on the Telegram
@@ -153,7 +160,8 @@ pub struct InputMediaDocument {
     /// Disables automatic server-side content type detection for files uploaded
     /// using multipart/form-data. Always true, if the document is sent as
     /// part of an album.
-    pub disable_content_type_detection: bool,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub disable_content_type_detection: Option<bool>,
 }
 
 impl InputMedia {
