@@ -90,7 +90,7 @@ telexide = "0.1.6"
 
 ## Supported Rust Versions
 
-The minimum supported version is 1.46. The current Telexide version is not guaranteed to build on Rust versions earlier than the minimum supported version.
+The minimum supported version is 1.60. The current Telexide version is not guaranteed to build on Rust versions earlier than the minimum supported version.
 
 [examples]: https://github.com/callieve/telexide/blob/master/examples
 [client]: https://docs.rs/telexide/*/telexide/client/index.html
