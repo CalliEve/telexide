@@ -6,7 +6,7 @@ use crate::{
 
 use parking_lot::RwLock;
 use std::sync::Arc;
-use typemap::ShareMap;
+use typemap_rev::TypeMap;
 
 /// A builder for the [`Client`] object to make customisation easier
 pub struct ClientBuilder {
@@ -121,7 +121,7 @@ impl ClientBuilder {
                 ))),
                 event_handlers: self.event_handler_funcs.clone(),
                 raw_event_handlers: self.raw_event_handler_funcs.clone(),
-                data: Arc::new(RwLock::new(ShareMap::custom())),
+                data: Arc::new(RwLock::new(TypeMap::custom())),
                 framework: self.framework.clone(),
                 webhook_opts: self.webhook.clone(),
                 allowed_updates: self.allowed_updates.clone(),
@@ -131,7 +131,7 @@ impl ClientBuilder {
                 event_handlers: self.event_handler_funcs.clone(),
                 webhook_opts: self.webhook.clone(),
                 raw_event_handlers: self.raw_event_handler_funcs.clone(),
-                data: Arc::new(RwLock::new(ShareMap::custom())),
+                data: Arc::new(RwLock::new(TypeMap::custom())),
                 framework: self.framework.clone(),
                 allowed_updates: self.allowed_updates.clone(),
             },
