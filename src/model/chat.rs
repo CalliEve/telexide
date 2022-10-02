@@ -1,11 +1,7 @@
 use chrono::{DateTime, Utc};
 use serde::{Deserialize, Serialize};
 
-use super::{
-    raw::RawChat,
-    utils::unix_date_formatting,
-    User,
-};
+use super::{raw::RawChat, utils::unix_date_formatting, User};
 
 /// A private chat object, also known as a DM, between the bot and an user
 #[derive(Serialize, Deserialize, Debug, Clone, PartialEq)]
@@ -20,12 +16,24 @@ pub struct PrivateChat {
     ///
     /// [`get_chat`]: ../../api/trait.API.html#method.get_chat
     pub bio: Option<String>,
+    /// True, if privacy settings of the other party in the private chat allows to use `tg://user?id=<user_id>` links only in chats with the user. Returned only in [`get_chat`].
+    ///
+    /// [`get_chat`]: ../../api/trait.API.html#method.get_chat
+    pub has_private_forwards: Option<bool>,
+    /// True, if the privacy settings of the other party restrict sending voice and video note messages in the private chat.Returned only in [`get_chat`].
+    ///
+    /// [`get_chat`]: ../../api/trait.API.html#method.get_chat
+    pub has_restricted_voice_and_video_messages: Option<bool>,
     /// Last name of the other party
     pub last_name: Option<String>,
     /// Chat photo. Returned only in [`get_chat`].
     ///
     /// [`get_chat`]: ../../api/trait.API.html#method.get_chat
     pub photo: Option<ChatPhoto>,
+    /// The time after which all messages sent to the chat will be automatically deleted; in seconds. Returned only in [`get_chat`].
+    ///
+    /// [`get_chat`]: ../../api/trait.API.html#method.get_chat
+    pub message_auto_delete_time: Option<usize>,
 }
 
 /// A Group chat object
@@ -52,6 +60,10 @@ pub struct GroupChat {
     ///
     /// [`get_chat`]: ../../api/trait.API.html#method.get_chat
     pub permissions: Option<super::ChatPermissions>,
+    /// True, if messages from the chat can't be forwarded to other chats. Returned only in [`get_chat`].
+    ///
+    /// [`get_chat`]: ../../api/trait.API.html#method.get_chat
+    pub has_protected_content: Option<bool>,
 }
 
 /// A supergroup object (a group with more than 200 members)
@@ -66,6 +78,14 @@ pub struct SuperGroupChat {
     ///
     /// [`get_chat`]: ../../api/trait.API.html#method.get_chat
     pub photo: Option<ChatPhoto>,
+    /// True, if users need to join the supergroup before they can send messages.Returned only in [`get_chat`].
+    ///
+    /// [`get_chat`]: ../../api/trait.API.html#method.get_chat
+    pub join_to_send_messages: Option<bool>,
+    /// True, if all users directly joining the supergroup need to be approved by supergroup administrators.Returned only in [`get_chat`].
+    ///
+    /// [`get_chat`]: ../../api/trait.API.html#method.get_chat
+    pub join_by_request: Option<bool>,
     /// Description. Returned only in [`get_chat`].
     ///
     /// [`get_chat`]: ../../api/trait.API.html#method.get_chat
@@ -85,6 +105,10 @@ pub struct SuperGroupChat {
     ///
     /// [`get_chat`]: ../../api/trait.API.html#method.get_chat
     pub slow_mode_delay: Option<usize>,
+    /// True, if messages from the chat can't be forwarded to other chats. Returned only in [`get_chat`].
+    ///
+    /// [`get_chat`]: ../../api/trait.API.html#method.get_chat
+    pub has_protected_content: Option<bool>,
     /// Name of group sticker set. Returned only in [`get_chat`].
     ///
     /// [`get_chat`]: ../../api/trait.API.html#method.get_chat
@@ -129,6 +153,10 @@ pub struct ChannelChat {
     ///
     /// [`get_chat`]: ../../api/trait.API.html#method.get_chat
     pub pinned_message: Option<Box<super::Message>>,
+    /// True, if messages from the chat can't be forwarded to other chats. Returned only in [`get_chat`].
+    ///
+    /// [`get_chat`]: ../../api/trait.API.html#method.get_chat
+    pub has_protected_content: Option<bool>,
     /// Unique identifier for the linked chat, i.e. the discussion group
     /// identifier for a channel and vice versa; for supergroups and channel
     /// chats. Returned only in [`get_chat`].
@@ -243,6 +271,7 @@ impl From<RawChat> for Chat {
                 description: raw.description,
                 pinned_message: raw.pinned_message.map(|m| Box::new((*m).into())),
                 invite_link: raw.invite_link,
+                has_protected_content: raw.has_protected_content,
                 linked_chat_id: raw.linked_chat_id,
             }),
             ChatType::Private => Chat::Private(PrivateChat {
@@ -252,6 +281,10 @@ impl From<RawChat> for Chat {
                 username: raw.username,
                 photo: raw.photo,
                 bio: raw.bio,
+                has_restricted_voice_and_video_messages: raw
+                    .has_restricted_voice_and_video_messages,
+                has_private_forwards: raw.has_private_forwards,
+                message_auto_delete_time: raw.message_auto_delete_time,
             }),
             ChatType::Group => Chat::Group(GroupChat {
                 id: raw.id,
@@ -261,16 +294,20 @@ impl From<RawChat> for Chat {
                 pinned_message: raw.pinned_message.map(|m| Box::new((*m).into())),
                 invite_link: raw.invite_link,
                 permissions: raw.permissions,
+                has_protected_content: raw.has_protected_content,
             }),
             ChatType::SuperGroup => Chat::SuperGroup(SuperGroupChat {
                 id: raw.id,
                 title: raw.title.unwrap_or_default(),
                 username: raw.username,
                 photo: raw.photo,
+                join_by_request: raw.join_by_request,
+                join_to_send_messages: raw.join_to_send_messages,
                 description: raw.description,
                 pinned_message: raw.pinned_message.map(|m| Box::new((*m).into())),
                 invite_link: raw.invite_link,
                 permissions: raw.permissions,
+                has_protected_content: raw.has_protected_content,
                 sticker_set_name: raw.sticker_set_name,
                 can_set_sticker_set: raw.can_set_sticker_set,
                 slow_mode_delay: raw.slow_mode_delay,
@@ -293,11 +330,17 @@ impl From<Chat> for RawChat {
                 username: c.username,
                 photo: c.photo,
                 bio: c.bio,
+                has_private_forwards: c.has_private_forwards,
+                message_auto_delete_time: c.message_auto_delete_time,
+                has_restricted_voice_and_video_messages: c.has_restricted_voice_and_video_messages,
+                join_to_send_messages: None,
+                join_by_request: None,
                 title: None,
                 description: None,
                 pinned_message: None,
                 invite_link: None,
                 permissions: None,
+                has_protected_content: None,
                 sticker_set_name: None,
                 can_set_sticker_set: None,
                 slow_mode_delay: None,
@@ -313,15 +356,21 @@ impl From<Chat> for RawChat {
                 pinned_message: c.pinned_message.map(|m| Box::new((*m).into())),
                 invite_link: c.invite_link,
                 permissions: c.permissions,
+                has_protected_content: c.has_protected_content,
                 username: None,
+                message_auto_delete_time: None,
                 sticker_set_name: None,
                 can_set_sticker_set: None,
                 slow_mode_delay: None,
                 first_name: None,
                 last_name: None,
                 bio: None,
+                has_private_forwards: None,
                 linked_chat_id: None,
                 location: None,
+                has_restricted_voice_and_video_messages: None,
+                join_to_send_messages: None,
+                join_by_request: None,
             },
             Chat::SuperGroup(c) => RawChat {
                 chat_type: ChatType::SuperGroup,
@@ -333,14 +382,20 @@ impl From<Chat> for RawChat {
                 pinned_message: c.pinned_message.map(|m| Box::new((*m).into())),
                 invite_link: c.invite_link,
                 permissions: c.permissions,
+                has_protected_content: c.has_protected_content,
                 sticker_set_name: c.sticker_set_name,
                 can_set_sticker_set: c.can_set_sticker_set,
                 slow_mode_delay: c.slow_mode_delay,
                 linked_chat_id: c.linked_chat_id,
                 location: c.location,
+                join_to_send_messages: c.join_to_send_messages,
+                join_by_request: c.join_by_request,
+                has_restricted_voice_and_video_messages: None,
                 bio: None,
+                has_private_forwards: None,
                 first_name: None,
                 last_name: None,
+                message_auto_delete_time: None,
             },
             Chat::Channel(c) => RawChat {
                 chat_type: ChatType::Channel,
@@ -351,15 +406,21 @@ impl From<Chat> for RawChat {
                 description: c.description,
                 pinned_message: c.pinned_message.map(|m| Box::new((*m).into())),
                 invite_link: c.invite_link,
+                has_protected_content: c.has_protected_content,
                 linked_chat_id: c.linked_chat_id,
                 permissions: None,
+                message_auto_delete_time: None,
                 sticker_set_name: None,
                 can_set_sticker_set: None,
                 slow_mode_delay: None,
                 first_name: None,
                 last_name: None,
                 bio: None,
+                has_private_forwards: None,
                 location: None,
+                has_restricted_voice_and_video_messages: None,
+                join_to_send_messages: None,
+                join_by_request: None,
             },
         }
     }
@@ -383,7 +444,7 @@ pub enum ChatMember {
     Kicked(KickedMemberStatus),
 }
 
-/// Represents a [`ChatMember`] who is the creator of the [`Chat`].
+/// Represents a [`ChatMember`] who is the creator or owner of the [`Chat`].
 #[derive(Serialize, Deserialize, Debug, Clone, PartialEq)]
 pub struct CreatorMemberStatus {
     /// Information about the user
@@ -528,6 +589,11 @@ pub struct ChatInviteLink {
     pub is_primary: bool,
     /// If the link is revoked
     pub is_revoked: bool,
+    /// If users joining the chat via the link need to be approved by chat administrators
+    pub creates_join_request: bool,
+    /// Invite link name
+    #[serde(default)]
+    pub name: Option<String>,
     /// When the link will expire or has been expired
     #[serde(with = "unix_date_formatting::optional")]
     pub expire_date: Option<DateTime<Utc>>,
@@ -535,6 +601,9 @@ pub struct ChatInviteLink {
     /// after joining the chat via this invite link; 1-99999
     #[serde(default)]
     pub member_limit: Option<i32>,
+    /// Number of pending join requests created using this link
+    #[serde(default)]
+    pub pending_join_request_count: Option<i32>,
 }
 
 /// Represents changes in the status of a chat member.
@@ -571,3 +640,20 @@ pub enum ChatType {
     Sender,
 }
 
+/// Represents a join request sent to a chat.
+#[derive(Serialize, Deserialize, Debug, Clone, PartialEq)]
+pub struct ChatJoinRequest {
+    /// Chat to which the request was sent
+    pub chat: Chat,
+    /// User that sent the join request
+    pub from: User,
+    /// Date the request was sent in Unix time.
+    #[serde(with = "unix_date_formatting")]
+    pub date: DateTime<Utc>,
+    /// Bio of the user.
+    #[serde(default)]
+    pub bio: Option<String>,
+    /// Chat invite link that was used by the user to send the join request
+    #[serde(default)]
+    pub invite_link: Option<ChatInviteLink>,
+}

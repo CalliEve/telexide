@@ -354,7 +354,8 @@ pub struct ProximityAlertTriggered {
     pub distance: i64,
 }
 
-/// This object represents a service message about a voice chat scheduled in the chat.
+/// This object represents a service message about a voice chat scheduled in the
+/// chat.
 #[derive(Serialize, Deserialize, Debug, Clone, PartialEq)]
 pub struct VoiceChatScheduled {
     /// Point in time when the voice chat is supposed to be started by a chat
@@ -391,4 +392,15 @@ pub struct VoiceChatParticipantsInvited {
 pub struct MessageAutoDeleteTimerChanged {
     /// New auto-delete time for messages in the chat
     pub message_auto_delete_time: i64,
+}
+
+/// Describes data sent from a [Web App] to the bot.
+///
+/// [Web App]: https://core.telegram.org/bots/webapps
+#[derive(Serialize, Deserialize, Debug, Clone, PartialEq)]
+pub struct WebAppData {
+    /// The data. Be aware that a bad client can send arbitrary data in this field.
+    pub data: String,
+    /// Text of the web_app keyboard button from which the Web App was opened. Be aware that a bad client can send arbitrary data in this field.
+    pub button_text: String,
 }

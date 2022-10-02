@@ -20,6 +20,9 @@ pub struct Context {
 
 impl Context {
     pub fn new(api: Arc<Box<APIConnector>>, data: Arc<RwLock<TypeMap>>) -> Self {
-        Self { api, data }
+        Self {
+            api,
+            data,
+        }
     }
 }

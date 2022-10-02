@@ -2,25 +2,10 @@ use chrono::{DateTime, Utc};
 use serde::{Deserialize, Serialize};
 
 use super::{
-    message_contents::*,
-    message_entity::*,
-    utils::unix_date_formatting,
-    ChatType,
-    CallbackQuery,
-    ChatLocation,
-    ChatMemberUpdated,
-    ChatPhoto,
-    ChosenInlineResult,
-    Game,
-    InlineKeyboardMarkup,
-    InlineQuery,
-    Invoice,
-    PassportData,
-    PreCheckoutQuery,
-    ShippingQuery,
-    Sticker,
-    SuccessfulPayment,
-    User,
+    message_contents::*, message_entity::*, utils::unix_date_formatting, CallbackQuery,
+    ChatJoinRequest, ChatLocation, ChatMemberUpdated, ChatPhoto, ChatType, ChosenInlineResult,
+    Game, InlineKeyboardMarkup, InlineQuery, Invoice, PassportData, PreCheckoutQuery,
+    ShippingQuery, Sticker, SuccessfulPayment, User,
 };
 
 /// The raw message, for most usages the [`Message`] object is easier to use
@@ -43,6 +28,8 @@ pub struct RawMessage {
     #[serde(default)]
     #[serde(with = "unix_date_formatting::optional")]
     pub forward_date: Option<DateTime<Utc>>,
+    #[serde(default)]
+    pub is_automatic_forward: bool,
 
     pub reply_to_message: Option<Box<RawMessage>>,
     pub via_bot: Option<User>,
@@ -50,6 +37,9 @@ pub struct RawMessage {
     #[serde(default)]
     #[serde(with = "unix_date_formatting::optional")]
     pub edit_date: Option<DateTime<Utc>>,
+
+    #[serde(default)]
+    pub has_protected_content: bool,
 
     pub media_group_id: Option<String>,
     pub author_signature: Option<String>,
@@ -104,6 +94,8 @@ pub struct RawMessage {
     pub voice_chat_started: Option<VoiceChatStarted>,
     pub voice_chat_ended: Option<VoiceChatEnded>,
     pub voice_chat_participants_invited: Option<VoiceChatParticipantsInvited>,
+
+    pub web_app_data: Option<WebAppData>,
 }
 
 /// The raw chat, for most usages the [`Chat`] object is easier to use
@@ -129,6 +121,22 @@ pub struct RawChat {
     ///
     /// [`get_chat`]: ../../api/trait.API.html#method.get_chat
     pub bio: Option<String>,
+    /// True, if privacy settings of the other party in the private chat allows to use `tg://user?id=<user_id>` links only in chats with the user. Returned only in [`get_chat`].
+    ///
+    /// [`get_chat`]: ../../api/trait.API.html#method.get_chat
+    pub has_private_forwards: Option<bool>,
+    /// True, if the privacy settings of the other party restrict sending voice and video note messages in the private chat.Returned only in [`get_chat`].
+    ///
+    /// [`get_chat`]: ../../api/trait.API.html#method.get_chat
+    pub has_restricted_voice_and_video_messages: Option<bool>,
+    /// True, if users need to join the supergroup before they can send messages.Returned only in [`get_chat`].
+    ///
+    /// [`get_chat`]: ../../api/trait.API.html#method.get_chat
+    pub join_to_send_messages: Option<bool>,
+    /// True, if all users directly joining the supergroup need to be approved by supergroup administrators.Returned only in [`get_chat`].
+    ///
+    /// [`get_chat`]: ../../api/trait.API.html#method.get_chat
+    pub join_by_request: Option<bool>,
     /// Description, for groups, supergroups and channel chats. Returned only in
     /// [`get_chat`].
     ///
@@ -151,6 +159,14 @@ pub struct RawChat {
     ///
     /// [`get_chat`]: ../../api/trait.API.html#method.get_chat
     pub slow_mode_delay: Option<usize>,
+    /// The time after which all messages sent to the chat will be automatically deleted; in seconds. Returned only in [`get_chat`].
+    ///
+    /// [`get_chat`]: ../../api/trait.API.html#method.get_chat
+    pub message_auto_delete_time: Option<usize>,
+    /// True, if messages from the chat can't be forwarded to other chats. Returned only in [`get_chat`].
+    ///
+    /// [`get_chat`]: ../../api/trait.API.html#method.get_chat
+    pub has_protected_content: Option<bool>,
     /// For supergroups, name of group sticker set. Returned only in
     /// [`get_chat`].
     ///
@@ -222,4 +238,6 @@ pub struct RawUpdate {
     /// administrator in the chat and must explicitly specify “chat_member”
     /// in the list of allowed_updates to receive these updates.
     pub chat_member: Option<ChatMemberUpdated>,
+    /// A request to join the chat has been sent. The bot must have the can_invite_users administrator right in the chat to receive these updates.
+    pub chat_join_request: Option<ChatJoinRequest>,
 }

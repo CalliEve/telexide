@@ -1,8 +1,8 @@
 use super::{InputFile, InputMedia};
 use crate::{
     model::{
-        utils::unix_date_formatting, ChatAction, MessageEntity, ParseMode, PhotoSize, PollType,
-        ReplyMarkup,
+        utils::{unix_date_formatting, IntegerOrString},
+        ChatAction, MessageEntity, ParseMode, PhotoSize, PollType, ReplyMarkup,
     },
     prelude::Message,
     utils::result::Result,
@@ -21,7 +21,7 @@ use telexide_proc_macros::build_struct;
 #[derive(Serialize, Deserialize, Debug, Clone, PartialEq)]
 pub struct SendMessage {
     /// Unique identifier for the target chat
-    pub chat_id: i64,
+    pub chat_id: IntegerOrString,
     /// Text of the message to be sen, 1-4096 characters after entities parsing
     pub text: String,
     /// Send Markdown or HTML, if you want Telegram apps to show bold, italic,
@@ -60,9 +60,9 @@ pub struct SendMessage {
 #[derive(Serialize, Deserialize, Debug, Clone, PartialEq)]
 pub struct ForwardMessage {
     /// Unique identifier for the target chat
-    pub chat_id: i64,
+    pub chat_id: IntegerOrString,
     /// Unique identifier for the chat where the original message was sent.
-    pub from_chat_id: i64,
+    pub from_chat_id: IntegerOrString,
     /// Message identifier in the chat specified in from_chat_id
     pub message_id: i64,
     /// Sends the message silently. Users will receive a notification with no
@@ -72,10 +72,10 @@ pub struct ForwardMessage {
 }
 
 impl ForwardMessage {
-    pub fn from_message(chat_id: i64, message: &Message) -> Self {
+    pub fn from_message(chat_id: IntegerOrString, message: &Message) -> Self {
         Self {
             chat_id,
-            from_chat_id: message.chat.get_id(),
+            from_chat_id: message.chat.get_id().into(),
             message_id: message.message_id,
             disable_notification: None,
         }
@@ -89,9 +89,9 @@ impl ForwardMessage {
 #[derive(Serialize, Deserialize, Debug, Clone, PartialEq)]
 pub struct CopyMessage {
     /// Unique identifier for the target chat
-    pub chat_id: i64,
+    pub chat_id: IntegerOrString,
     /// Unique identifier for the chat where the original message was sent.
-    pub from_chat_id: i64,
+    pub from_chat_id: IntegerOrString,
     /// Message identifier in the chat specified in from_chat_id
     pub message_id: i64,
     /// New caption for media, 0-1024 characters after entities parsing. If not
@@ -122,10 +122,10 @@ pub struct CopyMessage {
 }
 
 impl CopyMessage {
-    pub fn from_message(chat_id: i64, from: &Message) -> Self {
+    pub fn from_message(chat_id: IntegerOrString, from: &Message) -> Self {
         Self {
             chat_id,
-            from_chat_id: from.chat.get_id(),
+            from_chat_id: from.chat.get_id().into(),
             message_id: from.message_id,
             caption: None,
             caption_entities: None,
@@ -147,7 +147,7 @@ impl CopyMessage {
 #[derive(Serialize, Deserialize, Debug, Clone, PartialEq)]
 pub struct SendPhoto {
     /// Unique identifier for the target chat
-    pub chat_id: i64,
+    pub chat_id: IntegerOrString,
     /// Photo to send. Pass a file_id as String to send a photo that exists on
     /// the Telegram servers (recommended), pass an HTTP URL as a String for
     /// Telegram to get a photo from the Internet
@@ -181,7 +181,7 @@ pub struct SendPhoto {
 }
 
 impl SendPhoto {
-    pub fn from_photo_size(chat_id: i64, photo: &PhotoSize) -> Self {
+    pub fn from_photo_size(chat_id: IntegerOrString, photo: &PhotoSize) -> Self {
         Self {
             chat_id,
             photo: InputFile::String(photo.file_id.clone()),
@@ -195,7 +195,7 @@ impl SendPhoto {
         }
     }
 
-    pub fn from_file<P: AsRef<Path>>(chat_id: i64, path: P) -> Result<Self> {
+    pub fn from_file<P: AsRef<Path>>(chat_id: IntegerOrString, path: P) -> Result<Self> {
         Ok(Self {
             chat_id,
             photo: InputFile::from_path(path)?,
@@ -219,7 +219,7 @@ impl SendPhoto {
 #[derive(Serialize, Deserialize, Debug, Clone, PartialEq)]
 pub struct SendAudio {
     /// Unique identifier for the target chat
-    pub chat_id: i64,
+    pub chat_id: IntegerOrString,
     /// Audio to send. Pass a file_id as String to send an audio file that
     /// exists on the Telegram servers (recommended), pass an HTTP URL as a
     /// String for Telegram to get an audio file from the Internet
@@ -269,7 +269,7 @@ pub struct SendAudio {
 }
 
 impl SendAudio {
-    pub fn from_file<P: AsRef<Path>>(chat_id: i64, path: P) -> Result<Self> {
+    pub fn from_file<P: AsRef<Path>>(chat_id: IntegerOrString, path: P) -> Result<Self> {
         Ok(Self {
             chat_id,
             audio: InputFile::from_path(path)?,
@@ -297,7 +297,7 @@ impl SendAudio {
 #[derive(Serialize, Deserialize, Debug, Clone, PartialEq)]
 pub struct SendDocument {
     /// Unique identifier for the target chat
-    pub chat_id: i64,
+    pub chat_id: IntegerOrString,
     /// Document to send. Pass a file_id as String to send a photo that exists
     /// on the Telegram servers (recommended), pass an HTTP URL as a String
     /// for Telegram to get a document from the Internet
@@ -342,7 +342,7 @@ pub struct SendDocument {
 }
 
 impl SendDocument {
-    pub fn from_file<P: AsRef<Path>>(chat_id: i64, path: P) -> Result<Self> {
+    pub fn from_file<P: AsRef<Path>>(chat_id: IntegerOrString, path: P) -> Result<Self> {
         Ok(Self {
             chat_id,
             document: InputFile::from_path(path)?,
@@ -368,7 +368,7 @@ impl SendDocument {
 #[derive(Serialize, Deserialize, Debug, Clone, PartialEq)]
 pub struct SendVideo {
     /// Unique identifier for the target chat
-    pub chat_id: i64,
+    pub chat_id: IntegerOrString,
     /// Video to send. Pass a file_id as String to send an video file that
     /// exists on the Telegram servers (recommended), pass an HTTP URL as a
     /// String for Telegram to get an video file from the Internet
@@ -427,7 +427,7 @@ pub struct SendVideo {
 }
 
 impl SendVideo {
-    pub fn from_file<P: AsRef<Path>>(chat_id: i64, path: P) -> Result<Self> {
+    pub fn from_file<P: AsRef<Path>>(chat_id: IntegerOrString, path: P) -> Result<Self> {
         Ok(Self {
             chat_id,
             video: InputFile::from_path(path)?,
@@ -458,7 +458,7 @@ impl SendVideo {
 #[derive(Serialize, Deserialize, Debug, Clone, PartialEq)]
 pub struct SendAnimation {
     /// Unique identifier for the target chat
-    pub chat_id: i64,
+    pub chat_id: IntegerOrString,
     /// Animation to send. Pass a file_id as String to send an animation file
     /// that exists on the Telegram servers (recommended), pass an HTTP URL
     /// as a String for Telegram to get an animation file from the Internet
@@ -514,7 +514,7 @@ pub struct SendAnimation {
 }
 
 impl SendAnimation {
-    pub fn from_file<P: AsRef<Path>>(chat_id: i64, path: P) -> Result<Self> {
+    pub fn from_file<P: AsRef<Path>>(chat_id: IntegerOrString, path: P) -> Result<Self> {
         Ok(Self {
             chat_id,
             animation: InputFile::from_path(path)?,
@@ -544,7 +544,7 @@ impl SendAnimation {
 #[derive(Serialize, Deserialize, Debug, Clone, PartialEq)]
 pub struct SendVoice {
     /// Unique identifier for the target chat
-    pub chat_id: i64,
+    pub chat_id: IntegerOrString,
     /// Voice to send. Pass a file_id as String to send an voice file that
     /// exists on the Telegram servers (recommended), pass an HTTP URL as a
     /// String for Telegram to get an voice file from the Internet
@@ -581,7 +581,7 @@ pub struct SendVoice {
 }
 
 impl SendVoice {
-    pub fn from_file<P: AsRef<Path>>(chat_id: i64, path: P) -> Result<Self> {
+    pub fn from_file<P: AsRef<Path>>(chat_id: IntegerOrString, path: P) -> Result<Self> {
         Ok(Self {
             chat_id,
             voice: InputFile::from_path(path)?,
@@ -606,7 +606,7 @@ impl SendVoice {
 #[derive(Serialize, Deserialize, Debug, Clone, PartialEq)]
 pub struct SendVideoNote {
     /// Unique identifier for the target chat
-    pub chat_id: i64,
+    pub chat_id: IntegerOrString,
     /// VideoNote to send. Pass a file_id as String to send an video_note file
     /// that exists on the Telegram servers (recommended), pass an HTTP URL
     /// as a String for Telegram to get an video_note file from the Internet
@@ -641,7 +641,7 @@ pub struct SendVideoNote {
 }
 
 impl SendVideoNote {
-    pub fn from_file<P: AsRef<Path>>(chat_id: i64, path: P) -> Result<Self> {
+    pub fn from_file<P: AsRef<Path>>(chat_id: IntegerOrString, path: P) -> Result<Self> {
         Ok(Self {
             chat_id,
             video_note: InputFile::from_path(path)?,
@@ -665,7 +665,7 @@ impl SendVideoNote {
 #[derive(Serialize, Deserialize, Debug, Clone, PartialEq)]
 pub struct SendMediaGroup {
     /// Unique identifier for the target chat
-    pub chat_id: i64,
+    pub chat_id: IntegerOrString,
     /// Photos, videos, documents or audios as an album to be send, amount must
     /// be 2-10
     pub media: Vec<InputMedia>,
@@ -691,7 +691,7 @@ pub struct SendMediaGroup {
 #[derive(Serialize, Deserialize, Debug, Clone, PartialEq)]
 pub struct SendLocation {
     /// Unique identifier for the target chat
-    pub chat_id: i64,
+    pub chat_id: IntegerOrString,
     /// Latitude of the location
     pub latitude: f64,
     /// Longitude of the location
@@ -733,7 +733,7 @@ pub struct SendLocation {
 #[derive(Serialize, Deserialize, Debug, Clone, PartialEq)]
 pub struct SendVenue {
     /// Unique identifier for the target chat
-    pub chat_id: i64,
+    pub chat_id: IntegerOrString,
     /// Latitude of the venue
     pub latitude: f64,
     /// Longitude of the venue
@@ -775,7 +775,7 @@ pub struct SendVenue {
 #[derive(Serialize, Deserialize, Debug, Clone, PartialEq)]
 pub struct SendContact {
     /// Unique identifier for the target chat
-    pub chat_id: i64,
+    pub chat_id: IntegerOrString,
     /// Contact's phone number
     pub phone_number: String,
     /// Contact's first name
@@ -811,7 +811,7 @@ pub struct SendContact {
 #[derive(Serialize, Deserialize, Debug, Clone, PartialEq)]
 pub struct SendPoll {
     /// Unique identifier for the target chat
-    pub chat_id: i64,
+    pub chat_id: IntegerOrString,
     /// Poll question, 1-255 characters
     pub question: String,
     /// A JSON-serialized list of answer options, 2-10 strings 1-300 characters
@@ -880,7 +880,7 @@ pub struct SendPoll {
 #[derive(Serialize, Deserialize, Debug, Clone, PartialEq)]
 pub struct SendDice {
     /// Unique identifier for the target chat
-    pub chat_id: i64,
+    pub chat_id: IntegerOrString,
     /// Emoji on which the dice throw animation is based.
     /// Currently, must be one of “🎲”, “🎯”, “🏀”, “⚽”, “🎳”, or “🎰”.
     /// Dice can have values 1-6 for “🎲”, “🎯” and “🎳”, values 1-5 for “🏀”
@@ -906,13 +906,16 @@ pub struct SendDice {
 /// struct for holding data needed to call
 /// [`send_chat_action`]
 ///
+/// For more information of what actions can be broadcasted, see the [API docs]
+///
 /// [`send_chat_action`]:
 /// ../../api/trait.API.html#method.send_chat_action
+/// [API docs]: https://core.telegram.org/bots/api#sendchataction
 #[build_struct]
 #[derive(Serialize, Deserialize, Debug, Clone, PartialEq)]
 pub struct SendChatAction {
     /// Unique identifier for the target chat
-    pub chat_id: i64,
+    pub chat_id: IntegerOrString,
     /// Type of action to broadcast.
     pub action: ChatAction,
 }

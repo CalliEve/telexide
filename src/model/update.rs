@@ -1,14 +1,6 @@
 use super::{
-    raw::RawUpdate,
-    CallbackQuery,
-    ChatMemberUpdated,
-    ChosenInlineResult,
-    InlineQuery,
-    Message,
-    Poll,
-    PollAnswer,
-    PreCheckoutQuery,
-    ShippingQuery,
+    raw::RawUpdate, CallbackQuery, ChatJoinRequest, ChatMemberUpdated, ChosenInlineResult,
+    InlineQuery, Message, Poll, PollAnswer, PreCheckoutQuery, ShippingQuery,
 };
 use serde::{Deserialize, Deserializer, Serialize, Serializer};
 
@@ -69,6 +61,8 @@ pub enum UpdateContent {
     /// administrator in the chat and must explicitly specify “chat_member”
     /// in the list of allowed_updates to receive these updates.
     ChatMember(ChatMemberUpdated),
+    /// A request to join the chat has been sent. The bot must have the can_invite_users administrator right in the chat to receive these updates.
+    ChatJoinRequest(ChatJoinRequest),
     /// An unknown update content
     Unknown,
 }
@@ -76,10 +70,7 @@ pub enum UpdateContent {
 impl From<RawUpdate> for Update {
     fn from(raw: RawUpdate) -> Update {
         let update_id = raw.update_id;
-        let make_update = |content: UpdateContent| Self {
-            update_id,
-            content,
-        };
+        let make_update = |content: UpdateContent| Self { update_id, content };
 
         macro_rules! set_content {
             ($data:expr, $kind:ident) => {
@@ -102,6 +93,7 @@ impl From<RawUpdate> for Update {
         set_content!(raw.poll_answer, PollAnswer);
         set_content!(raw.my_chat_member, MyChatMember);
         set_content!(raw.chat_member, ChatMember);
+        set_content!(raw.chat_join_request, ChatJoinRequest);
 
         make_update(UpdateContent::Unknown)
     }
@@ -124,6 +116,7 @@ impl From<Update> for RawUpdate {
             poll_answer: None,
             my_chat_member: None,
             chat_member: None,
+            chat_join_request: None,
         };
 
         match update.content {
@@ -177,6 +170,10 @@ impl From<Update> for RawUpdate {
             },
             UpdateContent::ChatMember(c) => {
                 ret.chat_member = Some(c);
+                ret
+            },
+            UpdateContent::ChatJoinRequest(c) => {
+                ret.chat_join_request = Some(c);
                 ret
             },
             UpdateContent::Unknown => ret,

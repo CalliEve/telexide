@@ -124,8 +124,27 @@ pub trait API: Sync {
 
     /// Use this method to get the current list of the bot's commands. Requires
     /// no parameters. Returns a `Vec<`[`BotCommand`]`>` on success.
-    async fn get_my_commands(&self) -> Result<Vec<BotCommand>> {
-        self.get(APIEndpoint::GetMyCommands, None).await?.into()
+    async fn get_my_commands(&self, data: GetMyCommands) -> Result<Vec<BotCommand>> {
+        self.get(
+            APIEndpoint::GetMyCommands,
+            Some(serde_json::to_value(data)?),
+        )
+        .await?
+        .into()
+    }
+
+    /// Use this method to delete the list of the bot's commands for the given
+    /// scope and user language. After deletion, [higher level commands] will be
+    /// shown to affected users. Returns True on success.
+    ///
+    /// [higher level commands]: https://core.telegram.org/bots/api#determining-list-of-commands
+    async fn delete_my_commands(&self, data: DeleteMyCommands) -> Result<bool> {
+        self.post(
+            APIEndpoint::DeleteMyCommands,
+            Some(serde_json::to_value(data)?),
+        )
+        .await?
+        .into()
     }
 
     /// Use this method to forward messages of any kind. On success, the sent
@@ -549,15 +568,15 @@ pub trait API: Sync {
         .into()
     }
 
-    /// Use this method to kick a user from a group, a supergroup or a channel.
+    /// Use this method to ban a user from a group, a supergroup or a channel.
     /// In the case of supergroups and channels, the user will not be able to
     /// return to the group on their own using invite links, etc., unless
     /// unbanned first. The bot must be an administrator in the chat for
     /// this to work and must have the appropriate admin rights. Returns True on
     /// success.
-    async fn kick_chat_member(&self, data: KickChatMember) -> Result<bool> {
+    async fn ban_chat_member(&self, data: BanChatMember) -> Result<bool> {
         self.post(
-            APIEndpoint::KickChatMember,
+            APIEndpoint::BanChatMember,
             Some(serde_json::to_value(data)?),
         )
         .await?
@@ -598,6 +617,26 @@ pub trait API: Sync {
     ) -> Result<bool> {
         self.post(
             APIEndpoint::SetChatAdministratorCustomTitle,
+            Some(serde_json::to_value(data)?),
+        )
+        .await?
+        .into()
+    }
+
+    /// Use this method to ban a channel chat in a supergroup or a channel. Until the chat is unbanned, the owner of the banned chat won't be able to send messages on behalf of any of their channels. The bot must be an administrator in the supergroup or channel for this to work and must have the appropriate administrator rights. Returns True on success.
+    async fn ban_chat_sender_chat(&self, data: BanChatSenderChat) -> Result<bool> {
+        self.post(
+            APIEndpoint::BanChatSenderChat,
+            Some(serde_json::to_value(data)?),
+        )
+        .await?
+        .into()
+    }
+
+    /// Use this method to unban a previously banned channel chat in a supergroup or channel. The bot must be an administrator for this to work and must have the appropriate administrator rights. Returns True on success.
+    async fn unban_chat_sender_chat(&self, data: UnbanChatSenderChat) -> Result<bool> {
+        self.post(
+            APIEndpoint::UnbanChatSenderChat,
             Some(serde_json::to_value(data)?),
         )
         .await?
@@ -673,6 +712,26 @@ pub trait API: Sync {
     async fn revoke_chat_invite_link(&self, data: RevokeChatInviteLink) -> Result<ChatInviteLink> {
         self.post(
             APIEndpoint::RevokeChatInviteLink,
+            Some(serde_json::to_value(data)?),
+        )
+        .await?
+        .into()
+    }
+
+    /// Use this method to approve a chat join request. The bot must be an administrator in the chat for this to work and must have the can_invite_users administrator right. Returns True on success.
+    async fn approve_chat_join_request(&self, data: ApproveChatJoinRequest) -> Result<bool> {
+        self.post(
+            APIEndpoint::ApproveChatJoinRequest,
+            Some(serde_json::to_value(data)?),
+        )
+        .await?
+        .into()
+    }
+
+    /// Use this method to decline a chat join request. The bot must be an administrator in the chat for this to work and must have the can_invite_users administrator right. Returns True on success.
+    async fn decline_chat_join_request(&self, data: DeclineChatJoinRequest) -> Result<bool> {
+        self.post(
+            APIEndpoint::DeclineChatJoinRequest,
             Some(serde_json::to_value(data)?),
         )
         .await?
@@ -819,9 +878,9 @@ pub trait API: Sync {
 
     /// Use this method to get the number of members in a chat. Returns i64 on
     /// success.
-    async fn get_members_count(&self, data: GetChatMembersCount) -> Result<i64> {
+    async fn get_members_count(&self, data: GetChatMemberCount) -> Result<i64> {
         self.get(
-            APIEndpoint::GetChatMembersCount,
+            APIEndpoint::GetChatMemberCount,
             Some(serde_json::to_value(data)?),
         )
         .await?

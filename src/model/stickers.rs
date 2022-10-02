@@ -1,4 +1,4 @@
-use super::PhotoSize;
+use super::{File, PhotoSize};
 use serde::{Deserialize, Serialize};
 
 /// This object represents a sticker.
@@ -18,14 +18,21 @@ pub struct Sticker {
     /// True, if the sticker is [animated](https://telegram.org/blog/animated-stickers)
     #[serde(default)]
     pub is_animated: bool,
+    /// True, if the sticker is a [video sticker](https://telegram.org/blog/video-stickers-better-reactions)
+    #[serde(default)]
+    pub is_video: bool,
     /// Sticker thumbnail in the .WEBP or .JPG format
     pub thumb: Option<PhotoSize>,
     /// Emoji associated with the sticker
     pub emoji: Option<String>,
     /// Name of the sticker set to which the sticker belongs
     pub set_name: Option<String>,
+    /// For premium regular stickers, premium animation for the sticker
+    pub premium_animation: Option<File>,
     /// For mask stickers, the position where the mask should be placed
     pub mask_position: Option<MaskPosition>,
+    /// For custom emoji stickers, unique identifier of the custom emoji
+    pub custom_emoji_id: Option<String>,
     /// File size
     pub file_size: Option<usize>,
 }

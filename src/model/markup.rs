@@ -89,6 +89,8 @@ pub struct ReplyKeyboardMarkup {
     /// Defaults to false.
     #[serde(default)]
     pub one_time_keyboard: bool,
+    /// The placeholder to be shown in the input field when the keyboard is active; 1-64 characters.
+    pub input_field_placeholder: Option<String>,
     /// Use this parameter if you want to show the keyboard to specific users
     /// only. Targets: 1) users that are @mentioned in the text of the
     /// [`Message`] object; 2) if the bot's message is a reply (has
@@ -151,6 +153,8 @@ pub struct ForceReply {
     ///
     /// [privacy mode]: https://core.telegram.org/bots#privacy-mode
     pub force_reply: bool,
+    /// The placeholder to be shown in the input field when the keyboard is active; 1-64 characters.
+    pub input_field_placeholder: Option<String>,
     /// Optional. Use this parameter if you want to force reply from specific
     /// users only. Targets: 1) users that are @mentioned in the text of the
     /// [`Message`] object; 2) if the bot's message is a reply (has

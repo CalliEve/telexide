@@ -1,19 +1,22 @@
 use super::InputFile;
-use crate::model::{utils::unix_date_formatting, Chat, ChatPermissions};
+use crate::model::{
+    utils::{unix_date_formatting, IntegerOrString},
+    Chat, ChatPermissions,
+};
 use chrono::{DateTime, Utc};
 use serde::{Deserialize, Serialize};
 use telexide_proc_macros::build_struct;
 
 /// struct for holding data needed to call
-/// [`kick_chat_member`]
+/// [`ban_chat_member`]
 ///
-/// [`kick_chat_member`]:
-/// ../../api/trait.API.html#method.kick_chat_member
+/// [`ban_chat_member`]:
+/// ../../api/trait.API.html#method.ban_chat_member
 #[build_struct]
 #[derive(Serialize, Deserialize, Debug, Clone, PartialEq)]
-pub struct KickChatMember {
+pub struct BanChatMember {
     /// Unique identifier for the target chat
-    pub chat_id: i64,
+    pub chat_id: IntegerOrString,
     /// Unique identifier of the target user
     pub user_id: i64,
     /// Date when the user will be unbanned, unix time.
@@ -38,7 +41,7 @@ pub struct KickChatMember {
 #[derive(Serialize, Deserialize, Debug, Clone, PartialEq)]
 pub struct UnbanChatMember {
     /// Unique identifier for the target chat
-    pub chat_id: i64,
+    pub chat_id: IntegerOrString,
     /// Unique identifier of the target user
     pub user_id: i64,
     /// Do nothing if the user is not banned
@@ -55,7 +58,7 @@ pub struct UnbanChatMember {
 #[derive(Serialize, Deserialize, Debug, Clone, PartialEq)]
 pub struct RestrictChatMember {
     /// Unique identifier for the target chat
-    pub chat_id: i64,
+    pub chat_id: IntegerOrString,
     /// Unique identifier of the target user
     pub user_id: i64,
     /// New user permissions
@@ -77,7 +80,7 @@ pub struct RestrictChatMember {
 #[derive(Serialize, Deserialize, Debug, Clone, PartialEq)]
 pub struct PromoteChatMember {
     /// Unique identifier for the target chat
-    pub chat_id: i64,
+    pub chat_id: IntegerOrString,
     /// Unique identifier of the target user
     pub user_id: i64,
     /// If the administrator's presence in the chat is hidden
@@ -131,12 +134,38 @@ pub struct PromoteChatMember {
 #[derive(Serialize, Deserialize, Debug, Clone, PartialEq)]
 pub struct SetChatAdministratorCustomTitle {
     /// Unique identifier for the target chat
-    pub chat_id: i64,
+    pub chat_id: IntegerOrString,
     /// Unique identifier of the target user
     pub user_id: i64,
     /// New custom title for the administrator; 0-16 characters, emoji are not
     /// allowed
     pub custom_title: String,
+}
+
+/// struct for holding data needed to call [`ban_chat_sender_chat`]
+///
+/// [`ban_chat_sender_chat`]:
+/// ../../api/trait.API.html#method.ban_chat_sender_chat
+#[build_struct]
+#[derive(Serialize, Deserialize, Debug, Clone, PartialEq)]
+pub struct BanChatSenderChat {
+    /// Unique identifier for the target chat
+    pub chat_id: IntegerOrString,
+    /// Unique identifier of the target sender chat
+    pub sender_chat_id: i64,
+}
+
+/// struct for holding data needed to call [`unban_chat_sender_chat`]
+///
+/// [`unban_chat_sender_chat`]:
+/// ../../api/trait.API.html#method.unban_chat_sender_chat
+#[build_struct]
+#[derive(Serialize, Deserialize, Debug, Clone, PartialEq)]
+pub struct UnbanChatSenderChat {
+    /// Unique identifier for the target chat
+    pub chat_id: IntegerOrString,
+    /// Unique identifier of the target sender chat
+    pub sender_chat_id: i64,
 }
 
 /// struct for holding data needed to call [`set_chat_permissions`]
@@ -147,7 +176,7 @@ pub struct SetChatAdministratorCustomTitle {
 #[derive(Serialize, Deserialize, Debug, Clone, PartialEq)]
 pub struct SetChatPermissions {
     /// Unique identifier for the target chat
-    pub chat_id: i64,
+    pub chat_id: IntegerOrString,
     /// New default chat permissions
     pub permissions: ChatPermissions,
 }
@@ -160,7 +189,7 @@ pub struct SetChatPermissions {
 #[derive(Serialize, Deserialize, Debug, Clone, PartialEq)]
 pub struct ExportChatInviteLink {
     /// Unique identifier for the target chat
-    pub chat_id: i64,
+    pub chat_id: IntegerOrString,
 }
 
 /// struct for holding data needed to call
@@ -172,7 +201,7 @@ pub struct ExportChatInviteLink {
 #[derive(Serialize, Deserialize, Debug, Clone, PartialEq)]
 pub struct SetChatPhoto {
     /// Unique identifier for the target chat
-    pub chat_id: i64,
+    pub chat_id: IntegerOrString,
     /// New chat photo
     pub photo: InputFile,
 }
@@ -186,7 +215,7 @@ pub struct SetChatPhoto {
 #[derive(Serialize, Deserialize, Debug, Clone, PartialEq)]
 pub struct DeleteChatPhoto {
     /// Unique identifier for the target chat
-    pub chat_id: i64,
+    pub chat_id: IntegerOrString,
 }
 
 /// struct for holding data needed to call
@@ -198,7 +227,7 @@ pub struct DeleteChatPhoto {
 #[derive(Serialize, Deserialize, Debug, Clone, PartialEq)]
 pub struct SetChatTitle {
     /// Unique identifier for the target chat
-    pub chat_id: i64,
+    pub chat_id: IntegerOrString,
     /// New chat title, 1-255 characters
     pub title: String,
 }
@@ -212,7 +241,7 @@ pub struct SetChatTitle {
 #[derive(Serialize, Deserialize, Debug, Clone, PartialEq)]
 pub struct SetChatDescription {
     /// Unique identifier for the target chat
-    pub chat_id: i64,
+    pub chat_id: IntegerOrString,
     /// New chat description, 0-255 characters
     #[serde(skip_serializing_if = "Option::is_none")]
     pub description: Option<String>,
@@ -227,7 +256,7 @@ pub struct SetChatDescription {
 #[derive(Serialize, Deserialize, Debug, Clone, PartialEq)]
 pub struct PinChatMessage {
     /// Unique identifier for the target chat
-    pub chat_id: i64,
+    pub chat_id: IntegerOrString,
     /// Identifier of a message to pin
     pub message_id: i64,
     /// Sends the message silently. Users will receive a notification with no
@@ -245,7 +274,7 @@ pub struct PinChatMessage {
 #[derive(Serialize, Deserialize, Debug, Clone, PartialEq)]
 pub struct UnpinChatMessage {
     /// Unique identifier for the target chat
-    pub chat_id: i64,
+    pub chat_id: IntegerOrString,
     /// Identifier of a message to unpin. If not specified, the most recent
     /// pinned message (by sending date) will be unpinned.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -261,7 +290,7 @@ pub struct UnpinChatMessage {
 #[derive(Serialize, Deserialize, Debug, Clone, PartialEq)]
 pub struct UnpinAllChatMessages {
     /// Unique identifier for the target chat
-    pub chat_id: i64,
+    pub chat_id: IntegerOrString,
 }
 
 /// struct for holding data needed to call
@@ -273,7 +302,7 @@ pub struct UnpinAllChatMessages {
 #[derive(Serialize, Deserialize, Debug, Clone, PartialEq)]
 pub struct LeaveChat {
     /// Unique identifier for the target chat
-    pub chat_id: i64,
+    pub chat_id: IntegerOrString,
 }
 
 /// struct for holding data needed to call
@@ -285,7 +314,7 @@ pub struct LeaveChat {
 #[derive(Serialize, Deserialize, Debug, Clone, PartialEq)]
 pub struct GetChat {
     /// Unique identifier for the target chat
-    pub chat_id: i64,
+    pub chat_id: IntegerOrString,
 }
 
 /// struct for holding data needed to call
@@ -297,19 +326,19 @@ pub struct GetChat {
 #[derive(Serialize, Deserialize, Debug, Clone, PartialEq)]
 pub struct GetChatAdministrators {
     /// Unique identifier for the target chat
-    pub chat_id: i64,
+    pub chat_id: IntegerOrString,
 }
 
 /// struct for holding data needed to call
-/// [`get_chat_members_count`]
+/// [`get_chat_member_count`]
 ///
-/// [`get_chat_members_count`]:
-/// ../../api/trait.API.html#method.get_chat_members_count
+/// [`get_chat_member_count`]:
+/// ../../api/trait.API.html#method.get_chat_member_count
 #[build_struct]
 #[derive(Serialize, Deserialize, Debug, Clone, PartialEq)]
-pub struct GetChatMembersCount {
+pub struct GetChatMemberCount {
     /// Unique identifier for the target chat
-    pub chat_id: i64,
+    pub chat_id: IntegerOrString,
 }
 
 /// struct for holding data needed to call
@@ -321,7 +350,7 @@ pub struct GetChatMembersCount {
 #[derive(Serialize, Deserialize, Debug, Clone, PartialEq)]
 pub struct GetChatMember {
     /// Unique identifier for the target chat
-    pub chat_id: i64,
+    pub chat_id: IntegerOrString,
     /// Unique identifier of the target user
     pub user_id: i64,
 }
@@ -335,7 +364,7 @@ pub struct GetChatMember {
 #[derive(Serialize, Deserialize, Debug, Clone, PartialEq)]
 pub struct SetChatStickerSet {
     /// Unique identifier for the target chat
-    pub chat_id: i64,
+    pub chat_id: IntegerOrString,
     /// Name of the sticker set to be set as the group sticker set
     pub sticker_set_name: String,
 }
@@ -349,7 +378,7 @@ pub struct SetChatStickerSet {
 #[derive(Serialize, Deserialize, Debug, Clone, PartialEq)]
 pub struct DeleteChatStickerSet {
     /// Unique identifier for the target chat
-    pub chat_id: i64,
+    pub chat_id: IntegerOrString,
 }
 
 /// struct for holding data needed to call [`create_chat_invite_link`]
@@ -360,12 +389,21 @@ pub struct DeleteChatStickerSet {
 #[derive(Serialize, Deserialize, Debug, Clone, PartialEq)]
 pub struct CreateChatInviteLink {
     /// Unique identifier for the target chat
-    pub chat_id: i64,
+    pub chat_id: IntegerOrString,
+    /// Invite link name; 0-32 characters.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub name: Option<String>,
     /// Point in time (Unix timestamp) when the link will expire
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub expire_date: Option<i64>,
     /// Maximum number of users that can be members of the chat simultaneously
     /// after joining the chat via this invite link; 1-99999
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub member_limit: Option<i32>,
+    /// True, if users joining the chat via the link need to be approved by chat administrators.
+    /// If True, member_limit can't be specified.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub creates_join_request: Option<bool>,
 }
 
 /// struct for holding data needed to call [`edit_chat_invite_link`]
@@ -376,14 +414,23 @@ pub struct CreateChatInviteLink {
 #[derive(Serialize, Deserialize, Debug, Clone, PartialEq)]
 pub struct EditChatInviteLink {
     /// Unique identifier for the target chat
-    pub chat_id: i64,
+    pub chat_id: IntegerOrString,
     /// The invite link to edit
     pub invite_link: String,
+    /// Invite link name; 0-32 characters.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub name: Option<String>,
     /// Point in time (Unix timestamp) when the link will expire
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub expire_date: Option<i64>,
     /// Maximum number of users that can be members of the chat simultaneously
     /// after joining the chat via this invite link; 1-99999
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub member_limit: Option<i32>,
+    /// True, if users joining the chat via the link need to be approved by chat administrators.
+    /// If True, member_limit can't be specified.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub creates_join_request: Option<bool>,
 }
 
 /// struct for holding data needed to call [`revoke_chat_invite_link`]
@@ -394,9 +441,35 @@ pub struct EditChatInviteLink {
 #[derive(Serialize, Deserialize, Debug, Clone, PartialEq)]
 pub struct RevokeChatInviteLink {
     /// Unique identifier for the target chat
-    pub chat_id: i64,
+    pub chat_id: IntegerOrString,
     /// The invite link to revoke
     pub invite_link: String,
+}
+
+/// struct for holding data needed to call [`approve_chat_join_request`]
+///
+/// [`approve_chat_join_request`]:
+/// ../../api/trait.API.html#method.approve_chat_join_request
+#[build_struct]
+#[derive(Serialize, Deserialize, Debug, Clone, PartialEq)]
+pub struct ApproveChatJoinRequest {
+    /// Unique identifier for the target chat
+    pub chat_id: IntegerOrString,
+    /// Unique identifier of the target user
+    pub user_id: i64,
+}
+
+/// struct for holding data needed to call [`decline_chat_join_request`]
+///
+/// [`decline_chat_join_request`]:
+/// ../../api/trait.API.html#method.decline_chat_join_request
+#[build_struct]
+#[derive(Serialize, Deserialize, Debug, Clone, PartialEq)]
+pub struct DeclineChatJoinRequest {
+    /// Unique identifier for the target chat
+    pub chat_id: IntegerOrString,
+    /// Unique identifier of the target user
+    pub user_id: i64,
 }
 
 macro_rules! impl_from_chat {
@@ -404,7 +477,7 @@ macro_rules! impl_from_chat {
         impl From<Chat> for $name {
             fn from(chat: Chat) -> Self {
                 Self {
-                    chat_id: chat.get_id(),
+                    chat_id: chat.get_id().into(),
                 }
             }
         }
@@ -417,5 +490,5 @@ impl_from_chat!(UnpinAllChatMessages);
 impl_from_chat!(LeaveChat);
 impl_from_chat!(GetChat);
 impl_from_chat!(GetChatAdministrators);
-impl_from_chat!(GetChatMembersCount);
+impl_from_chat!(GetChatMemberCount);
 impl_from_chat!(DeleteChatStickerSet);

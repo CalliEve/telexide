@@ -46,15 +46,6 @@ pub struct CallbackQuery {
     pub game_short_name: Option<String>,
 }
 
-/// A bot command
-#[derive(Serialize, Deserialize, Debug, Clone, PartialEq)]
-pub struct BotCommand {
-    /// the command name, for example "ping" for the command "/ping"
-    pub command: String,
-    /// the description of the command to display in telegram
-    pub description: String,
-}
-
 /// The Bot API supports basic formatting for messages.
 /// You can use bold, italic, underlined and strikethrough text, as well as
 /// inline links and pre-formatted code in your bots' messages. Telegram clients
