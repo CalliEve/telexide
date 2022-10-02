@@ -16,6 +16,10 @@ pub struct User {
     pub username: Option<String>,
     /// [IETF language tag](https://en.wikipedia.org/wiki/IETF_language_tag) of the user's language
     pub language_code: Option<String>,
+    /// True, if this user is a Telegram Premium user
+    pub is_premium: Option<bool>,
+    /// True, if this user added the bot to the attachment menu
+    pub added_to_attachment_menu: Option<bool>,
     /// True, if the bot can be invited to groups. Returned only in [`get_me`].
     ///
     /// [`get_me`]: ../api/struct.API.html#method.get_me

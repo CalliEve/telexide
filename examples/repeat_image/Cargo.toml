@@ -9,3 +9,4 @@ telexide = { path = "../../" }
 tokio = { version = "1", features = ["full"] }
 typemap = "0.3"
 typemap_rev = "0.2"
+parking_lot = "0.12"

@@ -1,5 +1,5 @@
 use super::InputFile;
-use crate::model::{utils::IntegerOrString, MaskPosition, ReplyMarkup};
+use crate::model::{utils::IntegerOrString, MaskPosition, ReplyMarkup, StickerType};
 use serde::{Deserialize, Serialize};
 use telexide_proc_macros::build_struct;
 
@@ -89,7 +89,7 @@ pub struct CreateNewStickerSet {
     /// See <https://core.telegram.org/animated_stickers#technical-requirements> for technical requirements
     #[serde(skip_serializing_if = "Option::is_none")]
     pub tgs_sticker: Option<InputFile>,
-    /// WEBM video with the sticker, uploaded using multipart/form-data. See https://core.telegram.org/stickers#video-sticker-requirements for technical requirements
+    /// WEBM video with the sticker, uploaded using multipart/form-data. See <https://core.telegram.org/stickers#video-sticker-requirements> for technical requirements
     #[serde(skip_serializing_if = "Option::is_none")]
     pub webm_sticker: Option<InputFile>,
     /// Type of stickers in the set, pass “regular” or “mask”. Custom emoji
@@ -127,7 +127,7 @@ pub struct AddStickerToSet {
     /// See <https://core.telegram.org/animated_stickers#technical-requirements> for technical requirements
     #[serde(skip_serializing_if = "Option::is_none")]
     pub tgs_sticker: Option<InputFile>,
-    /// WEBM video with the sticker, uploaded using multipart/form-data. See https://core.telegram.org/stickers#video-sticker-requirements for technical requirements
+    /// WEBM video with the sticker, uploaded using multipart/form-data. See <https://core.telegram.org/stickers#video-sticker-requirements> for technical requirements
     #[serde(skip_serializing_if = "Option::is_none")]
     pub webm_sticker: Option<InputFile>,
     /// One or more emoji corresponding to the sticker
@@ -186,11 +186,14 @@ pub struct SetStickerSetThumb {
     pub thumb: Option<InputFile>,
 }
 
+/// struct for holding data needed to call
+/// [`get_custom_emoji_stickers`]
+///
+/// [`get_custom_emoji_stickers`]:
+/// ../../api/trait.API.html#method.get_custom_emoji_stickers
+#[build_struct]
 #[derive(Serialize, Deserialize, Debug, Clone, PartialEq)]
-#[serde(untagged)]
-pub enum StickerType {
-    #[serde(rename = "regular")]
-    Regular,
-    #[serde(rename = "mask")]
-    Mask,
+pub struct GetCustomEmojiStickers {
+    /// List of custom emoji identifiers. At most 200 custom emoji identifiers can be specified.
+    pub custom_emoji_ids: Vec<String>,
 }

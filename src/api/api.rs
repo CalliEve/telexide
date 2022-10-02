@@ -1025,6 +1025,26 @@ pub trait API: Sync {
         .into()
     }
 
+    /// Use this method to get information about custom emoji stickers by their identifiers. Returns a Vec of [Sticker] objects.
+    async fn get_custom_emoji_stickers(
+        &self,
+        data: GetCustomEmojiStickers,
+    ) -> Result<Vec<Sticker>> {
+        if data.custom_emoji_ids.len() > 200 {
+            return Err(TelegramError::InvalidArgument(
+                "At most 200 custom emoji identifiers can be specified.".to_owned(),
+            )
+            .into());
+        }
+
+        self.post(
+            APIEndpoint::GetCustomEmojiStickers,
+            Some(serde_json::to_value(data)?),
+        )
+        .await?
+        .into()
+    }
+
     /// Use this method to upload a .PNG file with a sticker for later use in
     /// createNewStickerSet and addStickerToSet methods (can be used
     /// multiple times). Returns the uploaded [File] on success.
@@ -1213,6 +1233,16 @@ pub trait API: Sync {
         self.post(APIEndpoint::SendInvoice, Some(serde_json::to_value(data)?))
             .await?
             .into()
+    }
+
+    /// Use this method to create a link for an invoice. Returns the created invoice link as String on success.
+    async fn create_invoice_link(&self, data: CreateInvoiceLink) -> Result<String> {
+        self.post(
+            APIEndpoint::CreateInvoiceLink,
+            Some(serde_json::to_value(data)?),
+        )
+        .await?
+        .into()
     }
 
     /// If you sent an invoice requesting a shipping address and the parameter

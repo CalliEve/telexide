@@ -21,7 +21,7 @@ async fn repeat(context: Context, message: Message) -> CommandResult {
     context
         .api
         .send_message(SendMessage::new(
-            message.chat.get_id(),
+            message.chat.get_id().into(),
             "please send the image I will repeat",
         ))
         .await?;
@@ -75,7 +75,7 @@ async fn handle_next(context: Context, update: Update) {
     let res = context
         .api
         .send_photo(SendPhoto::from_photo_size(
-            message.chat.get_id(),
+            message.chat.get_id().into(),
             &image.expect("no image"),
         ))
         .await;

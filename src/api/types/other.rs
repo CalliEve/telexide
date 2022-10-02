@@ -173,7 +173,7 @@ pub struct SetChatMenuButton {
     /// Unique identifier for the target private chat. If not specified, default bot's menu button will be changed
     #[serde(skip_serializing_if = "Option::is_none")]
     pub chat_id: Option<i64>,
-    /// A JSON-serialized object for the bot's new menu button. Defaults to [`MenuButtonDefault`]
+    /// A JSON-serialized object for the bot's new menu button. Defaults to [`MenuButton::Default`]
     #[serde(skip_serializing_if = "Option::is_none")]
     pub menu_button: Option<MenuButton>,
 }

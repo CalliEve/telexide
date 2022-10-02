@@ -1,9 +1,9 @@
+# telexide
+
 [![Crate](https://img.shields.io/crates/v/telexide?style=flat-square)](https://crates.io/crates/telexide)
 [![Docs](https://docs.rs/telexide/badge.svg)](https://docs.rs/telexide)
 [![Build Status](https://img.shields.io/endpoint.svg?url=https%3A%2F%2Factions-badge.atrox.dev%2Fcallieve%2Ftelexide%2Fbadge&style=flat-square)](https://actions-badge.atrox.dev/callieve/telexide/goto)
 [![Rust Version](https://img.shields.io/badge/rust-1.46.0+-93450a.svg?style=flat-square)](https://blog.rust-lang.org/2020/01/30/Rust-1.46.0.html)
-
-# telexide
 
 Telexide is an easy to use library for making a telegram bot, built on tokio and hyper.
 
@@ -58,6 +58,7 @@ For more examples, please see the examples dir.
 
 ## Features
 
+- [x] Supports all of the telegram bot API, up to and including version 6.2
 - [x] easy to use and customisable client
 - [x] long-polling based update handling
   - [x] set your own timeout
@@ -68,15 +69,15 @@ For more examples, please see the examples dir.
   - [x] use your own api struct so you control the get and post methods
   - [x] includes all telegram api endpoints
 - [x] webhook based update handling
+- [x] builder methods for creating all api call payloads
 
-#### Planned:
+### Planned
 
 - [ ] choosing what you want from the lib using feature flags
 - [ ] subscribe to non-message events using command (or similar) framework
   - [ ] run command on receiving an inline query or answer to one
   - [ ] run command on receiving a poll that matches your requirements
 - [ ] wait_for style Context method to wait for an update matching your criteria
-- [ ] more builder methods for creating api data
 - [ ] methods on models for easier calling of API endpoints (like `ChatMember::kick`)
 
 ## Installation

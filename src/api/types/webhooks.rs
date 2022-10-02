@@ -34,6 +34,9 @@ pub struct SetWebhook {
     /// Pass True to drop all pending updates
     #[serde(skip_serializing_if = "Option::is_none")]
     pub drop_pending_updates: Option<bool>,
+    /// A secret token to be sent in a header “X-Telegram-Bot-Api-Secret-Token” in every webhook request, 1-256 characters. Only characters A-Z, a-z, 0-9, _ and - are allowed. The header is useful to ensure that the request comes from a webhook set by you.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub secret_token: Option<String>,
 }
 
 /// Struct for holding data needed to call [`delete_webhook`]
