@@ -5,7 +5,7 @@ use telexide::{api::types::SendMessage, client::WebhookOptions, prelude::*};
 async fn ping(context: Context, message: Message) -> CommandResult {
     context
         .api
-        .send_message(SendMessage::new(message.chat.get_id(), "pong"))
+        .send_message(SendMessage::new(message.chat.get_id().into(), "pong"))
         .await?;
     Ok(())
 }

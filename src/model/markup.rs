@@ -30,6 +30,10 @@ pub struct InlineKeyboardButton {
     ///
     /// [callback query]: ../model/struct.CallbackQuery.html
     pub callback_data: Option<String>,
+    /// Description of the Web App that will be launched when the user presses the button. The Web App will be able to send an arbitrary message on behalf of the user using the method [`answer_web_app_query`]. Available only in private chats between a user and the bot.
+    ///
+    /// [`answer_web_app_query`]: ../api/trait.API.html#method.answer_web_app_query
+    pub web_app: Option<WebAppInfo>,
     /// If set, pressing the button will prompt the user to select one of their
     /// chats, open that chat and insert the bot‘s username and the
     /// specified inline query in the input field. Can be empty, in which
@@ -89,6 +93,9 @@ pub struct ReplyKeyboardMarkup {
     /// Defaults to false.
     #[serde(default)]
     pub one_time_keyboard: bool,
+    /// The placeholder to be shown in the input field when the keyboard is
+    /// active; 1-64 characters.
+    pub input_field_placeholder: Option<String>,
     /// Use this parameter if you want to show the keyboard to specific users
     /// only. Targets: 1) users that are @mentioned in the text of the
     /// [`Message`] object; 2) if the bot's message is a reply (has
@@ -151,6 +158,9 @@ pub struct ForceReply {
     ///
     /// [privacy mode]: https://core.telegram.org/bots#privacy-mode
     pub force_reply: bool,
+    /// The placeholder to be shown in the input field when the keyboard is
+    /// active; 1-64 characters.
+    pub input_field_placeholder: Option<String>,
     /// Optional. Use this parameter if you want to force reply from specific
     /// users only. Targets: 1) users that are @mentioned in the text of the
     /// [`Message`] object; 2) if the bot's message is a reply (has
@@ -181,6 +191,8 @@ pub struct KeyboardButton {
     /// If specified, the user will be asked to create a poll and send it to the
     /// bot when the button is pressed. Available in private chats only
     pub request_poll: Option<KeyboardButtonPollType>,
+    /// If specified, the described Web App will be launched when the button is pressed. The Web App will be able to send a “web_app_data” service message. Available in private chats only.
+    pub web_app: Option<WebAppInfo>,
 }
 
 /// This object represents type of a poll, which is allowed to be created and
@@ -192,4 +204,15 @@ pub struct KeyboardButtonPollType {
     /// Otherwise, the user will be allowed to create a poll of any type.
     #[serde(rename = "type")]
     pub poll_type: super::PollType,
+}
+
+/// Describes a [Web App].
+///
+/// [Web App]: https://core.telegram.org/bots/webapps
+#[derive(Serialize, Deserialize, Debug, Clone, PartialEq)]
+pub struct WebAppInfo {
+    /// An HTTPS URL of a Web App to be opened with additional data as specified in [Initializing Web Apps]
+    ///
+    /// [Initializing Web Apps]: https://core.telegram.org/bots/webapps#initializing-web-apps
+    pub url: String,
 }

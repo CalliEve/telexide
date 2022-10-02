@@ -1,6 +1,7 @@
 use super::{
     raw::RawUpdate,
     CallbackQuery,
+    ChatJoinRequest,
     ChatMemberUpdated,
     ChosenInlineResult,
     InlineQuery,
@@ -69,6 +70,10 @@ pub enum UpdateContent {
     /// administrator in the chat and must explicitly specify “chat_member”
     /// in the list of allowed_updates to receive these updates.
     ChatMember(ChatMemberUpdated),
+    /// A request to join the chat has been sent. The bot must have the
+    /// can_invite_users administrator right in the chat to receive these
+    /// updates.
+    ChatJoinRequest(ChatJoinRequest),
     /// An unknown update content
     Unknown,
 }
@@ -102,6 +107,7 @@ impl From<RawUpdate> for Update {
         set_content!(raw.poll_answer, PollAnswer);
         set_content!(raw.my_chat_member, MyChatMember);
         set_content!(raw.chat_member, ChatMember);
+        set_content!(raw.chat_join_request, ChatJoinRequest);
 
         make_update(UpdateContent::Unknown)
     }
@@ -124,6 +130,7 @@ impl From<Update> for RawUpdate {
             poll_answer: None,
             my_chat_member: None,
             chat_member: None,
+            chat_join_request: None,
         };
 
         match update.content {
@@ -177,6 +184,10 @@ impl From<Update> for RawUpdate {
             },
             UpdateContent::ChatMember(c) => {
                 ret.chat_member = Some(c);
+                ret
+            },
+            UpdateContent::ChatJoinRequest(c) => {
+                ret.chat_join_request = Some(c);
                 ret
             },
             UpdateContent::Unknown => ret,

@@ -1,5 +1,5 @@
 use super::InputFile;
-use crate::model::{MaskPosition, ReplyMarkup};
+use crate::model::{utils::IntegerOrString, MaskPosition, ReplyMarkup, StickerType};
 use serde::{Deserialize, Serialize};
 use telexide_proc_macros::build_struct;
 
@@ -12,7 +12,7 @@ use telexide_proc_macros::build_struct;
 #[derive(Serialize, Deserialize, Debug, Clone, PartialEq)]
 pub struct SendSticker {
     /// Unique identifier for the target chat
-    pub chat_id: i64,
+    pub chat_id: IntegerOrString,
     /// Sticker to send. Pass a file_id as String to send a file that exists on
     /// the Telegram servers (recommended), pass an HTTP URL as a String for
     /// Telegram to get a .WEBP file from the Internet, or upload a new one
@@ -21,6 +21,9 @@ pub struct SendSticker {
     /// sound.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub disable_notification: Option<bool>,
+    /// Protects the contents of the sent message from forwarding and saving
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub protect_content: Option<bool>,
     /// If the message is a reply, ID of the original message
     #[serde(skip_serializing_if = "Option::is_none")]
     pub reply_to_message_id: Option<i64>,
@@ -86,11 +89,16 @@ pub struct CreateNewStickerSet {
     /// See <https://core.telegram.org/animated_stickers#technical-requirements> for technical requirements
     #[serde(skip_serializing_if = "Option::is_none")]
     pub tgs_sticker: Option<InputFile>,
+    /// WEBM video with the sticker, uploaded using multipart/form-data. See <https://core.telegram.org/stickers#video-sticker-requirements> for technical requirements
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub webm_sticker: Option<InputFile>,
+    /// Type of stickers in the set, pass “regular” or “mask”. Custom emoji
+    /// sticker sets can't be created via the Bot API at the moment. By default,
+    /// a regular sticker set is created.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub sticker_type: Option<StickerType>,
     /// One or more emoji corresponding to the sticker
     pub emojis: String,
-    /// Pass True, if a set of mask stickers should be created
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub contains_masks: Option<bool>,
     /// position where the mask should be placed on faces
     #[serde(skip_serializing_if = "Option::is_none")]
     pub mask_position: Option<MaskPosition>,
@@ -119,6 +127,9 @@ pub struct AddStickerToSet {
     /// See <https://core.telegram.org/animated_stickers#technical-requirements> for technical requirements
     #[serde(skip_serializing_if = "Option::is_none")]
     pub tgs_sticker: Option<InputFile>,
+    /// WEBM video with the sticker, uploaded using multipart/form-data. See <https://core.telegram.org/stickers#video-sticker-requirements> for technical requirements
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub webm_sticker: Option<InputFile>,
     /// One or more emoji corresponding to the sticker
     pub emojis: String,
     /// position where the mask should be placed on faces
@@ -173,4 +184,16 @@ pub struct SetStickerSetThumb {
     /// thumbnail can't be uploaded via HTTP URL.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub thumb: Option<InputFile>,
+}
+
+/// struct for holding data needed to call
+/// [`get_custom_emoji_stickers`]
+///
+/// [`get_custom_emoji_stickers`]:
+/// ../../api/trait.API.html#method.get_custom_emoji_stickers
+#[build_struct]
+#[derive(Serialize, Deserialize, Debug, Clone, PartialEq)]
+pub struct GetCustomEmojiStickers {
+    /// List of custom emoji identifiers. At most 200 custom emoji identifiers can be specified.
+    pub custom_emoji_ids: Vec<String>,
 }

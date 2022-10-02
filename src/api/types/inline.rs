@@ -684,7 +684,8 @@ pub struct InputContactMessageContent {
     pub vcard: Option<String>,
 }
 
-/// Represents the content of an invoice message to be sent as the result of an inline query.
+/// Represents the content of an invoice message to be sent as the result of an
+/// inline query.
 #[build_struct]
 #[derive(Serialize, Deserialize, Debug, Clone, PartialEq)]
 pub struct InputInvoiceMessageContent {
@@ -692,8 +693,8 @@ pub struct InputInvoiceMessageContent {
     pub title: String,
     /// Product description, 1-255 characters
     pub description: String,
-    /// Bot-defined invoice payload, 1-128 bytes. This will not be displayed to the user, use for
-    /// your internal processes.
+    /// Bot-defined invoice payload, 1-128 bytes. This will not be displayed to
+    /// the user, use for your internal processes.
     pub payload: String,
     /// Payment provider token, obtained via [Botfather](https://t.me/botfather)
     pub provider_token: String,
@@ -703,24 +704,27 @@ pub struct InputInvoiceMessageContent {
     /// Price breakdown, a vec of components (e.g. product price, tax, discount,
     /// delivery cost, delivery tax, bonus, etc.)
     pub prices: Vec<LabeledPrice>,
-    /// The maximum accepted amount for tips in the smallest units of the currency (integer, not
-    /// float/double). For example, for a maximum tip of `US$ 1.45` pass `max_tip_amount = 145`. See
-    /// the exp parameter in [currencies.json](https://core.telegram.org/bots/payments/currencies.json),
+    /// The maximum accepted amount for tips in the smallest units of the
+    /// currency (integer, not float/double). For example, for a maximum tip
+    /// of `US$ 1.45` pass `max_tip_amount = 145`. See the exp parameter in [currencies.json](https://core.telegram.org/bots/payments/currencies.json),
     /// it shows the number of digits past the decimal point
     /// for each currency (2 for the majority of currencies). Defaults to 0
     #[serde(skip_serializing_if = "Option::is_none")]
     pub max_tip_amount: Option<i64>,
-    /// A vec of suggested amounts of tips in the smallest units of the currency (integer, not
-    /// float/double). At most 4 suggested tip amounts can be specified. The suggested tip amounts
-    /// must be positive, passed in a strictly increased order and must not exceed max_tip_amount.
+    /// A vec of suggested amounts of tips in the smallest units of the currency
+    /// (integer, not float/double). At most 4 suggested tip amounts can be
+    /// specified. The suggested tip amounts must be positive, passed in a
+    /// strictly increased order and must not exceed max_tip_amount.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub suggested_tip_amounts: Option<Vec<i64>>,
-    /// A JSON-serialized object for data about the invoice, which will be shared with the payment provider. A
-    /// detailed description of the required fields should be provided by the payment provider.
+    /// A JSON-serialized object for data about the invoice, which will be
+    /// shared with the payment provider. A detailed description of the
+    /// required fields should be provided by the payment provider.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub provider_data: Option<String>,
-    /// URL of the product photo for the invoice. Can be a photo of the goods or a marketing image
-    /// for a service. People like it better when they see what they are paying for.
+    /// URL of the product photo for the invoice. Can be a photo of the goods or
+    /// a marketing image for a service. People like it better when they see
+    /// what they are paying for.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub photo_url: Option<String>,
     /// Photo size
@@ -741,7 +745,8 @@ pub struct InputInvoiceMessageContent {
     /// Pass True, if you require the user's email address to complete the order
     #[serde(skip_serializing_if = "Option::is_none")]
     pub need_email: Option<bool>,
-    /// Pass True, if you require the user's shipping address to complete the order
+    /// Pass True, if you require the user's shipping address to complete the
+    /// order
     #[serde(skip_serializing_if = "Option::is_none")]
     pub need_shipping_address: Option<bool>,
     /// Pass True, if user's phone number should be sent to provider
@@ -753,4 +758,14 @@ pub struct InputInvoiceMessageContent {
     /// Pass True, if the final price depends on the shipping method
     #[serde(skip_serializing_if = "Option::is_none")]
     pub is_flexible: Option<bool>,
+}
+
+/// Represents the content of an answer to a web app query
+#[build_struct]
+#[derive(Serialize, Deserialize, Debug, Clone, PartialEq)]
+pub struct AnswerWebAppQuery {
+    /// Unique identifier for the query to be answered
+    pub web_app_query_id: String,
+    /// A JSON-serialized object describing the message to be sent
+    pub result: InlineQueryResult,
 }

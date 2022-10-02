@@ -3,6 +3,7 @@
 pub(crate) mod utils;
 
 mod chat;
+mod commands;
 mod games;
 mod inline;
 mod markup;
@@ -18,6 +19,7 @@ mod update;
 mod user;
 
 pub use chat::*;
+pub use commands::*;
 pub use games::*;
 pub use inline::*;
 pub use markup::*;
@@ -30,3 +32,4 @@ pub use stickers::*;
 pub use telegram_passport::*;
 pub use update::*;
 pub use user::*;
+pub use utils::IntegerOrString;

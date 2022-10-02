@@ -11,13 +11,7 @@ use crate::{
 use hyper::{
     body::HttpBody,
     service::{make_service_fn, service_fn},
-    Body,
-    Method,
-    Request,
-    Response,
-    Server,
-    StatusCode,
-    Uri,
+    Body, Method, Request, Response, Server, StatusCode, Uri,
 };
 use tokio::sync::mpsc::{channel, Receiver, Sender};
 
@@ -31,9 +25,7 @@ pub struct Webhook {
 impl Webhook {
     /// creates a new `Webhook` based on the provided `WebhookOptions`
     pub fn new(opts: &WebhookOptions) -> Self {
-        Self {
-            opts: opts.clone(),
-        }
+        Self { opts: opts.clone() }
     }
 
     /// starts the webhandling and returns a [`Receiver`], which will allow you
@@ -136,6 +128,7 @@ pub struct WebhookOptions {
     pub path: String,
     pub port: u16,
     pub ip: IpAddr,
+    pub secret_token: Option<String>,
 }
 
 impl WebhookOptions {
@@ -148,6 +141,7 @@ impl WebhookOptions {
             path: "/".to_owned(),
             port: 8006,
             ip: [127, 0, 0, 1].into(),
+            secret_token: None,
         }
     }
 
@@ -172,6 +166,12 @@ impl WebhookOptions {
     /// Sets the url of the webhook
     pub fn set_url(&mut self, url: &str) -> TelegramResult<&mut Self> {
         self.url = Some(url.parse()?);
+        Ok(self)
+    }
+
+    /// Sets the secret token of the webhook
+    pub fn set_secret_token(&mut self, secret_token: impl ToString) -> TelegramResult<&mut Self> {
+        self.secret_token = Some(secret_token.to_string());
         Ok(self)
     }
 

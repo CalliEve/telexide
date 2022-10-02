@@ -1,11 +1,6 @@
 use super::{
-    utils::unix_date_formatting,
-    ForceReply,
-    InlineKeyboardMarkup,
-    Message,
-    ReplyKeyboardMarkup,
-    ReplyKeyboardRemove,
-    User,
+    utils::unix_date_formatting, ForceReply, InlineKeyboardMarkup, Message, ReplyKeyboardMarkup,
+    ReplyKeyboardRemove, User, WebAppInfo,
 };
 use crate::api::types::UpdateType;
 use chrono::{DateTime, Utc};
@@ -44,15 +39,6 @@ pub struct CallbackQuery {
     ///
     /// [`Game`]: ../model/struct.Game.html
     pub game_short_name: Option<String>,
-}
-
-/// A bot command
-#[derive(Serialize, Deserialize, Debug, Clone, PartialEq)]
-pub struct BotCommand {
-    /// the command name, for example "ping" for the command "/ping"
-    pub command: String,
-    /// the description of the command to display in telegram
-    pub description: String,
 }
 
 /// The Bot API supports basic formatting for messages.
@@ -157,6 +143,9 @@ pub struct WebhookInfo {
     /// an update via webhook
     #[serde(with = "unix_date_formatting::optional")]
     pub last_error_date: Option<DateTime<Utc>>,
+    /// Unix time of the most recent error that happened when trying to synchronize available updates with Telegram datacenters
+    #[serde(with = "unix_date_formatting::optional")]
+    pub last_synchronization_error_date: Option<DateTime<Utc>>,
     /// Error message in human-readable format for the most recent error that
     /// happened when trying to deliver an update via webhook
     pub last_error_message: Option<String>,
@@ -168,4 +157,26 @@ pub struct WebhookInfo {
     pub allowed_updates: Option<Vec<UpdateType>>,
     /// Currently used webhook IP address
     pub ip_address: Option<String>,
+}
+
+/// This object describes the bot's menu button in a private chat.
+/// If a menu button other than Default is set for a private chat, then it is applied in the chat. Otherwise the default menu button is applied. By default, the menu button opens the list of bot commands.
+#[derive(Serialize, Deserialize, Debug, Clone, PartialEq)]
+#[serde(tag = "type")]
+pub enum MenuButton {
+    /// Describes that no specific value for the menu button was set.
+    Default,
+    /// Represents a menu button, which opens the bot's list of commands.
+    Commands,
+    /// Represents a menu button, which launches a [Web App].
+    ///
+    /// [Web App]: https://core.telegram.org/bots/webapps
+    WebApp {
+        /// Text on the button
+        text: String,
+        /// Description of the Web App that will be launched when the user presses the button. The Web App will be able to send an arbitrary message on behalf of the user using the method [`answer_web_app_query`].
+        ///
+        /// [`answer_web_app_query`]: ../api/trait.API.html#method.answer_web_app_query
+        web_app: WebAppInfo,
+    },
 }

@@ -176,6 +176,7 @@ impl Client {
                     allowed_updates: Some(self.allowed_updates.clone()),
                     drop_pending_updates: None,
                     ip_address: None, // TODO: add opts for these
+                    secret_token: opts.secret_token.clone(),
                 })
                 .await?;
         }

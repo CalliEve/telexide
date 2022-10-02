@@ -354,9 +354,10 @@ pub struct ProximityAlertTriggered {
     pub distance: i64,
 }
 
-/// This object represents a service message about a voice chat scheduled in the chat.
+/// This object represents a service message about a voice chat scheduled in the
+/// chat.
 #[derive(Serialize, Deserialize, Debug, Clone, PartialEq)]
-pub struct VoiceChatScheduled {
+pub struct VideoChatScheduled {
     /// Point in time when the voice chat is supposed to be started by a chat
     /// administrator
     #[serde(with = "unix_date_formatting")]
@@ -366,12 +367,12 @@ pub struct VoiceChatScheduled {
 /// This object represents a service message about a voice chat started in the
 /// chat. Currently holds no information.
 #[derive(Serialize, Deserialize, Debug, Clone, PartialEq)]
-pub struct VoiceChatStarted {}
+pub struct VideoChatStarted {}
 
 /// This object represents a service message about a voice chat ended in the
 /// chat.
 #[derive(Serialize, Deserialize, Debug, Clone, PartialEq)]
-pub struct VoiceChatEnded {
+pub struct VideoChatEnded {
     /// Voice chat duration; in seconds
     pub duration: i64,
 }
@@ -379,7 +380,7 @@ pub struct VoiceChatEnded {
 /// This object represents a service message about new members invited to a
 /// voice chat.
 #[derive(Serialize, Deserialize, Debug, Clone, PartialEq)]
-pub struct VoiceChatParticipantsInvited {
+pub struct VideoChatParticipantsInvited {
     /// New members that were invited to the voice chat.
     #[serde(default)]
     pub users: Option<Vec<User>>,
@@ -391,4 +392,17 @@ pub struct VoiceChatParticipantsInvited {
 pub struct MessageAutoDeleteTimerChanged {
     /// New auto-delete time for messages in the chat
     pub message_auto_delete_time: i64,
+}
+
+/// Describes data sent from a [Web App] to the bot.
+///
+/// [Web App]: https://core.telegram.org/bots/webapps
+#[derive(Serialize, Deserialize, Debug, Clone, PartialEq)]
+pub struct WebAppData {
+    /// The data. Be aware that a bad client can send arbitrary data in this
+    /// field.
+    pub data: String,
+    /// Text of the web_app keyboard button from which the Web App was opened.
+    /// Be aware that a bad client can send arbitrary data in this field.
+    pub button_text: String,
 }

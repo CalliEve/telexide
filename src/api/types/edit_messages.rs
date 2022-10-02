@@ -1,5 +1,11 @@
 use super::InputMedia;
-use crate::model::{InlineKeyboardMarkup, Message, MessageEntity, ParseMode};
+use crate::model::{
+    utils::IntegerOrString,
+    InlineKeyboardMarkup,
+    Message,
+    MessageEntity,
+    ParseMode,
+};
 use serde::{Deserialize, Serialize};
 use telexide_proc_macros::build_struct;
 
@@ -11,10 +17,12 @@ use telexide_proc_macros::build_struct;
 #[build_struct]
 #[derive(Serialize, Deserialize, Debug, Clone, PartialEq)]
 pub struct EditMessageText {
-    /// Required if inline_message_id is not specified. Unique identifier for the target chat.
+    /// Required if inline_message_id is not specified. Unique identifier for
+    /// the target chat.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub chat_id: Option<i64>,
-    /// Required if inline_message_id is not specified. Identifier of the message to edit.
+    /// Required if inline_message_id is not specified. Identifier of the
+    /// message to edit.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub message_id: Option<i64>,
     /// Identifier of the inline message
@@ -61,10 +69,12 @@ impl EditMessageText {
 #[build_struct]
 #[derive(Serialize, Deserialize, Debug, Clone, PartialEq)]
 pub struct EditMessageCaption {
-    /// Required if inline_message_id is not specified. Unique identifier for the target chat.
+    /// Required if inline_message_id is not specified. Unique identifier for
+    /// the target chat.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub chat_id: Option<i64>,
-    /// Required if inline_message_id is not specified. Identifier of the message to edit.
+    /// Required if inline_message_id is not specified. Identifier of the
+    /// message to edit.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub message_id: Option<i64>,
     /// Identifier of the inline message.
@@ -108,10 +118,12 @@ impl EditMessageCaption {
 #[build_struct]
 #[derive(Serialize, Deserialize, Debug, Clone, PartialEq)]
 pub struct EditMessageMedia {
-    /// Required if inline_message_id is not specified. Unique identifier for the target chat.
+    /// Required if inline_message_id is not specified. Unique identifier for
+    /// the target chat.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub chat_id: Option<i64>,
-    /// Required if inline_message_id is not specified. Identifier of the message to edit.
+    /// Required if inline_message_id is not specified. Identifier of the
+    /// message to edit.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub message_id: Option<i64>,
     /// Identifier of the inline message.
@@ -144,13 +156,16 @@ impl EditMessageMedia {
 #[build_struct]
 #[derive(Serialize, Deserialize, Debug, Clone, PartialEq)]
 pub struct EditMessageReplyMarkup {
-    /// Required if inline_message_id is not specified. Unique identifier for the target chat.
+    /// Required if inline_message_id is not specified. Unique identifier for
+    /// the target chat.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub chat_id: Option<i64>,
-    /// Required if inline_message_id is not specified. Identifier of the message to edit.
+    /// Required if inline_message_id is not specified. Identifier of the
+    /// message to edit.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub message_id: Option<i64>,
-    /// Required if inline_message_id is not specified. Identifier of the inline message.
+    /// Required if inline_message_id is not specified. Identifier of the inline
+    /// message.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub inline_message_id: Option<String>,
     /// Inline keyboard.
@@ -178,7 +193,7 @@ impl EditMessageReplyMarkup {
 #[derive(Serialize, Deserialize, Debug, Clone, PartialEq)]
 pub struct StopPoll {
     /// Unique identifier for the target chat
-    pub chat_id: i64,
+    pub chat_id: IntegerOrString,
     /// Identifier of the message to edit
     pub message_id: i64,
     /// Inline keyboard
@@ -189,7 +204,7 @@ pub struct StopPoll {
 impl StopPoll {
     fn from_message(message: &Message) -> Self {
         Self {
-            chat_id: message.chat.get_id(),
+            chat_id: message.chat.get_id().into(),
             message_id: message.message_id,
             reply_markup: None,
         }
@@ -205,7 +220,7 @@ impl StopPoll {
 #[derive(Serialize, Deserialize, Debug, Clone, PartialEq)]
 pub struct DeleteMessage {
     /// Unique identifier for the target chat
-    pub chat_id: i64,
+    pub chat_id: IntegerOrString,
     /// Identifier of the message to delete
     pub message_id: i64,
 }
@@ -213,7 +228,7 @@ pub struct DeleteMessage {
 impl DeleteMessage {
     fn from_message(message: &Message) -> Self {
         Self {
-            chat_id: message.chat.get_id(),
+            chat_id: message.chat.get_id().into(),
             message_id: message.message_id,
         }
     }

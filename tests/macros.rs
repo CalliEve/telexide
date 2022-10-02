@@ -4,14 +4,7 @@ use telexide::{
     framework::CommandResult,
     macros::{command, create_framework, prepare_listener},
     model::{
-        Chat,
-        Message,
-        MessageContent,
-        MessageEntity,
-        PrivateChat,
-        TextBlock,
-        Update,
-        UpdateContent,
+        Chat, Message, MessageContent, MessageEntity, PrivateChat, TextBlock, Update, UpdateContent,
     },
     Result,
 };
@@ -69,6 +62,9 @@ async fn test_using_command() -> Result<()> {
                 bio: None,
                 last_name: None,
                 photo: None,
+                has_private_forwards: None,
+                has_restricted_voice_and_video_messages: None,
+                message_auto_delete_time: None,
             }),
             sender_chat: None,
             forward_data: None,
@@ -79,6 +75,7 @@ async fn test_using_command() -> Result<()> {
             connected_website: None,
             passport_data: None,
             reply_markup: None,
+            has_protected_content: false,
             content: MessageContent::Unknown,
         }),
     });
@@ -100,6 +97,9 @@ async fn test_using_command() -> Result<()> {
                 bio: None,
                 last_name: None,
                 photo: None,
+                has_private_forwards: None,
+                has_restricted_voice_and_video_messages: None,
+                message_auto_delete_time: None,
             }),
             sender_chat: None,
             forward_data: None,
@@ -110,6 +110,7 @@ async fn test_using_command() -> Result<()> {
             connected_website: None,
             passport_data: None,
             reply_markup: None,
+            has_protected_content: false,
             content: MessageContent::Text {
                 content: "/testing_command".to_owned(),
                 entities: vec![MessageEntity::BotCommand(TextBlock {

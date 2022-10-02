@@ -2,16 +2,8 @@ use chrono::{DateTime, Utc};
 use serde::{Deserialize, Deserializer, Serialize, Serializer};
 
 use super::{
-    message_contents::*,
-    message_entity::*,
-    raw::*,
-    Game,
-    InlineKeyboardMarkup,
-    Invoice,
-    PassportData,
-    Sticker,
-    SuccessfulPayment,
-    User,
+    message_contents::*, message_entity::*, raw::*, Game, InlineKeyboardMarkup, Invoice,
+    PassportData, Sticker, SuccessfulPayment, User,
 };
 
 /// This object represents a message.
@@ -41,6 +33,8 @@ pub struct Message {
     pub edit_date: Option<DateTime<Utc>>,
     /// Signature of the post author for messages in channels
     pub author_signature: Option<String>,
+    /// True, if the message can't be forwarded
+    pub has_protected_content: bool,
 
     /// The content of the message
     pub content: MessageContent,
@@ -214,21 +208,25 @@ pub enum MessageContent {
         /// proximity alert while sharing Live Location.
         content: ProximityAlertTriggered,
     },
-    VoiceChatScheduled {
+    VideoChatScheduled {
         /// Service message: voice chat scheduled
-        content: VoiceChatScheduled,
+        content: VideoChatScheduled,
     },
-    VoiceChatStarted {
+    VideoChatStarted {
         /// Service message: voice chat started
-        content: VoiceChatStarted,
+        content: VideoChatStarted,
     },
-    VoiceChatEnded {
+    VideoChatEnded {
         /// Service message: voice chat ended
-        content: VoiceChatEnded,
+        content: VideoChatEnded,
     },
-    VoiceChatParticipantsInvited {
+    VideoChatParticipantsInvited {
         /// Service message: new participants invited to a voice chat
-        content: VoiceChatParticipantsInvited,
+        content: VideoChatParticipantsInvited,
+    },
+    WebAppData {
+        /// Service message: data sent by a Web App
+        content: WebAppData,
     },
 
     /// Service message: the chat photo was deleted
@@ -270,32 +268,21 @@ pub struct ForwardData {
     pub sender_name: Option<String>,
     /// For forwarded messages, date the original message was sent in Unix time
     pub date: DateTime<Utc>,
+    /// True, if the message is a channel post that was automatically forwarded
+    /// to the connected discussion group
+    pub is_automatic_forward: bool,
 }
 
 impl Message {
     pub fn get_text(&self) -> Option<String> {
         match self.content {
-            MessageContent::Text {
-                ref content, ..
-            } => Some(content.clone()),
-            MessageContent::Audio {
-                ref caption, ..
-            }
-            | MessageContent::Document {
-                ref caption, ..
-            }
-            | MessageContent::Animation {
-                ref caption, ..
-            }
-            | MessageContent::Video {
-                ref caption, ..
-            }
-            | MessageContent::Voice {
-                ref caption, ..
-            }
-            | MessageContent::Photo {
-                ref caption, ..
-            } => caption.clone(),
+            MessageContent::Text { ref content, .. } => Some(content.clone()),
+            MessageContent::Audio { ref caption, .. }
+            | MessageContent::Document { ref caption, .. }
+            | MessageContent::Animation { ref caption, .. }
+            | MessageContent::Video { ref caption, .. }
+            | MessageContent::Voice { ref caption, .. }
+            | MessageContent::Photo { ref caption, .. } => caption.clone(),
             _ => None,
         }
     }
@@ -316,6 +303,7 @@ impl From<RawMessage> for Message {
         let connected_website = raw.connected_website;
         let passport_data = raw.passport_data;
         let reply_markup = raw.reply_markup;
+        let has_protected_content = raw.has_protected_content;
 
         let forward_data = if let Some(d) = raw.forward_date {
             Some(ForwardData {
@@ -325,6 +313,7 @@ impl From<RawMessage> for Message {
                 signature: raw.forward_signature,
                 sender_name: raw.forward_sender_name,
                 date: d,
+                is_automatic_forward: raw.is_automatic_forward,
             })
         } else {
             None
@@ -345,6 +334,7 @@ impl From<RawMessage> for Message {
             connected_website,
             passport_data,
             reply_markup,
+            has_protected_content,
         };
 
         if let Some(c) = raw.text {
@@ -387,9 +377,7 @@ impl From<RawMessage> for Message {
         macro_rules! content {
             ($data:expr, $kind:ident) => {
                 if let Some(c) = $data {
-                    return fill_in_content(MessageContent::$kind {
-                        content: c,
-                    });
+                    return fill_in_content(MessageContent::$kind { content: c });
                 }
             };
         }
@@ -428,13 +416,14 @@ impl From<RawMessage> for Message {
         content!(raw.invoice, Invoice);
         content!(raw.successful_payment, SuccessfulPayment);
         content!(raw.proximity_alert_triggered, ProximityAlertTriggered);
-        content!(raw.voice_chat_scheduled, VoiceChatScheduled);
-        content!(raw.voice_chat_started, VoiceChatStarted);
-        content!(raw.voice_chat_ended, VoiceChatEnded);
+        content!(raw.voice_chat_scheduled, VideoChatScheduled);
+        content!(raw.voice_chat_started, VideoChatStarted);
+        content!(raw.voice_chat_ended, VideoChatEnded);
         content!(
             raw.voice_chat_participants_invited,
-            VoiceChatParticipantsInvited
+            VideoChatParticipantsInvited
         );
+        content!(raw.web_app_data, WebAppData);
 
         bool_content!(raw.delete_chat_photo, DeleteChatPhoto);
         bool_content!(raw.group_chat_created, GroupChatCreated);
@@ -466,6 +455,9 @@ impl From<Message> for RawMessage {
             forward_from_message_id: None,
             forward_from: None,
             forward_from_chat: None,
+            is_automatic_forward: false,
+
+            has_protected_content: message.has_protected_content,
 
             text: None,
             entities: None,
@@ -505,6 +497,8 @@ impl From<Message> for RawMessage {
             voice_chat_ended: None,
             voice_chat_participants_invited: None,
 
+            web_app_data: None,
+
             connected_website: message.connected_website,
             passport_data: message.passport_data,
             reply_markup: message.reply_markup,
@@ -517,13 +511,11 @@ impl From<Message> for RawMessage {
             ret.forward_from_message_id = d.from_message_id;
             ret.forward_from = d.from;
             ret.forward_from_chat = d.from_chat.map(|c| c.into());
+            ret.is_automatic_forward = d.is_automatic_forward;
         }
 
         match message.content {
-            MessageContent::Text {
-                content,
-                entities,
-            } => {
+            MessageContent::Text { content, entities } => {
                 ret.text = Some(content);
                 ret.entities = Some(entities);
                 ret
@@ -592,142 +584,100 @@ impl From<Message> for RawMessage {
                 ret.media_group_id = media_group_id;
                 ret
             },
-            MessageContent::Game {
-                content,
-            } => {
+            MessageContent::Game { content } => {
                 ret.game = Some(content);
                 ret
             },
-            MessageContent::Sticker {
-                content,
-            } => {
+            MessageContent::Sticker { content } => {
                 ret.sticker = Some(content);
                 ret
             },
-            MessageContent::VideoNote {
-                content,
-            } => {
+            MessageContent::VideoNote { content } => {
                 ret.video_note = Some(content);
                 ret
             },
-            MessageContent::Contact {
-                content,
-            } => {
+            MessageContent::Contact { content } => {
                 ret.contact = Some(content);
                 ret
             },
-            MessageContent::Location {
-                content,
-            } => {
+            MessageContent::Location { content } => {
                 ret.location = Some(content);
                 ret
             },
-            MessageContent::Venue {
-                content,
-            } => {
+            MessageContent::Venue { content } => {
                 ret.venue = Some(content);
                 ret
             },
-            MessageContent::Poll {
-                content,
-            } => {
+            MessageContent::Poll { content } => {
                 ret.poll = Some(content);
                 ret
             },
-            MessageContent::Dice {
-                content,
-            } => {
+            MessageContent::Dice { content } => {
                 ret.dice = Some(content);
                 ret
             },
-            MessageContent::NewChatMembers {
-                content,
-            } => {
+            MessageContent::NewChatMembers { content } => {
                 ret.new_chat_members = Some(content);
                 ret
             },
-            MessageContent::LeftChatMember {
-                content,
-            } => {
+            MessageContent::LeftChatMember { content } => {
                 ret.left_chat_member = Some(content);
                 ret
             },
-            MessageContent::NewChatTitle {
-                content,
-            } => {
+            MessageContent::NewChatTitle { content } => {
                 ret.new_chat_title = Some(content);
                 ret
             },
-            MessageContent::NewChatPhoto {
-                content,
-            } => {
+            MessageContent::NewChatPhoto { content } => {
                 ret.new_chat_photo = Some(content);
                 ret
             },
-            MessageContent::MessageAutoDeleteTimerChanged {
-                content,
-            } => {
+            MessageContent::MessageAutoDeleteTimerChanged { content } => {
                 ret.message_auto_delete_timer_changed = Some(content);
                 ret
             },
-            MessageContent::MigrateToChatID {
-                content,
-            } => {
+            MessageContent::MigrateToChatID { content } => {
                 ret.migrate_to_chat_id = Some(content);
                 ret
             },
-            MessageContent::MigrateFromChatID {
-                content,
-            } => {
+            MessageContent::MigrateFromChatID { content } => {
                 ret.migrate_from_chat_id = Some(content);
                 ret
             },
-            MessageContent::Invoice {
-                content,
-            } => {
+            MessageContent::Invoice { content } => {
                 ret.invoice = Some(content);
                 ret
             },
-            MessageContent::SuccessfulPayment {
-                content,
-            } => {
+            MessageContent::SuccessfulPayment { content } => {
                 ret.successful_payment = Some(content);
                 ret
             },
-            MessageContent::PinnedMessage {
-                content,
-            } => {
+            MessageContent::PinnedMessage { content } => {
                 ret.pinned_message = Some(Box::new((*content).into()));
                 ret
             },
-            MessageContent::ProximityAlertTriggered {
-                content,
-            } => {
+            MessageContent::ProximityAlertTriggered { content } => {
                 ret.proximity_alert_triggered = Some(content);
                 ret
             },
-            MessageContent::VoiceChatScheduled {
-                content,
-            } => {
+            MessageContent::VideoChatScheduled { content } => {
                 ret.voice_chat_scheduled = Some(content);
                 ret
             },
-            MessageContent::VoiceChatStarted {
-                content,
-            } => {
+            MessageContent::VideoChatStarted { content } => {
                 ret.voice_chat_started = Some(content);
                 ret
             },
-            MessageContent::VoiceChatEnded {
-                content,
-            } => {
+            MessageContent::VideoChatEnded { content } => {
                 ret.voice_chat_ended = Some(content);
                 ret
             },
-            MessageContent::VoiceChatParticipantsInvited {
-                content,
-            } => {
+            MessageContent::VideoChatParticipantsInvited { content } => {
                 ret.voice_chat_participants_invited = Some(content);
+                ret
+            },
+            MessageContent::WebAppData { content } => {
+                ret.web_app_data = Some(content);
                 ret
             },
             MessageContent::DeleteChatPhoto => {

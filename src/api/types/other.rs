@@ -1,3 +1,4 @@
+use crate::model::{ChatAdministratorRights, MenuButton};
 use crate::utils::{
     result::{Result, TelegramError},
     FormDataFile,
@@ -159,4 +160,62 @@ impl<'de> Deserialize<'de> for InputFile {
     {
         Ok(Self::String(Deserialize::deserialize(deserializer)?))
     }
+}
+
+/// struct for holding data needed to call
+/// [`set_chat_menu_button`]
+///
+/// [`set_chat_menu_button`]:
+/// ../../api/trait.API.html#method.set_chat_menu_button
+#[build_struct]
+#[derive(Serialize, Deserialize, Debug, Clone, PartialEq)]
+pub struct SetChatMenuButton {
+    /// Unique identifier for the target private chat. If not specified, default bot's menu button will be changed
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub chat_id: Option<i64>,
+    /// A JSON-serialized object for the bot's new menu button. Defaults to [`MenuButton::Default`]
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub menu_button: Option<MenuButton>,
+}
+
+/// struct for holding data needed to call
+/// [`get_chat_menu_button`]
+///
+/// [`get_chat_menu_button`]:
+/// ../../api/trait.API.html#method.get_chat_menu_button
+#[build_struct]
+#[derive(Serialize, Deserialize, Debug, Clone, PartialEq)]
+pub struct GetChatMenuButton {
+    /// Unique identifier for the target private chat. If not specified, default bot's menu button will be returned
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub chat_id: Option<i64>,
+}
+
+/// struct for holding data needed to call
+/// [`set_my_default_administrator_rights`]
+///
+/// [`set_my_default_administrator_rights`]:
+/// ../../api/trait.API.html#method.set_my_default_administrator_rights
+#[build_struct]
+#[derive(Serialize, Deserialize, Debug, Clone, PartialEq)]
+pub struct SetMyDefaultAdministratorRights {
+    /// A JSON-serialized object describing new default administrator rights. If not specified, the default administrator rights will be cleared.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub rights: Option<ChatAdministratorRights>,
+    /// Pass True to change the default administrator rights of the bot in channels. Otherwise, the default administrator rights of the bot for groups and supergroups will be changed.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub channels: Option<bool>,
+}
+
+/// struct for holding data needed to call
+/// [`set_my_default_administrator_rights`]
+///
+/// [`set_my_default_administrator_rights`]:
+/// ../../api/trait.API.html#method.set_my_default_administrator_rights
+#[build_struct]
+#[derive(Serialize, Deserialize, Debug, Clone, PartialEq)]
+pub struct GetMyDefaultAdministratorRights {
+    /// Pass True to get the default administrator rights of the bot in channels. Otherwise, the default administrator rights of the bot for groups and supergroups will be returned.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub channels: Option<bool>,
 }

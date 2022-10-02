@@ -1,4 +1,4 @@
-use super::PhotoSize;
+use super::{File, PhotoSize};
 use serde::{Deserialize, Serialize};
 
 /// This object represents a sticker.
@@ -11,6 +11,9 @@ pub struct Sticker {
     /// time and for different bots. Can't be used to download or reuse the
     /// file.
     pub file_unique_id: String,
+    /// Type of the sticker. The type of the sticker is independent from its format, which is determined by the fields is_animated and is_video.
+    #[serde(rename = "type")]
+    pub kind: StickerType,
     /// Sticker width
     pub width: usize,
     /// Sticker height
@@ -18,14 +21,21 @@ pub struct Sticker {
     /// True, if the sticker is [animated](https://telegram.org/blog/animated-stickers)
     #[serde(default)]
     pub is_animated: bool,
+    /// True, if the sticker is a [video sticker](https://telegram.org/blog/video-stickers-better-reactions)
+    #[serde(default)]
+    pub is_video: bool,
     /// Sticker thumbnail in the .WEBP or .JPG format
     pub thumb: Option<PhotoSize>,
     /// Emoji associated with the sticker
     pub emoji: Option<String>,
     /// Name of the sticker set to which the sticker belongs
     pub set_name: Option<String>,
+    /// For premium regular stickers, premium animation for the sticker
+    pub premium_animation: Option<File>,
     /// For mask stickers, the position where the mask should be placed
     pub mask_position: Option<MaskPosition>,
+    /// For custom emoji stickers, unique identifier of the custom emoji
+    pub custom_emoji_id: Option<String>,
     /// File size
     pub file_size: Option<usize>,
 }
@@ -37,10 +47,10 @@ pub struct StickerSet {
     pub name: String,
     /// Sticker set title
     pub title: String,
+    /// Type of stickers in the set, currently one of “regular”, “mask”, “custom_emoji”
+    pub sticker_type: StickerType,
     /// True, if the sticker set contains [animated stickers](https://telegram.org/blog/animated-stickers)
     pub is_animated: bool,
-    /// True, if the sticker set contains masks
-    pub contains_masks: bool,
     /// List of all set stickers
     pub stickers: Vec<Sticker>,
     /// Optional. Sticker set thumbnail in the .WEBP or .TGS format
@@ -76,4 +86,15 @@ pub enum MaskPoint {
     Mouth,
     #[serde(rename = "chin")]
     Chin,
+}
+
+#[derive(Serialize, Deserialize, Debug, Clone, PartialEq)]
+#[serde(untagged)]
+pub enum StickerType {
+    #[serde(rename = "regular")]
+    Regular,
+    #[serde(rename = "mask")]
+    Mask,
+    #[serde(rename = "custom_emoji")]
+    CustomEmoji,
 }

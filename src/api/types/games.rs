@@ -1,4 +1,4 @@
-use crate::model::ReplyMarkup;
+use crate::model::{utils::IntegerOrString, ReplyMarkup};
 use serde::{Deserialize, Serialize};
 use telexide_proc_macros::build_struct;
 
@@ -11,7 +11,7 @@ use telexide_proc_macros::build_struct;
 #[derive(Serialize, Deserialize, Debug, Clone, PartialEq)]
 pub struct SendGame {
     /// Unique identifier for the target chat
-    pub chat_id: i64,
+    pub chat_id: IntegerOrString,
     /// Short name of the game, serves as the unique identifier for the game.
     /// Set up your games via Botfather.
     pub game_short_name: String,
@@ -19,6 +19,9 @@ pub struct SendGame {
     /// sound.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub disable_notification: Option<bool>,
+    /// Protects the contents of the sent message from forwarding and saving
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub protect_content: Option<bool>,
     /// If the message is a reply, ID of the original message
     #[serde(skip_serializing_if = "Option::is_none")]
     pub reply_to_message_id: Option<i64>,

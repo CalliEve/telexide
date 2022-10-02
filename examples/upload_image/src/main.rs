@@ -8,7 +8,7 @@ async fn space_image(context: Context, message: Message) -> CommandResult {
         log::info!("image requested by: {}", &message.from.unwrap().first_name);
     }
 
-    let mut data = SendPhoto::from_file(message.chat.get_id(), "./silver_coin_galaxy.jpg")
+    let mut data = SendPhoto::from_file(message.chat.get_id().into(), "./silver_coin_galaxy.jpg")
         .expect("error while getting file");
     data.caption = Some("Take a look at this awesome galaxy!".to_owned());
 
