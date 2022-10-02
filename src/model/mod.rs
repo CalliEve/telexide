@@ -32,3 +32,4 @@ pub use stickers::*;
 pub use telegram_passport::*;
 pub use update::*;
 pub use user::*;
+pub use utils::IntegerOrString;

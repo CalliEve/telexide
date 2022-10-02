@@ -208,21 +208,21 @@ pub enum MessageContent {
         /// proximity alert while sharing Live Location.
         content: ProximityAlertTriggered,
     },
-    VoiceChatScheduled {
+    VideoChatScheduled {
         /// Service message: voice chat scheduled
-        content: VoiceChatScheduled,
+        content: VideoChatScheduled,
     },
-    VoiceChatStarted {
+    VideoChatStarted {
         /// Service message: voice chat started
-        content: VoiceChatStarted,
+        content: VideoChatStarted,
     },
-    VoiceChatEnded {
+    VideoChatEnded {
         /// Service message: voice chat ended
-        content: VoiceChatEnded,
+        content: VideoChatEnded,
     },
-    VoiceChatParticipantsInvited {
+    VideoChatParticipantsInvited {
         /// Service message: new participants invited to a voice chat
-        content: VoiceChatParticipantsInvited,
+        content: VideoChatParticipantsInvited,
     },
     WebAppData {
         /// Service message: data sent by a Web App
@@ -268,7 +268,8 @@ pub struct ForwardData {
     pub sender_name: Option<String>,
     /// For forwarded messages, date the original message was sent in Unix time
     pub date: DateTime<Utc>,
-    /// True, if the message is a channel post that was automatically forwarded to the connected discussion group
+    /// True, if the message is a channel post that was automatically forwarded
+    /// to the connected discussion group
     pub is_automatic_forward: bool,
 }
 
@@ -415,12 +416,12 @@ impl From<RawMessage> for Message {
         content!(raw.invoice, Invoice);
         content!(raw.successful_payment, SuccessfulPayment);
         content!(raw.proximity_alert_triggered, ProximityAlertTriggered);
-        content!(raw.voice_chat_scheduled, VoiceChatScheduled);
-        content!(raw.voice_chat_started, VoiceChatStarted);
-        content!(raw.voice_chat_ended, VoiceChatEnded);
+        content!(raw.voice_chat_scheduled, VideoChatScheduled);
+        content!(raw.voice_chat_started, VideoChatStarted);
+        content!(raw.voice_chat_ended, VideoChatEnded);
         content!(
             raw.voice_chat_participants_invited,
-            VoiceChatParticipantsInvited
+            VideoChatParticipantsInvited
         );
         content!(raw.web_app_data, WebAppData);
 
@@ -659,19 +660,19 @@ impl From<Message> for RawMessage {
                 ret.proximity_alert_triggered = Some(content);
                 ret
             },
-            MessageContent::VoiceChatScheduled { content } => {
+            MessageContent::VideoChatScheduled { content } => {
                 ret.voice_chat_scheduled = Some(content);
                 ret
             },
-            MessageContent::VoiceChatStarted { content } => {
+            MessageContent::VideoChatStarted { content } => {
                 ret.voice_chat_started = Some(content);
                 ret
             },
-            MessageContent::VoiceChatEnded { content } => {
+            MessageContent::VideoChatEnded { content } => {
                 ret.voice_chat_ended = Some(content);
                 ret
             },
-            MessageContent::VoiceChatParticipantsInvited { content } => {
+            MessageContent::VideoChatParticipantsInvited { content } => {
                 ret.voice_chat_participants_invited = Some(content);
                 ret
             },

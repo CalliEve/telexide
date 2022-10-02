@@ -19,6 +19,9 @@ pub struct SendGame {
     /// sound.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub disable_notification: Option<bool>,
+    /// Protects the contents of the sent message from forwarding and saving
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub protect_content: Option<bool>,
     /// If the message is a reply, ID of the original message
     #[serde(skip_serializing_if = "Option::is_none")]
     pub reply_to_message_id: Option<i64>,

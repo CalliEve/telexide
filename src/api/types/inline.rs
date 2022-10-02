@@ -759,3 +759,13 @@ pub struct InputInvoiceMessageContent {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub is_flexible: Option<bool>,
 }
+
+/// Represents the content of an answer to a web app query
+#[build_struct]
+#[derive(Serialize, Deserialize, Debug, Clone, PartialEq)]
+pub struct AnswerWebAppQuery {
+    /// Unique identifier for the query to be answered
+    pub web_app_query_id: String,
+    /// A JSON-serialized object describing the message to be sent
+    pub result: InlineQueryResult,
+}

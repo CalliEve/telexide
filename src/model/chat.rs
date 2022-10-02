@@ -16,11 +16,15 @@ pub struct PrivateChat {
     ///
     /// [`get_chat`]: ../../api/trait.API.html#method.get_chat
     pub bio: Option<String>,
-    /// True, if privacy settings of the other party in the private chat allows to use `tg://user?id=<user_id>` links only in chats with the user. Returned only in [`get_chat`].
+    /// True, if privacy settings of the other party in the private chat allows
+    /// to use `tg://user?id=<user_id>` links only in chats with the user.
+    /// Returned only in [`get_chat`].
     ///
     /// [`get_chat`]: ../../api/trait.API.html#method.get_chat
     pub has_private_forwards: Option<bool>,
-    /// True, if the privacy settings of the other party restrict sending voice and video note messages in the private chat.Returned only in [`get_chat`].
+    /// True, if the privacy settings of the other party restrict sending voice
+    /// and video note messages in the private chat.Returned only in
+    /// [`get_chat`].
     ///
     /// [`get_chat`]: ../../api/trait.API.html#method.get_chat
     pub has_restricted_voice_and_video_messages: Option<bool>,
@@ -30,7 +34,8 @@ pub struct PrivateChat {
     ///
     /// [`get_chat`]: ../../api/trait.API.html#method.get_chat
     pub photo: Option<ChatPhoto>,
-    /// The time after which all messages sent to the chat will be automatically deleted; in seconds. Returned only in [`get_chat`].
+    /// The time after which all messages sent to the chat will be automatically
+    /// deleted; in seconds. Returned only in [`get_chat`].
     ///
     /// [`get_chat`]: ../../api/trait.API.html#method.get_chat
     pub message_auto_delete_time: Option<usize>,
@@ -60,7 +65,8 @@ pub struct GroupChat {
     ///
     /// [`get_chat`]: ../../api/trait.API.html#method.get_chat
     pub permissions: Option<super::ChatPermissions>,
-    /// True, if messages from the chat can't be forwarded to other chats. Returned only in [`get_chat`].
+    /// True, if messages from the chat can't be forwarded to other chats.
+    /// Returned only in [`get_chat`].
     ///
     /// [`get_chat`]: ../../api/trait.API.html#method.get_chat
     pub has_protected_content: Option<bool>,
@@ -78,11 +84,13 @@ pub struct SuperGroupChat {
     ///
     /// [`get_chat`]: ../../api/trait.API.html#method.get_chat
     pub photo: Option<ChatPhoto>,
-    /// True, if users need to join the supergroup before they can send messages.Returned only in [`get_chat`].
+    /// True, if users need to join the supergroup before they can send
+    /// messages.Returned only in [`get_chat`].
     ///
     /// [`get_chat`]: ../../api/trait.API.html#method.get_chat
     pub join_to_send_messages: Option<bool>,
-    /// True, if all users directly joining the supergroup need to be approved by supergroup administrators.Returned only in [`get_chat`].
+    /// True, if all users directly joining the supergroup need to be approved
+    /// by supergroup administrators.Returned only in [`get_chat`].
     ///
     /// [`get_chat`]: ../../api/trait.API.html#method.get_chat
     pub join_by_request: Option<bool>,
@@ -105,7 +113,8 @@ pub struct SuperGroupChat {
     ///
     /// [`get_chat`]: ../../api/trait.API.html#method.get_chat
     pub slow_mode_delay: Option<usize>,
-    /// True, if messages from the chat can't be forwarded to other chats. Returned only in [`get_chat`].
+    /// True, if messages from the chat can't be forwarded to other chats.
+    /// Returned only in [`get_chat`].
     ///
     /// [`get_chat`]: ../../api/trait.API.html#method.get_chat
     pub has_protected_content: Option<bool>,
@@ -153,7 +162,8 @@ pub struct ChannelChat {
     ///
     /// [`get_chat`]: ../../api/trait.API.html#method.get_chat
     pub pinned_message: Option<Box<super::Message>>,
-    /// True, if messages from the chat can't be forwarded to other chats. Returned only in [`get_chat`].
+    /// True, if messages from the chat can't be forwarded to other chats.
+    /// Returned only in [`get_chat`].
     ///
     /// [`get_chat`]: ../../api/trait.API.html#method.get_chat
     pub has_protected_content: Option<bool>,
@@ -491,9 +501,9 @@ pub struct AdministratorMemberStatus {
     /// True, if the user is allowed to add web page previews to their messages
     #[serde(default)]
     pub can_add_web_page_previews: bool,
-    /// True, if the administrator can manage voice chats
+    /// True, if the administrator can manage video chats
     #[serde(default)]
-    pub can_manage_voice_chats: bool,
+    pub can_manage_video_chats: bool,
 }
 
 /// Represents a [`ChatMember`] who is a normal member of the [`Chat`] without
@@ -589,7 +599,8 @@ pub struct ChatInviteLink {
     pub is_primary: bool,
     /// If the link is revoked
     pub is_revoked: bool,
-    /// If users joining the chat via the link need to be approved by chat administrators
+    /// If users joining the chat via the link need to be approved by chat
+    /// administrators
     pub creates_join_request: bool,
     /// Invite link name
     #[serde(default)]
@@ -656,4 +667,34 @@ pub struct ChatJoinRequest {
     /// Chat invite link that was used by the user to send the join request
     #[serde(default)]
     pub invite_link: Option<ChatInviteLink>,
+}
+
+/// Represents the rights of an administrator in a chat.
+#[derive(Serialize, Deserialize, Debug, Clone, PartialEq)]
+pub struct ChatAdministratorRights {
+    /// True, if the user's presence in the chat is hidden
+    pub is_anonymous: bool,
+    /// True, if the administrator can access the chat event log, chat statistics, message statistics in channels, see channel members, see anonymous administrators in supergroups and ignore slow mode. Implied by any other administrator privilege
+    pub can_manage_chat: bool,
+    /// True, if the administrator can delete messages of other users
+    pub can_delete_messages: bool,
+    /// True, if the administrator can manage video chats
+    pub can_manage_video_chats: bool,
+    /// True, if the administrator can restrict, ban or unban chat members
+    pub can_restrict_members: bool,
+    /// True, if the administrator can add new administrators with a subset of their own privileges or demote administrators that he has promoted, directly or indirectly (promoted by administrators that were appointed by the user)
+    pub can_promote_members: bool,
+    /// True, if the user is allowed to change the chat title, photo and other settings
+    pub can_change_info: bool,
+    /// True, if the user is allowed to invite new users to the chat
+    pub can_invite_users: bool,
+    /// True, if the administrator can post in the channel; channels only
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub can_post_messages: Option<bool>,
+    /// True, if the administrator can edit messages of other users and can pin messages; channels only
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub can_edit_messages: Option<bool>,
+    /// True, if the user is allowed to pin messages; groups and supergroups only
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub can_pin_messages: Option<bool>,
 }

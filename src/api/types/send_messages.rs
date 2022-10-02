@@ -39,6 +39,9 @@ pub struct SendMessage {
     /// sound.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub disable_notification: Option<bool>,
+    /// Protects the contents of the sent message from forwarding and saving
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub protect_content: Option<bool>,
     /// If the message is a reply, ID of the original message
     #[serde(skip_serializing_if = "Option::is_none")]
     pub reply_to_message_id: Option<i64>,
@@ -69,6 +72,9 @@ pub struct ForwardMessage {
     /// sound.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub disable_notification: Option<bool>,
+    /// Protects the contents of the sent message from forwarding and saving
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub protect_content: Option<bool>,
 }
 
 impl ForwardMessage {
@@ -78,6 +84,7 @@ impl ForwardMessage {
             from_chat_id: message.chat.get_id().into(),
             message_id: message.message_id,
             disable_notification: None,
+            protect_content: None,
         }
     }
 }
@@ -109,6 +116,9 @@ pub struct CopyMessage {
     /// sound.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub disable_notification: Option<bool>,
+    /// Protects the contents of the sent message from forwarding and saving
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub protect_content: Option<bool>,
     /// If the message is a reply, ID of the original message
     #[serde(skip_serializing_if = "Option::is_none")]
     pub reply_to_message_id: Option<i64>,
@@ -131,6 +141,7 @@ impl CopyMessage {
             caption_entities: None,
             parse_mode: None,
             disable_notification: None,
+            protect_content: None,
             reply_to_message_id: None,
             allow_sending_without_reply: None,
             reply_markup: None,
@@ -168,6 +179,9 @@ pub struct SendPhoto {
     /// sound.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub disable_notification: Option<bool>,
+    /// Protects the contents of the sent message from forwarding and saving
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub protect_content: Option<bool>,
     /// If the message is a reply, ID of the original message
     #[serde(skip_serializing_if = "Option::is_none")]
     pub reply_to_message_id: Option<i64>,
@@ -189,6 +203,7 @@ impl SendPhoto {
             caption_entities: None,
             parse_mode: None,
             disable_notification: None,
+            protect_content: None,
             reply_to_message_id: None,
             allow_sending_without_reply: None,
             reply_markup: None,
@@ -203,6 +218,7 @@ impl SendPhoto {
             caption_entities: None,
             parse_mode: None,
             disable_notification: None,
+            protect_content: None,
             reply_to_message_id: None,
             allow_sending_without_reply: None,
             reply_markup: None,
@@ -256,6 +272,9 @@ pub struct SendAudio {
     /// sound.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub disable_notification: Option<bool>,
+    /// Protects the contents of the sent message from forwarding and saving
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub protect_content: Option<bool>,
     /// If the message is a reply, ID of the original message
     #[serde(skip_serializing_if = "Option::is_none")]
     pub reply_to_message_id: Option<i64>,
@@ -281,6 +300,7 @@ impl SendAudio {
             title: None,
             parse_mode: None,
             disable_notification: None,
+            protect_content: None,
             reply_to_message_id: None,
             allow_sending_without_reply: None,
             reply_markup: None,
@@ -329,6 +349,9 @@ pub struct SendDocument {
     /// sound.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub disable_notification: Option<bool>,
+    /// Protects the contents of the sent message from forwarding and saving
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub protect_content: Option<bool>,
     /// If the message is a reply, ID of the original message
     #[serde(skip_serializing_if = "Option::is_none")]
     pub reply_to_message_id: Option<i64>,
@@ -351,6 +374,7 @@ impl SendDocument {
             caption_entities: None,
             parse_mode: None,
             disable_notification: None,
+            protect_content: None,
             disable_content_type_detection: None,
             reply_to_message_id: None,
             allow_sending_without_reply: None,
@@ -411,6 +435,9 @@ pub struct SendVideo {
     /// sound.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub disable_notification: Option<bool>,
+    /// Protects the contents of the sent message from forwarding and saving
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub protect_content: Option<bool>,
     /// If the uploaded video is suitable for streaming
     #[serde(skip_serializing_if = "Option::is_none")]
     pub supports_streaming: Option<bool>,
@@ -442,6 +469,7 @@ impl SendVideo {
             supports_streaming: None,
             parse_mode: None,
             disable_notification: None,
+            protect_content: None,
             reply_to_message_id: None,
             allow_sending_without_reply: None,
             reply_markup: None,
@@ -501,6 +529,9 @@ pub struct SendAnimation {
     /// sound.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub disable_notification: Option<bool>,
+    /// Protects the contents of the sent message from forwarding and saving
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub protect_content: Option<bool>,
     /// If the message is a reply, ID of the original message
     #[serde(skip_serializing_if = "Option::is_none")]
     pub reply_to_message_id: Option<i64>,
@@ -528,6 +559,7 @@ impl SendAnimation {
             title: None,
             parse_mode: None,
             disable_notification: None,
+            protect_content: None,
             reply_to_message_id: None,
             allow_sending_without_reply: None,
             reply_markup: None,
@@ -568,6 +600,9 @@ pub struct SendVoice {
     /// sound.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub disable_notification: Option<bool>,
+    /// Protects the contents of the sent message from forwarding and saving
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub protect_content: Option<bool>,
     /// If the message is a reply, ID of the original message
     #[serde(skip_serializing_if = "Option::is_none")]
     pub reply_to_message_id: Option<i64>,
@@ -590,6 +625,7 @@ impl SendVoice {
             caption_entities: None,
             parse_mode: None,
             disable_notification: None,
+            protect_content: None,
             reply_to_message_id: None,
             allow_sending_without_reply: None,
             reply_markup: None,
@@ -628,6 +664,9 @@ pub struct SendVideoNote {
     /// sound.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub disable_notification: Option<bool>,
+    /// Protects the contents of the sent message from forwarding and saving
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub protect_content: Option<bool>,
     /// If the message is a reply, ID of the original message
     #[serde(skip_serializing_if = "Option::is_none")]
     pub reply_to_message_id: Option<i64>,
@@ -649,6 +688,7 @@ impl SendVideoNote {
             duration: None,
             length: None,
             disable_notification: None,
+            protect_content: None,
             reply_to_message_id: None,
             allow_sending_without_reply: None,
             reply_markup: None,
@@ -673,6 +713,9 @@ pub struct SendMediaGroup {
     /// sound.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub disable_notification: Option<bool>,
+    /// Protects the contents of the sent message from forwarding and saving
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub protect_content: Option<bool>,
     /// If the message is a reply, ID of the original message
     #[serde(skip_serializing_if = "Option::is_none")]
     pub reply_to_message_id: Option<i64>,
@@ -712,6 +755,9 @@ pub struct SendLocation {
     /// sound.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub disable_notification: Option<bool>,
+    /// Protects the contents of the sent message from forwarding and saving
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub protect_content: Option<bool>,
     /// If the message is a reply, ID of the original message
     #[serde(skip_serializing_if = "Option::is_none")]
     pub reply_to_message_id: Option<i64>,
@@ -754,6 +800,9 @@ pub struct SendVenue {
     /// sound.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub disable_notification: Option<bool>,
+    /// Protects the contents of the sent message from forwarding and saving
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub protect_content: Option<bool>,
     /// If the message is a reply, ID of the original message
     #[serde(skip_serializing_if = "Option::is_none")]
     pub reply_to_message_id: Option<i64>,
@@ -790,6 +839,9 @@ pub struct SendContact {
     /// sound.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub disable_notification: Option<bool>,
+    /// Protects the contents of the sent message from forwarding and saving
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub protect_content: Option<bool>,
     /// If the message is a reply, ID of the original message
     #[serde(skip_serializing_if = "Option::is_none")]
     pub reply_to_message_id: Option<i64>,
@@ -859,6 +911,9 @@ pub struct SendPoll {
     /// sound.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub disable_notification: Option<bool>,
+    /// Protects the contents of the sent message from forwarding and saving
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub protect_content: Option<bool>,
     /// If the message is a reply, ID of the original message
     #[serde(skip_serializing_if = "Option::is_none")]
     pub reply_to_message_id: Option<i64>,
@@ -891,6 +946,9 @@ pub struct SendDice {
     /// sound.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub disable_notification: Option<bool>,
+    /// Protects the contents of the sent message from forwarding and saving
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub protect_content: Option<bool>,
     /// If the message is a reply, ID of the original message
     #[serde(skip_serializing_if = "Option::is_none")]
     pub reply_to_message_id: Option<i64>,

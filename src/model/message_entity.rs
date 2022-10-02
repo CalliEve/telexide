@@ -40,6 +40,9 @@ pub enum MessageEntity {
     /// strikethrough text
     #[serde(rename = "strikethrough")]
     StrikeThrough(TextBlock),
+    /// spoiler message
+    #[serde(rename = "spoiler")]
+    Spoiler(TextBlock),
     /// A monowidth code string
     #[serde(rename = "code")]
     Code(TextBlock),
@@ -52,6 +55,9 @@ pub enum MessageEntity {
     /// A mention of users without usernames
     #[serde(rename = "text_mention")]
     TextMention(TextMention),
+    /// Inline custom emoji stickers
+    #[serde(rename = "custom_emoji")]
+    CustomEmoji(InlineCustomEmoji),
 }
 
 /// A monowidth code block
@@ -82,4 +88,15 @@ pub struct TextMention {
     pub text_block: TextBlock,
     /// The mentioned user
     pub user: User,
+}
+
+#[derive(Serialize, Deserialize, Debug, Clone, PartialEq)]
+pub struct InlineCustomEmoji {
+    /// The part of the text that is the custom emoji
+    #[serde(flatten)]
+    pub text_block: TextBlock,
+    /// For “custom_emoji” only, unique identifier of the custom emoji. Use [`get_custom_emoji_stickers`] to get full information about the sticker
+    ///
+    /// [`get_custom_emoji_stickers`]: ../../api/trait.API.html#method.get_custom_emoji_stickers
+    pub custom_emoji_id: String,
 }

@@ -133,6 +133,52 @@ pub trait API: Sync {
         .into()
     }
 
+    /// Use this method to change the bot's menu button in a private chat, or the default menu button. Returns True on success.
+    async fn set_chat_menu_button(&self, data: SetChatMenuButton) -> Result<bool> {
+        self.post(
+            APIEndpoint::SetChatMenuButton,
+            Some(serde_json::to_value(data)?),
+        )
+        .await?
+        .into()
+    }
+
+    /// Use this method to get the current value of the bot's menu button in a private chat, or the default menu button. Returns [`MenuButton`] on success.
+    async fn get_chat_menu_button(&self, data: GetChatMenuButton) -> Result<MenuButton> {
+        self.get(
+            APIEndpoint::GetChatMenuButton,
+            Some(serde_json::to_value(data)?),
+        )
+        .await?
+        .into()
+    }
+
+    /// Use this method to change the default administrator rights requested by the bot when it's added as an administrator to groups or channels. These rights will be suggested to users, but they are are free to modify the list before adding the bot. Returns True on success.
+    async fn set_my_default_administrator_rights(
+        &self,
+        data: SetMyDefaultAdministratorRights,
+    ) -> Result<bool> {
+        self.post(
+            APIEndpoint::SetMyDefaultAdministratorRights,
+            Some(serde_json::to_value(data)?),
+        )
+        .await?
+        .into()
+    }
+
+    /// Use this method to get the current default administrator rights of the bot. Returns [`ChatAdministratorRights`] on success.
+    async fn get_my_default_administrator_right(
+        &self,
+        data: GetMyDefaultAdministratorRights,
+    ) -> Result<ChatAdministratorRights> {
+        self.get(
+            APIEndpoint::GetMyDefaultAdministratorRights,
+            Some(serde_json::to_value(data)?),
+        )
+        .await?
+        .into()
+    }
+
     /// Use this method to delete the list of the bot's commands for the given
     /// scope and user language. After deletion, [higher level commands] will be
     /// shown to affected users. Returns True on success.
@@ -623,7 +669,11 @@ pub trait API: Sync {
         .into()
     }
 
-    /// Use this method to ban a channel chat in a supergroup or a channel. Until the chat is unbanned, the owner of the banned chat won't be able to send messages on behalf of any of their channels. The bot must be an administrator in the supergroup or channel for this to work and must have the appropriate administrator rights. Returns True on success.
+    /// Use this method to ban a channel chat in a supergroup or a channel.
+    /// Until the chat is unbanned, the owner of the banned chat won't be able
+    /// to send messages on behalf of any of their channels. The bot must be an
+    /// administrator in the supergroup or channel for this to work and must
+    /// have the appropriate administrator rights. Returns True on success.
     async fn ban_chat_sender_chat(&self, data: BanChatSenderChat) -> Result<bool> {
         self.post(
             APIEndpoint::BanChatSenderChat,
@@ -633,7 +683,10 @@ pub trait API: Sync {
         .into()
     }
 
-    /// Use this method to unban a previously banned channel chat in a supergroup or channel. The bot must be an administrator for this to work and must have the appropriate administrator rights. Returns True on success.
+    /// Use this method to unban a previously banned channel chat in a
+    /// supergroup or channel. The bot must be an administrator for this to work
+    /// and must have the appropriate administrator rights. Returns True on
+    /// success.
     async fn unban_chat_sender_chat(&self, data: UnbanChatSenderChat) -> Result<bool> {
         self.post(
             APIEndpoint::UnbanChatSenderChat,
@@ -718,7 +771,9 @@ pub trait API: Sync {
         .into()
     }
 
-    /// Use this method to approve a chat join request. The bot must be an administrator in the chat for this to work and must have the can_invite_users administrator right. Returns True on success.
+    /// Use this method to approve a chat join request. The bot must be an
+    /// administrator in the chat for this to work and must have the
+    /// can_invite_users administrator right. Returns True on success.
     async fn approve_chat_join_request(&self, data: ApproveChatJoinRequest) -> Result<bool> {
         self.post(
             APIEndpoint::ApproveChatJoinRequest,
@@ -728,7 +783,9 @@ pub trait API: Sync {
         .into()
     }
 
-    /// Use this method to decline a chat join request. The bot must be an administrator in the chat for this to work and must have the can_invite_users administrator right. Returns True on success.
+    /// Use this method to decline a chat join request. The bot must be an
+    /// administrator in the chat for this to work and must have the
+    /// can_invite_users administrator right. Returns True on success.
     async fn decline_chat_join_request(&self, data: DeclineChatJoinRequest) -> Result<bool> {
         self.post(
             APIEndpoint::DeclineChatJoinRequest,
@@ -1132,6 +1189,18 @@ pub trait API: Sync {
 
         self.post(
             APIEndpoint::AnswerInlineQuery,
+            Some(serde_json::to_value(data)?),
+        )
+        .await?
+        .into()
+    }
+
+    /// Use this method to set the result of an interaction with a [Web App] and send a corresponding message on behalf of the user to the chat from which the query originated. On success, a [`SentWebAppMessage`] object is returned.
+    ///
+    /// [Web App]: https://core.telegram.org/bots/webapps
+    async fn answer_web_app_query(&self, data: AnswerWebAppQuery) -> Result<SentWebAppMessage> {
+        self.post(
+            APIEndpoint::AnswerWebAppQuery,
             Some(serde_json::to_value(data)?),
         )
         .await?

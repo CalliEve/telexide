@@ -1,10 +1,6 @@
 use super::{api::API, endpoints::APIEndpoint, response::Response};
 use crate::utils::{
-    encode_multipart_form_data,
-    result::Result,
-    AsFormData,
-    FormDataFile,
-    BOUNDARY,
+    encode_multipart_form_data, result::Result, AsFormData, FormDataFile, BOUNDARY,
 };
 use async_trait::async_trait;
 use hyper::{body::HttpBody, client::HttpConnector, Body, Client, Request};
@@ -24,7 +20,7 @@ static TELEGRAM_API: &str = "https://api.telegram.org/bot";
 /// # #[tokio::main]
 /// # async fn main() {
 ///     # let token = "test token";
-///     # let chat_id = 3;
+///     # let chat_id = telexide::model::IntegerOrString::Integer(3);
 ///     let message = SendMessage::new(chat_id, "hi!");
 ///
 ///     let client = APIClient::new_default(token);

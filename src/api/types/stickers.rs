@@ -21,6 +21,9 @@ pub struct SendSticker {
     /// sound.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub disable_notification: Option<bool>,
+    /// Protects the contents of the sent message from forwarding and saving
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub protect_content: Option<bool>,
     /// If the message is a reply, ID of the original message
     #[serde(skip_serializing_if = "Option::is_none")]
     pub reply_to_message_id: Option<i64>,
@@ -89,7 +92,9 @@ pub struct CreateNewStickerSet {
     /// WEBM video with the sticker, uploaded using multipart/form-data. See https://core.telegram.org/stickers#video-sticker-requirements for technical requirements
     #[serde(skip_serializing_if = "Option::is_none")]
     pub webm_sticker: Option<InputFile>,
-    /// Type of stickers in the set, pass “regular” or “mask”. Custom emoji sticker sets can't be created via the Bot API at the moment. By default, a regular sticker set is created.
+    /// Type of stickers in the set, pass “regular” or “mask”. Custom emoji
+    /// sticker sets can't be created via the Bot API at the moment. By default,
+    /// a regular sticker set is created.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub sticker_type: Option<StickerType>,
     /// One or more emoji corresponding to the sticker

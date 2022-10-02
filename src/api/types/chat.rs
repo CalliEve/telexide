@@ -114,9 +114,9 @@ pub struct PromoteChatMember {
     /// If the administrator can pin messages, supergroups only
     #[serde(skip_serializing_if = "Option::is_none")]
     pub can_pin_messages: Option<bool>,
-    /// If the administrator can manage voice chats, supergroups only
+    /// If the administrator can manage video chats, supergroups only
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub can_manage_voice_chats: Option<bool>,
+    pub can_manage_video_chats: Option<bool>,
     /// If the administrator can access the chat event log, chat statistics,
     /// message statistics in channels, see channel members, see anonymous
     /// administrators in supergroups and ignore slow mode. Implied by any
@@ -400,8 +400,8 @@ pub struct CreateChatInviteLink {
     /// after joining the chat via this invite link; 1-99999
     #[serde(skip_serializing_if = "Option::is_none")]
     pub member_limit: Option<i32>,
-    /// True, if users joining the chat via the link need to be approved by chat administrators.
-    /// If True, member_limit can't be specified.
+    /// True, if users joining the chat via the link need to be approved by chat
+    /// administrators. If True, member_limit can't be specified.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub creates_join_request: Option<bool>,
 }
@@ -427,8 +427,8 @@ pub struct EditChatInviteLink {
     /// after joining the chat via this invite link; 1-99999
     #[serde(skip_serializing_if = "Option::is_none")]
     pub member_limit: Option<i32>,
-    /// True, if users joining the chat via the link need to be approved by chat administrators.
-    /// If True, member_limit can't be specified.
+    /// True, if users joining the chat via the link need to be approved by chat
+    /// administrators. If True, member_limit can't be specified.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub creates_join_request: Option<bool>,
 }

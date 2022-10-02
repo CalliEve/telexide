@@ -1,6 +1,15 @@
 use super::{
-    raw::RawUpdate, CallbackQuery, ChatJoinRequest, ChatMemberUpdated, ChosenInlineResult,
-    InlineQuery, Message, Poll, PollAnswer, PreCheckoutQuery, ShippingQuery,
+    raw::RawUpdate,
+    CallbackQuery,
+    ChatJoinRequest,
+    ChatMemberUpdated,
+    ChosenInlineResult,
+    InlineQuery,
+    Message,
+    Poll,
+    PollAnswer,
+    PreCheckoutQuery,
+    ShippingQuery,
 };
 use serde::{Deserialize, Deserializer, Serialize, Serializer};
 
@@ -61,7 +70,9 @@ pub enum UpdateContent {
     /// administrator in the chat and must explicitly specify “chat_member”
     /// in the list of allowed_updates to receive these updates.
     ChatMember(ChatMemberUpdated),
-    /// A request to join the chat has been sent. The bot must have the can_invite_users administrator right in the chat to receive these updates.
+    /// A request to join the chat has been sent. The bot must have the
+    /// can_invite_users administrator right in the chat to receive these
+    /// updates.
     ChatJoinRequest(ChatJoinRequest),
     /// An unknown update content
     Unknown,
@@ -70,7 +81,10 @@ pub enum UpdateContent {
 impl From<RawUpdate> for Update {
     fn from(raw: RawUpdate) -> Update {
         let update_id = raw.update_id;
-        let make_update = |content: UpdateContent| Self { update_id, content };
+        let make_update = |content: UpdateContent| Self {
+            update_id,
+            content,
+        };
 
         macro_rules! set_content {
             ($data:expr, $kind:ident) => {
