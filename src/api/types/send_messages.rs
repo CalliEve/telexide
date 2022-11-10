@@ -887,6 +887,7 @@ pub struct SendPoll {
     /// Text that is shown when a user chooses an incorrect answer or taps on
     /// the lamp icon in a quiz-style poll, 0-200 characters with at most 2 line
     /// feeds after entities parsing
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub explanation: Option<String>,
     /// Mode for parsing entities in the explanation.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -941,6 +942,7 @@ pub struct SendDice {
     /// Dice can have values 1-6 for “🎲”, “🎯” and “🎳”, values 1-5 for “🏀”
     /// and “⚽”, and values 1-64 for “🎰”.
     /// Defauts to “🎲”
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub emoji: Option<String>,
     /// Sends the message silently. Users will receive a notification with no
     /// sound.
