@@ -1,6 +1,6 @@
 [package]
 name = "telexide"
-version = "0.1.7"
+version = "0.1.8"
 description = "An async Rust library for the telegram bot API."
 documentation = "https://docs.rs/telexide"
 repository = "https://github.com/callieve/telexide"

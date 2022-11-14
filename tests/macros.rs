@@ -53,10 +53,12 @@ async fn test_using_command() -> Result<()> {
         update_id: 10,
         content: UpdateContent::Message(Message {
             message_id: 30,
+            message_thread_id: None,
             from: None,
             date: chrono::offset::Utc::now(),
             chat: Chat::Private(PrivateChat {
                 id: 40,
+                active_usernames: Vec::new(),
                 username: None,
                 first_name: None,
                 bio: None,
@@ -65,6 +67,7 @@ async fn test_using_command() -> Result<()> {
                 has_private_forwards: None,
                 has_restricted_voice_and_video_messages: None,
                 message_auto_delete_time: None,
+                emoji_status_custom_emoji_id: None,
             }),
             sender_chat: None,
             forward_data: None,
@@ -75,6 +78,7 @@ async fn test_using_command() -> Result<()> {
             connected_website: None,
             passport_data: None,
             reply_markup: None,
+            is_topic_message: false,
             has_protected_content: false,
             content: MessageContent::Unknown,
         }),
@@ -88,10 +92,12 @@ async fn test_using_command() -> Result<()> {
         update_id: 10,
         content: UpdateContent::Message(Message {
             message_id: 30,
+            message_thread_id: None,
             from: None,
             date: chrono::offset::Utc::now(),
             chat: Chat::Private(PrivateChat {
                 id: 40,
+                active_usernames: Vec::new(),
                 username: None,
                 first_name: None,
                 bio: None,
@@ -100,6 +106,7 @@ async fn test_using_command() -> Result<()> {
                 has_private_forwards: None,
                 has_restricted_voice_and_video_messages: None,
                 message_auto_delete_time: None,
+                emoji_status_custom_emoji_id: None,
             }),
             sender_chat: None,
             forward_data: None,
@@ -110,6 +117,7 @@ async fn test_using_command() -> Result<()> {
             connected_website: None,
             passport_data: None,
             reply_markup: None,
+            is_topic_message: false,
             has_protected_content: false,
             content: MessageContent::Text {
                 content: "/testing_command".to_owned(),

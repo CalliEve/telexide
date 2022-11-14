@@ -983,6 +983,95 @@ pub trait API: Sync {
         .into()
     }
 
+    /// Use this method to get custom emoji stickers, which can be used as
+    /// a forum topic icon by any user. Returns a `Vec<`[`Sticker`]`>`.
+    async fn get_forum_topic_icon_stickers(&self) -> Result<Vec<Sticker>> {
+        self.get(APIEndpoint::GetForumTopicIconStickers, None)
+            .await?
+            .into()
+    }
+
+    /// Use this method to create a topic in a forum supergroup chat.
+    /// The bot must be an administrator in the chat for this to work and must
+    /// have the can_manage_topics administrator rights.
+    /// Returns information about the created topic as a [`ForumTopic`] object.
+    async fn create_forum_topic(&self, data: CreateForumTopic) -> Result<ForumTopic> {
+        self.post(
+            APIEndpoint::CreateForumTopic,
+            Some(serde_json::to_value(data)?),
+        )
+        .await?
+        .into()
+    }
+
+    /// Use this method to edit name and icon of a topic in a forum supergroup chat.
+    /// The bot must be an administrator in the chat for this to work and must
+    /// have can_manage_topics administrator rights, unless it is the creator of the topic.
+    /// Returns True on success.
+    async fn edit_forum_topic(&self, data: EditForumTopic) -> Result<bool> {
+        self.post(
+            APIEndpoint::EditForumTopic,
+            Some(serde_json::to_value(data)?),
+        )
+        .await?
+        .into()
+    }
+
+    /// Use this method to close an open topic in a forum supergroup chat.
+    /// The bot must be an administrator in the chat for this to work and must
+    /// have the can_manage_topics administrator rights, unless it is the creator of the topic.
+    /// Returns True on success.
+    async fn close_forum_topic(&self, data: CloseForumTopic) -> Result<bool> {
+        self.post(
+            APIEndpoint::CloseForumTopic,
+            Some(serde_json::to_value(data)?),
+        )
+        .await?
+        .into()
+    }
+
+    /// Use this method to reopen a closed topic in a forum supergroup chat.
+    /// The bot must be an administrator in the chat for this to work and must
+    /// have the can_manage_topics administrator rights, unless it is the creator of the topic.
+    /// Returns True on success.
+    async fn reopen_forum_topic(&self, data: ReopenForumTopic) -> Result<bool> {
+        self.post(
+            APIEndpoint::ReopenForumTopic,
+            Some(serde_json::to_value(data)?),
+        )
+        .await?
+        .into()
+    }
+
+    /// Use this method to delete a forum topic along with all its messages in a forum supergroup chat.
+    /// The bot must be an administrator in the chat for this to work and must
+    /// have the can_delete_messages administrator rights.
+    /// Returns True on success.
+    async fn delete_forum_topic(&self, data: DeleteForumTopic) -> Result<bool> {
+        self.post(
+            APIEndpoint::DeleteForumTopic,
+            Some(serde_json::to_value(data)?),
+        )
+        .await?
+        .into()
+    }
+
+    /// Use this method to clear the list of pinned messages in a forum topic.
+    /// The bot must be an administrator in the chat for this to work and must
+    /// have the can_pin_messages administrator right in the supergroup.
+    /// Returns True on success.
+    async fn unpin_all_forum_topic_messages(
+        &self,
+        data: UnpinAllForumTopicMessages,
+    ) -> Result<bool> {
+        self.post(
+            APIEndpoint::UnpinAllForumTopicMessages,
+            Some(serde_json::to_value(data)?),
+        )
+        .await?
+        .into()
+    }
+
     /// Use this method to send answers to callback queries sent from [inline keyboards](https://core.telegram.org/bots#inline-keyboards-and-on-the-fly-updating).
     /// The answer will be displayed to the user as a notification at the top of
     /// the chat screen or as an alert. On success, True is returned.

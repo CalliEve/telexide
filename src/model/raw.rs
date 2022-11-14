@@ -14,6 +14,7 @@ use super::{
 #[derive(Serialize, Deserialize, Debug, Clone, PartialEq)]
 pub struct RawMessage {
     pub message_id: i64,
+    pub message_thread_id: Option<i64>,
     pub from: Option<super::User>,
     pub sender_chat: Option<RawChat>,
     #[serde(with = "unix_date_formatting")]
@@ -28,6 +29,8 @@ pub struct RawMessage {
     #[serde(default)]
     #[serde(with = "unix_date_formatting::optional")]
     pub forward_date: Option<DateTime<Utc>>,
+    #[serde(default)]
+    pub is_topic_message: bool,
     #[serde(default)]
     pub is_automatic_forward: bool,
 
@@ -95,6 +98,10 @@ pub struct RawMessage {
     pub voice_chat_ended: Option<VideoChatEnded>,
     pub voice_chat_participants_invited: Option<VideoChatParticipantsInvited>,
 
+    pub forum_topic_created: Option<ForumTopicCreated>,
+    pub forum_topic_closed: Option<ForumTopicClosed>,
+    pub forum_topic_reopened: Option<ForumTopicReopened>,
+
     pub web_app_data: Option<WebAppData>,
 }
 
@@ -115,8 +122,19 @@ pub struct RawChat {
     pub first_name: Option<String>,
     /// Last name of the other party in a private chat
     pub last_name: Option<String>,
+    /// True, if the supergroup chat is a forum
+    pub is_forum: Option<bool>,
     /// Chat photo. Returned only in getChat.
     pub photo: Option<ChatPhoto>,
+    /// If non-empty, the list of all active chat usernames. Returned only in [`get_chat`].
+    ///
+    /// [`get_chat`]: ../../api/trait.API.html#method.get_chat
+    #[serde(default)]
+    pub active_usernames: Vec<String>,
+    /// Custom emoji identifier of emoji status of the other party in a private chat. Returned only in [`get_chat`].
+    ///
+    /// [`get_chat`]: ../../api/trait.API.html#method.get_chat
+    pub emoji_status_custom_emoji_id: Option<String>,
     /// Bio of the other party in a private chat. Returned only in [`get_chat`].
     ///
     /// [`get_chat`]: ../../api/trait.API.html#method.get_chat

@@ -13,6 +13,10 @@ use telexide_proc_macros::build_struct;
 pub struct SendSticker {
     /// Unique identifier for the target chat
     pub chat_id: IntegerOrString,
+    /// Unique identifier for the target message thread (topic) of the forum;
+    /// for forum supergroups only
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub message_thread_id: Option<i64>,
     /// Sticker to send. Pass a file_id as String to send a file that exists on
     /// the Telegram servers (recommended), pass an HTTP URL as a String for
     /// Telegram to get a .WEBP file from the Internet, or upload a new one

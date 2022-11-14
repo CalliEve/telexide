@@ -406,3 +406,24 @@ pub struct WebAppData {
     /// Be aware that a bad client can send arbitrary data in this field.
     pub button_text: String,
 }
+
+/// This object represents a service message about a new forum topic created in the chat.
+#[derive(Serialize, Deserialize, Debug, Clone, PartialEq)]
+pub struct ForumTopicCreated {
+    /// Name of the topic
+    pub name: String,
+    /// Color of the topic icon in RGB format
+    pub icon_color: i64,
+    /// Unique identifier of the custom emoji shown as the topic icon
+    pub icon_custom_emoji_id: Option<String>,
+}
+
+/// This object represents a service message about a forum topic closed in the chat.
+/// Currently holds no information.
+#[derive(Serialize, Deserialize, Debug, Clone, PartialEq)]
+pub struct ForumTopicClosed {}
+
+/// This object represents a service message about a forum topic reopened in the chat.
+/// Currently holds no information.
+#[derive(Serialize, Deserialize, Debug, Clone, PartialEq)]
+pub struct ForumTopicReopened {}

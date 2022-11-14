@@ -12,6 +12,10 @@ use telexide_proc_macros::build_struct;
 pub struct SendInvoice {
     /// Unique identifier for the target private chat
     pub chat_id: IntegerOrString,
+    /// Unique identifier for the target message thread (topic) of the forum;
+    /// for forum supergroups only
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub message_thread_id: Option<i64>,
     /// Product name, 1-32 characters
     pub title: String,
     /// Product description, 1-255 characters

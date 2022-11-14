@@ -123,6 +123,9 @@ pub struct PromoteChatMember {
     /// other administrator privilege.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub can_manage_chat: Option<bool>,
+    /// If the user is allowed to create, rename, close, and reopen forum topics, supergroups only
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub can_manage_topics: Option<bool>,
 }
 
 /// struct for holding data needed to call

@@ -12,6 +12,10 @@ use telexide_proc_macros::build_struct;
 pub struct SendGame {
     /// Unique identifier for the target chat
     pub chat_id: IntegerOrString,
+    /// Unique identifier for the target message thread (topic) of the forum;
+    /// for forum supergroups only
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub message_thread_id: Option<i64>,
     /// Short name of the game, serves as the unique identifier for the game.
     /// Set up your games via Botfather.
     pub game_short_name: String,

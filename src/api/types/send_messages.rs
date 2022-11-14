@@ -22,6 +22,10 @@ use telexide_proc_macros::build_struct;
 pub struct SendMessage {
     /// Unique identifier for the target chat
     pub chat_id: IntegerOrString,
+    /// Unique identifier for the target message thread (topic) of the forum;
+    /// for forum supergroups only
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub message_thread_id: Option<i64>,
     /// Text of the message to be sen, 1-4096 characters after entities parsing
     pub text: String,
     /// Send Markdown or HTML, if you want Telegram apps to show bold, italic,
@@ -64,6 +68,10 @@ pub struct SendMessage {
 pub struct ForwardMessage {
     /// Unique identifier for the target chat
     pub chat_id: IntegerOrString,
+    /// Unique identifier for the target message thread (topic) of the forum;
+    /// for forum supergroups only
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub message_thread_id: Option<i64>,
     /// Unique identifier for the chat where the original message was sent.
     pub from_chat_id: IntegerOrString,
     /// Message identifier in the chat specified in from_chat_id
@@ -83,6 +91,7 @@ impl ForwardMessage {
             chat_id,
             from_chat_id: message.chat.get_id().into(),
             message_id: message.message_id,
+            message_thread_id: message.message_thread_id,
             disable_notification: None,
             protect_content: None,
         }
@@ -97,6 +106,10 @@ impl ForwardMessage {
 pub struct CopyMessage {
     /// Unique identifier for the target chat
     pub chat_id: IntegerOrString,
+    /// Unique identifier for the target message thread (topic) of the forum;
+    /// for forum supergroups only
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub message_thread_id: Option<i64>,
     /// Unique identifier for the chat where the original message was sent.
     pub from_chat_id: IntegerOrString,
     /// Message identifier in the chat specified in from_chat_id
@@ -137,6 +150,7 @@ impl CopyMessage {
             chat_id,
             from_chat_id: from.chat.get_id().into(),
             message_id: from.message_id,
+            message_thread_id: from.message_thread_id,
             caption: None,
             caption_entities: None,
             parse_mode: None,
@@ -159,6 +173,10 @@ impl CopyMessage {
 pub struct SendPhoto {
     /// Unique identifier for the target chat
     pub chat_id: IntegerOrString,
+    /// Unique identifier for the target message thread (topic) of the forum;
+    /// for forum supergroups only
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub message_thread_id: Option<i64>,
     /// Photo to send. Pass a file_id as String to send a photo that exists on
     /// the Telegram servers (recommended), pass an HTTP URL as a String for
     /// Telegram to get a photo from the Internet
@@ -199,6 +217,7 @@ impl SendPhoto {
         Self {
             chat_id,
             photo: InputFile::String(photo.file_id.clone()),
+            message_thread_id: None,
             caption: None,
             caption_entities: None,
             parse_mode: None,
@@ -214,6 +233,7 @@ impl SendPhoto {
         Ok(Self {
             chat_id,
             photo: InputFile::from_path(path)?,
+            message_thread_id: None,
             caption: None,
             caption_entities: None,
             parse_mode: None,
@@ -236,6 +256,10 @@ impl SendPhoto {
 pub struct SendAudio {
     /// Unique identifier for the target chat
     pub chat_id: IntegerOrString,
+    /// Unique identifier for the target message thread (topic) of the forum;
+    /// for forum supergroups only
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub message_thread_id: Option<i64>,
     /// Audio to send. Pass a file_id as String to send an audio file that
     /// exists on the Telegram servers (recommended), pass an HTTP URL as a
     /// String for Telegram to get an audio file from the Internet
@@ -292,6 +316,7 @@ impl SendAudio {
         Ok(Self {
             chat_id,
             audio: InputFile::from_path(path)?,
+            message_thread_id: None,
             thumb: None,
             caption: None,
             caption_entities: None,
@@ -318,6 +343,10 @@ impl SendAudio {
 pub struct SendDocument {
     /// Unique identifier for the target chat
     pub chat_id: IntegerOrString,
+    /// Unique identifier for the target message thread (topic) of the forum;
+    /// for forum supergroups only
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub message_thread_id: Option<i64>,
     /// Document to send. Pass a file_id as String to send a photo that exists
     /// on the Telegram servers (recommended), pass an HTTP URL as a String
     /// for Telegram to get a document from the Internet
@@ -369,6 +398,7 @@ impl SendDocument {
         Ok(Self {
             chat_id,
             document: InputFile::from_path(path)?,
+            message_thread_id: None,
             thumb: None,
             caption: None,
             caption_entities: None,
@@ -393,6 +423,10 @@ impl SendDocument {
 pub struct SendVideo {
     /// Unique identifier for the target chat
     pub chat_id: IntegerOrString,
+    /// Unique identifier for the target message thread (topic) of the forum;
+    /// for forum supergroups only
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub message_thread_id: Option<i64>,
     /// Video to send. Pass a file_id as String to send an video file that
     /// exists on the Telegram servers (recommended), pass an HTTP URL as a
     /// String for Telegram to get an video file from the Internet
@@ -458,6 +492,7 @@ impl SendVideo {
         Ok(Self {
             chat_id,
             video: InputFile::from_path(path)?,
+            message_thread_id: None,
             thumb: None,
             caption: None,
             caption_entities: None,
@@ -487,6 +522,10 @@ impl SendVideo {
 pub struct SendAnimation {
     /// Unique identifier for the target chat
     pub chat_id: IntegerOrString,
+    /// Unique identifier for the target message thread (topic) of the forum;
+    /// for forum supergroups only
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub message_thread_id: Option<i64>,
     /// Animation to send. Pass a file_id as String to send an animation file
     /// that exists on the Telegram servers (recommended), pass an HTTP URL
     /// as a String for Telegram to get an animation file from the Internet
@@ -549,6 +588,7 @@ impl SendAnimation {
         Ok(Self {
             chat_id,
             animation: InputFile::from_path(path)?,
+            message_thread_id: None,
             thumb: None,
             caption: None,
             caption_entities: None,
@@ -577,6 +617,10 @@ impl SendAnimation {
 pub struct SendVoice {
     /// Unique identifier for the target chat
     pub chat_id: IntegerOrString,
+    /// Unique identifier for the target message thread (topic) of the forum;
+    /// for forum supergroups only
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub message_thread_id: Option<i64>,
     /// Voice to send. Pass a file_id as String to send an voice file that
     /// exists on the Telegram servers (recommended), pass an HTTP URL as a
     /// String for Telegram to get an voice file from the Internet
@@ -620,6 +664,7 @@ impl SendVoice {
         Ok(Self {
             chat_id,
             voice: InputFile::from_path(path)?,
+            message_thread_id: None,
             duration: None,
             caption: None,
             caption_entities: None,
@@ -643,6 +688,10 @@ impl SendVoice {
 pub struct SendVideoNote {
     /// Unique identifier for the target chat
     pub chat_id: IntegerOrString,
+    /// Unique identifier for the target message thread (topic) of the forum;
+    /// for forum supergroups only
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub message_thread_id: Option<i64>,
     /// VideoNote to send. Pass a file_id as String to send an video_note file
     /// that exists on the Telegram servers (recommended), pass an HTTP URL
     /// as a String for Telegram to get an video_note file from the Internet
@@ -684,6 +733,7 @@ impl SendVideoNote {
         Ok(Self {
             chat_id,
             video_note: InputFile::from_path(path)?,
+            message_thread_id: None,
             thumb: None,
             duration: None,
             length: None,
@@ -706,6 +756,10 @@ impl SendVideoNote {
 pub struct SendMediaGroup {
     /// Unique identifier for the target chat
     pub chat_id: IntegerOrString,
+    /// Unique identifier for the target message thread (topic) of the forum;
+    /// for forum supergroups only
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub message_thread_id: Option<i64>,
     /// Photos, videos, documents or audios as an album to be send, amount must
     /// be 2-10
     pub media: Vec<InputMedia>,
@@ -735,6 +789,10 @@ pub struct SendMediaGroup {
 pub struct SendLocation {
     /// Unique identifier for the target chat
     pub chat_id: IntegerOrString,
+    /// Unique identifier for the target message thread (topic) of the forum;
+    /// for forum supergroups only
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub message_thread_id: Option<i64>,
     /// Latitude of the location
     pub latitude: f64,
     /// Longitude of the location
@@ -780,6 +838,10 @@ pub struct SendLocation {
 pub struct SendVenue {
     /// Unique identifier for the target chat
     pub chat_id: IntegerOrString,
+    /// Unique identifier for the target message thread (topic) of the forum;
+    /// for forum supergroups only
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub message_thread_id: Option<i64>,
     /// Latitude of the venue
     pub latitude: f64,
     /// Longitude of the venue
@@ -825,6 +887,10 @@ pub struct SendVenue {
 pub struct SendContact {
     /// Unique identifier for the target chat
     pub chat_id: IntegerOrString,
+    /// Unique identifier for the target message thread (topic) of the forum;
+    /// for forum supergroups only
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub message_thread_id: Option<i64>,
     /// Contact's phone number
     pub phone_number: String,
     /// Contact's first name
@@ -864,6 +930,10 @@ pub struct SendContact {
 pub struct SendPoll {
     /// Unique identifier for the target chat
     pub chat_id: IntegerOrString,
+    /// Unique identifier for the target message thread (topic) of the forum;
+    /// for forum supergroups only
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub message_thread_id: Option<i64>,
     /// Poll question, 1-255 characters
     pub question: String,
     /// A JSON-serialized list of answer options, 2-10 strings 1-300 characters
@@ -937,6 +1007,10 @@ pub struct SendPoll {
 pub struct SendDice {
     /// Unique identifier for the target chat
     pub chat_id: IntegerOrString,
+    /// Unique identifier for the target message thread (topic) of the forum;
+    /// for forum supergroups only
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub message_thread_id: Option<i64>,
     /// Emoji on which the dice throw animation is based.
     /// Currently, must be one of “🎲”, “🎯”, “🏀”, “⚽”, “🎳”, or “🎰”.
     /// Dice can have values 1-6 for “🎲”, “🎯” and “🎳”, values 1-5 for “🏀”

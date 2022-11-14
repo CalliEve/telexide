@@ -11,6 +11,8 @@ use super::{
 pub struct Message {
     /// Unique message identifier inside this chat
     pub message_id: i64,
+    /// Unique identifier of a message thread to which the message belongs; for supergroups only
+    pub message_thread_id: Option<i64>,
     /// Sender, empty for messages sent to channels
     pub from: Option<super::User>,
     /// Sender of the message, sent on behalf of a chat. The channel itself for
@@ -26,6 +28,10 @@ pub struct Message {
     /// Data about what message it was forwarded from
     pub forward_data: Option<ForwardData>,
 
+    /// True, if the message is sent to a forum topic
+    pub is_topic_message: bool,
+    /// For replies, the original message.
+    /// Note that the Message object in this field will not contain further reply_to_message fields even if it itself is a reply.
     pub reply_to_message: Option<Box<Message>>,
     /// Bot through which the message was sent
     pub via_bot: Option<User>,
@@ -228,7 +234,17 @@ pub enum MessageContent {
         /// Service message: data sent by a Web App
         content: WebAppData,
     },
+    ForumTopicCreated {
+        /// Information about the forum topic that was created
+        content: ForumTopicCreated,
+    },
 
+    /// This object represents a service message about a forum topic closed in the chat.
+    /// Currently holds no information.
+    ForumTopicClosed,
+    /// This object represents a service message about a forum topic reopened in the chat.
+    /// Currently holds no information.
+    ForumTopicReopened,
     /// Service message: the chat photo was deleted
     DeleteChatPhoto,
     /// Service message: the group has been created
@@ -292,6 +308,7 @@ impl From<RawMessage> for Message {
     #[allow(clippy::too_many_lines)]
     fn from(raw: RawMessage) -> Message {
         let message_id = raw.message_id;
+        let message_thread_id = raw.message_thread_id;
         let from = raw.from;
         let sender_chat = raw.sender_chat.map(|c| c.into());
         let date = raw.date;
@@ -304,6 +321,7 @@ impl From<RawMessage> for Message {
         let passport_data = raw.passport_data;
         let reply_markup = raw.reply_markup;
         let has_protected_content = raw.has_protected_content;
+        let is_topic_message = raw.is_topic_message;
 
         let forward_data = if let Some(d) = raw.forward_date {
             Some(ForwardData {
@@ -321,6 +339,7 @@ impl From<RawMessage> for Message {
 
         let fill_in_content = |content: MessageContent| Self {
             message_id,
+            message_thread_id,
             from,
             sender_chat,
             date,
@@ -335,6 +354,7 @@ impl From<RawMessage> for Message {
             passport_data,
             reply_markup,
             has_protected_content,
+            is_topic_message,
         };
 
         if let Some(c) = raw.text {
@@ -390,6 +410,14 @@ impl From<RawMessage> for Message {
             };
         }
 
+        macro_rules! content_is_some {
+            ($data:expr, $kind:ident) => {
+                if let Some(_) = $data {
+                    return fill_in_content(MessageContent::$kind);
+                }
+            };
+        }
+
         content_with_captions!(raw.audio, Audio);
         content_with_captions!(raw.animation, Animation);
         content_with_captions!(raw.document, Document);
@@ -424,11 +452,15 @@ impl From<RawMessage> for Message {
             VideoChatParticipantsInvited
         );
         content!(raw.web_app_data, WebAppData);
+        content!(raw.forum_topic_created, ForumTopicCreated);
 
         bool_content!(raw.delete_chat_photo, DeleteChatPhoto);
         bool_content!(raw.group_chat_created, GroupChatCreated);
         bool_content!(raw.supergroup_chat_created, SupergroupChatCreated);
         bool_content!(raw.channel_chat_created, ChannelChatCreated);
+
+        content_is_some!(raw.forum_topic_closed, ForumTopicClosed);
+        content_is_some!(raw.forum_topic_reopened, ForumTopicReopened);
 
         fill_in_content(MessageContent::Unknown)
     }
@@ -439,6 +471,7 @@ impl From<Message> for RawMessage {
     fn from(message: Message) -> RawMessage {
         let mut ret = Self {
             message_id: message.message_id,
+            message_thread_id: message.message_thread_id,
             from: message.from,
             sender_chat: message.sender_chat.map(|c| c.into()),
             date: message.date,
@@ -455,6 +488,7 @@ impl From<Message> for RawMessage {
             forward_from_message_id: None,
             forward_from: None,
             forward_from_chat: None,
+            is_topic_message: message.is_topic_message,
             is_automatic_forward: false,
 
             has_protected_content: message.has_protected_content,
@@ -496,6 +530,9 @@ impl From<Message> for RawMessage {
             voice_chat_started: None,
             voice_chat_ended: None,
             voice_chat_participants_invited: None,
+            forum_topic_created: None,
+            forum_topic_closed: None,
+            forum_topic_reopened: None,
 
             web_app_data: None,
 
@@ -582,6 +619,10 @@ impl From<Message> for RawMessage {
                 ret.caption = caption;
                 ret.caption_entities = caption_entities;
                 ret.media_group_id = media_group_id;
+                ret
+            },
+            MessageContent::ForumTopicCreated { content } => {
+                ret.forum_topic_created = Some(content);
                 ret
             },
             MessageContent::Game { content } => {
@@ -694,6 +735,14 @@ impl From<Message> for RawMessage {
             },
             MessageContent::ChannelChatCreated => {
                 ret.channel_chat_created = true;
+                ret
+            },
+            MessageContent::ForumTopicClosed => {
+                ret.forum_topic_closed = Some(ForumTopicClosed {});
+                ret
+            },
+            MessageContent::ForumTopicReopened => {
+                ret.forum_topic_reopened = Some(ForumTopicReopened {});
                 ret
             },
             MessageContent::Unknown => ret,

@@ -4,6 +4,7 @@
 mod chat;
 mod commands;
 mod edit_messages;
+mod forum;
 mod games;
 mod inline;
 mod input_media;
@@ -18,6 +19,7 @@ mod webhooks;
 pub use chat::*;
 pub use commands::*;
 pub use edit_messages::*;
+pub use forum::*;
 pub use games::*;
 pub use inline::*;
 pub use input_media::*;

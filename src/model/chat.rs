@@ -34,6 +34,15 @@ pub struct PrivateChat {
     ///
     /// [`get_chat`]: ../../api/trait.API.html#method.get_chat
     pub photo: Option<ChatPhoto>,
+    /// If non-empty, the list of all active chat usernames. Returned only in [`get_chat`].
+    ///
+    /// [`get_chat`]: ../../api/trait.API.html#method.get_chat
+    #[serde(default)]
+    pub active_usernames: Vec<String>,
+    /// Custom emoji identifier of emoji status of the other party in a private chat. Returned only in [`get_chat`].
+    ///
+    /// [`get_chat`]: ../../api/trait.API.html#method.get_chat
+    pub emoji_status_custom_emoji_id: Option<String>,
     /// The time after which all messages sent to the chat will be automatically
     /// deleted; in seconds. Returned only in [`get_chat`].
     ///
@@ -80,10 +89,19 @@ pub struct SuperGroupChat {
     pub title: String,
     /// Username if available
     pub username: Option<String>,
+    /// True, if the supergroup chat is a forum (has [topics] enabled)
+    ///
+    /// [topics]: https://telegram.org/blog/topics-in-groups-collectible-usernames#topics-in-groups
+    pub is_forum: Option<bool>,
     /// Chat photo. Returned only in [`get_chat`].
     ///
     /// [`get_chat`]: ../../api/trait.API.html#method.get_chat
     pub photo: Option<ChatPhoto>,
+    /// If non-empty, the list of all active chat usernames. Returned only in [`get_chat`].
+    ///
+    /// [`get_chat`]: ../../api/trait.API.html#method.get_chat
+    #[serde(default)]
+    pub active_usernames: Vec<String>,
     /// True, if users need to join the supergroup before they can send
     /// messages.Returned only in [`get_chat`].
     ///
@@ -152,6 +170,11 @@ pub struct ChannelChat {
     ///
     /// [`get_chat`]: ../../api/trait.API.html#method.get_chat
     pub photo: Option<ChatPhoto>,
+    /// If non-empty, the list of all active chat usernames. Returned only in [`get_chat`].
+    ///
+    /// [`get_chat`]: ../../api/trait.API.html#method.get_chat
+    #[serde(default)]
+    pub active_usernames: Vec<String>,
     /// Description. Returned only in [`get_chat`].
     ///
     /// [`get_chat`]: ../../api/trait.API.html#method.get_chat
@@ -235,6 +258,9 @@ pub struct ChatPermissions {
     /// supergroups.
     #[serde(default)]
     pub can_pin_messages: bool,
+    /// True, if the user is allowed to create forum topics. If omitted defaults to the value of can_pin_messages
+    #[serde(default)]
+    pub can_manage_topics: bool,
 }
 
 /// This object represents a chat photo.
@@ -278,6 +304,7 @@ impl From<RawChat> for Chat {
                 title: raw.title.unwrap_or_default(),
                 username: raw.username,
                 photo: raw.photo,
+                active_usernames: raw.active_usernames,
                 description: raw.description,
                 pinned_message: raw.pinned_message.map(|m| Box::new((*m).into())),
                 invite_link: raw.invite_link,
@@ -290,6 +317,8 @@ impl From<RawChat> for Chat {
                 last_name: raw.last_name,
                 username: raw.username,
                 photo: raw.photo,
+                active_usernames: raw.active_usernames,
+                emoji_status_custom_emoji_id: raw.emoji_status_custom_emoji_id,
                 bio: raw.bio,
                 has_restricted_voice_and_video_messages: raw
                     .has_restricted_voice_and_video_messages,
@@ -310,7 +339,9 @@ impl From<RawChat> for Chat {
                 id: raw.id,
                 title: raw.title.unwrap_or_default(),
                 username: raw.username,
+                is_forum: raw.is_forum,
                 photo: raw.photo,
+                active_usernames: raw.active_usernames,
                 join_by_request: raw.join_by_request,
                 join_to_send_messages: raw.join_to_send_messages,
                 description: raw.description,
@@ -339,6 +370,8 @@ impl From<Chat> for RawChat {
                 id: c.id,
                 username: c.username,
                 photo: c.photo,
+                active_usernames: c.active_usernames,
+                emoji_status_custom_emoji_id: c.emoji_status_custom_emoji_id,
                 bio: c.bio,
                 has_private_forwards: c.has_private_forwards,
                 message_auto_delete_time: c.message_auto_delete_time,
@@ -356,6 +389,7 @@ impl From<Chat> for RawChat {
                 slow_mode_delay: None,
                 linked_chat_id: None,
                 location: None,
+                is_forum: None,
             },
             Chat::Group(c) => RawChat {
                 chat_type: ChatType::Group,
@@ -381,6 +415,9 @@ impl From<Chat> for RawChat {
                 has_restricted_voice_and_video_messages: None,
                 join_to_send_messages: None,
                 join_by_request: None,
+                is_forum: None,
+                active_usernames: Vec::new(),
+                emoji_status_custom_emoji_id: None,
             },
             Chat::SuperGroup(c) => RawChat {
                 chat_type: ChatType::SuperGroup,
@@ -388,6 +425,7 @@ impl From<Chat> for RawChat {
                 title: Some(c.title),
                 username: c.username,
                 photo: c.photo,
+                active_usernames: c.active_usernames,
                 description: c.description,
                 pinned_message: c.pinned_message.map(|m| Box::new((*m).into())),
                 invite_link: c.invite_link,
@@ -400,12 +438,14 @@ impl From<Chat> for RawChat {
                 location: c.location,
                 join_to_send_messages: c.join_to_send_messages,
                 join_by_request: c.join_by_request,
+                is_forum: c.is_forum,
                 has_restricted_voice_and_video_messages: None,
                 bio: None,
                 has_private_forwards: None,
                 first_name: None,
                 last_name: None,
                 message_auto_delete_time: None,
+                emoji_status_custom_emoji_id: None,
             },
             Chat::Channel(c) => RawChat {
                 chat_type: ChatType::Channel,
@@ -413,6 +453,7 @@ impl From<Chat> for RawChat {
                 title: Some(c.title),
                 username: c.username,
                 photo: c.photo,
+                active_usernames: c.active_usernames,
                 description: c.description,
                 pinned_message: c.pinned_message.map(|m| Box::new((*m).into())),
                 invite_link: c.invite_link,
@@ -431,6 +472,8 @@ impl From<Chat> for RawChat {
                 has_restricted_voice_and_video_messages: None,
                 join_to_send_messages: None,
                 join_by_request: None,
+                is_forum: None,
+                emoji_status_custom_emoji_id: None,
             },
         }
     }
@@ -504,6 +547,9 @@ pub struct AdministratorMemberStatus {
     /// True, if the administrator can manage video chats
     #[serde(default)]
     pub can_manage_video_chats: bool,
+    /// True, if the user is allowed to create, rename, close, and reopen forum topics; supergroups only
+    #[serde(default)]
+    pub can_manage_topics: bool,
 }
 
 /// Represents a [`ChatMember`] who is a normal member of the [`Chat`] without
@@ -554,6 +600,9 @@ pub struct RestrictedMemberStatus {
     /// True, if the user is allowed to add web page previews to their messages
     #[serde(default)]
     pub can_add_web_page_previews: bool,
+    /// True, if the user is allowed to create forum topics
+    #[serde(default)]
+    pub can_manage_topics: bool,
 }
 
 /// Represents a [`ChatMember`] who left the [`Chat`].
@@ -697,4 +746,20 @@ pub struct ChatAdministratorRights {
     /// True, if the user is allowed to pin messages; groups and supergroups only
     #[serde(skip_serializing_if = "Option::is_none")]
     pub can_pin_messages: Option<bool>,
+    /// True, if the user is allowed to create, rename, close, and reopen forum topics; supergroups only
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub can_manage_topics: Option<bool>,
+}
+
+/// This object represents a forum topic.
+#[derive(Serialize, Deserialize, Debug, Clone, PartialEq)]
+pub struct ForumTopic {
+    /// Unique identifier of the forum topic
+    pub message_thread_id: i64,
+    /// Name of the topic
+    pub name: String,
+    /// Color of the topic icon in RGB format
+    pub icon_color: i64,
+    /// Unique identifier of the custom emoji shown as the topic icon
+    pub icon_custom_emoji_id: Option<String>,
 }
