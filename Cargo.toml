@@ -1,6 +1,6 @@
 [package]
 name = "telexide"
-version = "0.1.8"
+version = "0.1.9"
 description = "An async Rust library for the telegram bot API."
 documentation = "https://docs.rs/telexide"
 repository = "https://github.com/callieve/telexide"
@@ -8,7 +8,7 @@ homepage = "https://github.com/callieve/telexide"
 keywords = ["telegram", "api", "bot"]
 license-file = "LICENSE.md"
 readme = "README.md"
-authors = ["Callidus <callidusumbra@gmail.com>"]
+authors = ["Calli <me@calli.dev>"]
 edition = "2021"
 
 [dependencies.telexide_proc_macros]

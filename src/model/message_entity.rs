@@ -67,7 +67,7 @@ pub struct Pre {
     #[serde(flatten)]
     pub text_block: TextBlock,
     /// The programming language of the entity text
-    pub language: String,
+    pub language: Option<String>,
 }
 
 /// A clickable text URL
@@ -95,7 +95,8 @@ pub struct InlineCustomEmoji {
     /// The part of the text that is the custom emoji
     #[serde(flatten)]
     pub text_block: TextBlock,
-    /// For “custom_emoji” only, unique identifier of the custom emoji. Use [`get_custom_emoji_stickers`] to get full information about the sticker
+    /// For “custom_emoji” only, unique identifier of the custom emoji. Use
+    /// [`get_custom_emoji_stickers`] to get full information about the sticker
     ///
     /// [`get_custom_emoji_stickers`]: ../../api/trait.API.html#method.get_custom_emoji_stickers
     pub custom_emoji_id: String,
