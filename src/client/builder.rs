@@ -52,8 +52,9 @@ impl ClientBuilder {
     }
 
     /// Sets the token to be used in authorizing the API requests of your bot
-    pub fn set_token(&mut self, token: &str) -> &mut Self {
-        self.token = Some(token.to_owned());
+    #[allow(clippy::needless_pass_by_value)]
+    pub fn set_token(&mut self, token: impl ToString) -> &mut Self {
+        self.token = Some(token.to_string());
         self
     }
 

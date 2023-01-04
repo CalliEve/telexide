@@ -40,9 +40,10 @@ pub struct APIClient {
 impl APIClient {
     /// Creates a new `APIClient` with the provided token and hyper client (if
     /// it is Some).
-    pub fn new<T: ToString>(
+    #[allow(clippy::needless_pass_by_value)]
+    pub fn new(
         hyper_client: Option<Client<hyper_tls::HttpsConnector<HttpConnector>>>,
-        token: &T,
+        token: impl ToString,
     ) -> Self {
         hyper_client.map_or_else(
             || Self {
@@ -58,11 +59,9 @@ impl APIClient {
 
     /// Creates a new `APIClient` with the provided token and the default hyper
     /// client.
-    pub fn new_default<T: ToString>(token: &T) -> Self {
-        Self {
-            hyper_client: hyper::Client::builder().build(hyper_tls::HttpsConnector::new()),
-            token: token.to_string(),
-        }
+    #[allow(clippy::needless_pass_by_value)]
+    pub fn new_default(token: impl ToString) -> Self {
+        Self::new(None, token)
     }
 
     fn parse_endpoint(&self, endpoint: &APIEndpoint) -> String {
