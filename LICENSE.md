@@ -1,4 +1,4 @@
-[Telexide] Copyright (2020) (Bart Evers)(“Licensor”)
+[Telexide] Copyright (2020) (Calli Evers)(“Licensor”)
 
 Hippocratic License Version Number: 2.1.
 
