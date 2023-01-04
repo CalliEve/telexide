@@ -9,7 +9,7 @@ use telexide_proc_macros::build_struct;
 /// [`get_updates`]: ../../api/trait.API.html#method.get_updates
 /// [`set_webhook`]: ../../api/trait.API.html#method.set_webhook
 #[build_struct]
-#[derive(Serialize, Deserialize, Debug, Clone, PartialEq)]
+#[derive(Serialize, Deserialize, Debug, Clone, PartialEq, Eq)]
 pub struct SetWebhook {
     /// HTTPS url to send updates to. Use an empty string to remove webhook
     /// integration
@@ -38,7 +38,10 @@ pub struct SetWebhook {
     /// Pass True to drop all pending updates
     #[serde(skip_serializing_if = "Option::is_none")]
     pub drop_pending_updates: Option<bool>,
-    /// A secret token to be sent in a header “X-Telegram-Bot-Api-Secret-Token” in every webhook request, 1-256 characters. Only characters A-Z, a-z, 0-9, _ and - are allowed. The header is useful to ensure that the request comes from a webhook set by you.
+    /// A secret token to be sent in a header “X-Telegram-Bot-Api-Secret-Token”
+    /// in every webhook request, 1-256 characters. Only characters A-Z, a-z,
+    /// 0-9, _ and - are allowed. The header is useful to ensure that the
+    /// request comes from a webhook set by you.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub secret_token: Option<String>,
 }
@@ -47,7 +50,7 @@ pub struct SetWebhook {
 ///
 /// [`delete_webhook`]: ../../api/trait.API.html#method.delete_webhook
 #[build_struct]
-#[derive(Serialize, Deserialize, Debug, Clone, PartialEq, Default)]
+#[derive(Serialize, Deserialize, Debug, Clone, PartialEq, Eq, Default)]
 pub struct DeleteWebhook {
     /// Pass True to drop all pending updates
     #[serde(skip_serializing_if = "Option::is_none")]

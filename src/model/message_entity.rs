@@ -4,7 +4,7 @@ use serde::{Deserialize, Serialize};
 
 /// This object represents one special entity in a text message.
 /// For example, hashtags, usernames, URLs, etc.
-#[derive(Serialize, Deserialize, Debug, Clone, PartialEq)]
+#[derive(Serialize, Deserialize, Debug, Clone, PartialEq, Eq)]
 #[serde(tag = "type")]
 pub enum MessageEntity {
     /// A mention (`@username`)
@@ -61,7 +61,7 @@ pub enum MessageEntity {
 }
 
 /// A monowidth code block
-#[derive(Serialize, Deserialize, Debug, Clone, PartialEq)]
+#[derive(Serialize, Deserialize, Debug, Clone, PartialEq, Eq)]
 pub struct Pre {
     /// The part of the text that is the code block
     #[serde(flatten)]
@@ -71,7 +71,7 @@ pub struct Pre {
 }
 
 /// A clickable text URL
-#[derive(Serialize, Deserialize, Debug, Clone, PartialEq)]
+#[derive(Serialize, Deserialize, Debug, Clone, PartialEq, Eq)]
 pub struct TextLink {
     /// The part of the text that if clicked will open an url
     #[serde(flatten)]
@@ -81,7 +81,7 @@ pub struct TextLink {
 }
 
 /// For users [without usernames](https://telegram.org/blog/edit#new-mentions)
-#[derive(Serialize, Deserialize, Debug, Clone, PartialEq)]
+#[derive(Serialize, Deserialize, Debug, Clone, PartialEq, Eq)]
 pub struct TextMention {
     /// The part of the text that is the mention
     #[serde(flatten)]
@@ -90,7 +90,7 @@ pub struct TextMention {
     pub user: User,
 }
 
-#[derive(Serialize, Deserialize, Debug, Clone, PartialEq)]
+#[derive(Serialize, Deserialize, Debug, Clone, PartialEq, Eq)]
 pub struct InlineCustomEmoji {
     /// The part of the text that is the custom emoji
     #[serde(flatten)]

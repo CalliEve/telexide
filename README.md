@@ -38,7 +38,7 @@ use telexide::{api::types::SendMessage, prelude::*};
 async fn ping(context: Context, message: Message) -> CommandResult {
     context
         .api
-        .send_message(SendMessage::new(message.chat.get_id(), "pong"))
+        .send_message(SendMessage::new(message.chat.get_id().into(), "pong"))
         .await?;
     Ok(())
 }
@@ -46,19 +46,22 @@ async fn ping(context: Context, message: Message) -> CommandResult {
 #[tokio::main]
 async fn main() -> telexide::Result<()> {
     let token = env::var("BOT_TOKEN").expect("no token environment variable set");
+    let bot_name = "ping-pong";
 
-    ClientBuilder::with_framework(
-        create_framework!("ping-pong", ping),
-        token
-    ).start().await
+    ClientBuilder::new()
+        .set_token(&token)
+        .set_framework(create_framework!(bot_name, ping))
+        .build()
+        .start()
+        .await
 }
 ```
 
-For more examples, please see the examples dir.
+For more examples, please see the examples directory.
 
 ## Features
 
-- [x] Supports all of the telegram bot API, up to and including version 6.2
+- [x] Supports all of the telegram bot API, up to and including version 6.4
 - [x] easy to use and customisable client
 - [x] long-polling based update handling
   - [x] set your own timeout
@@ -86,12 +89,12 @@ Add the following to your `Cargo.toml` file:
 
 ```toml
 [dependencies]
-telexide = "0.1.9"
+telexide = "0.1.10"
 ```
 
 ## Supported Rust Versions
 
-The minimum supported version is 1.60. The current Telexide version is not guaranteed to build on Rust versions earlier than the minimum supported version.
+The minimum supported version is 1.63. The current Telexide version is not guaranteed to build on Rust versions earlier than the minimum supported version.
 
 [examples]: https://github.com/callieve/telexide/blob/master/examples
 [client]: https://docs.rs/telexide/*/telexide/client/index.html

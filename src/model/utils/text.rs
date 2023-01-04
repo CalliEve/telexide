@@ -1,7 +1,7 @@
 use serde::{Deserialize, Serialize};
 
 /// An object describing a part of a text
-#[derive(Serialize, Deserialize, Debug, Clone, PartialEq)]
+#[derive(Serialize, Deserialize, Debug, Clone, PartialEq, Eq)]
 pub struct TextBlock {
     /// Offset in UTF-16 code units to the start of the entity
     pub offset: usize,
@@ -19,7 +19,7 @@ impl TextBlock {
                 break;
             }
             if self.offset <= i {
-                res.push(point)
+                res.push(point);
             }
         }
 

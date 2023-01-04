@@ -7,7 +7,7 @@ pub use text::TextBlock;
 
 /// Can be a string or an integer. Often used for the id of a chat, as that can
 /// also be the username of a supergroup.
-#[derive(Serialize, Deserialize, Debug, Clone, PartialEq)]
+#[derive(Serialize, Deserialize, Debug, Clone, PartialEq, Eq)]
 #[serde(untagged)]
 pub enum IntegerOrString {
     Integer(i64),

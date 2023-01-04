@@ -2,7 +2,7 @@ use super::PhotoSize;
 use serde::{Deserialize, Serialize};
 
 /// This object represents a Telegram user or bot.
-#[derive(Serialize, Deserialize, Debug, Clone, PartialEq)]
+#[derive(Serialize, Deserialize, Debug, Clone, PartialEq, Eq)]
 pub struct User {
     /// Unique identifier for this user or bot
     pub id: i64,
@@ -36,7 +36,7 @@ pub struct User {
 }
 
 /// This object represent a user's profile pictures.
-#[derive(Serialize, Deserialize, Debug, Clone, PartialEq)]
+#[derive(Serialize, Deserialize, Debug, Clone, PartialEq, Eq)]
 pub struct UserProfilePhotos {
     /// Total number of profile pictures the target user has
     pub total_count: i64,

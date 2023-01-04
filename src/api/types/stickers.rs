@@ -9,7 +9,7 @@ use telexide_proc_macros::build_struct;
 /// [`send_sticker`]:
 /// ../../api/trait.API.html#method.send_sticker
 #[build_struct]
-#[derive(Serialize, Deserialize, Debug, Clone, PartialEq)]
+#[derive(Serialize, Deserialize, Debug, Clone, PartialEq, Eq)]
 pub struct SendSticker {
     /// Unique identifier for the target chat
     pub chat_id: IntegerOrString,
@@ -42,7 +42,7 @@ pub struct SendSticker {
 /// [`get_sticker_set`]:
 /// ../../api/trait.API.html#method.get_sticker_set
 #[build_struct]
-#[derive(Serialize, Deserialize, Debug, Clone, PartialEq)]
+#[derive(Serialize, Deserialize, Debug, Clone, PartialEq, Eq)]
 pub struct GetStickerSet {
     /// Name of the sticker set
     pub name: String,
@@ -54,7 +54,7 @@ pub struct GetStickerSet {
 /// [`upload_sticker_file`]:
 /// ../../api/trait.API.html#method.upload_sticker_file
 #[build_struct]
-#[derive(Serialize, Deserialize, Debug, Clone, PartialEq)]
+#[derive(Serialize, Deserialize, Debug, Clone, PartialEq, Eq)]
 pub struct UploadStickerFile {
     /// User identifier of sticker file owner
     pub user_id: i64,
@@ -147,7 +147,7 @@ pub struct AddStickerToSet {
 /// [`set_sticker_position_in_set`]:
 /// ../../api/trait.API.html#method.set_sticker_position_in_set
 #[build_struct]
-#[derive(Serialize, Deserialize, Debug, Clone, PartialEq)]
+#[derive(Serialize, Deserialize, Debug, Clone, PartialEq, Eq)]
 pub struct SetStickerPositionInSet {
     /// File identifier of the sticker
     pub sticker: String,
@@ -161,7 +161,7 @@ pub struct SetStickerPositionInSet {
 /// [`delete_sticker_from_set`]:
 /// ../../api/trait.API.html#method.delete_sticker_from_set
 #[build_struct]
-#[derive(Serialize, Deserialize, Debug, Clone, PartialEq)]
+#[derive(Serialize, Deserialize, Debug, Clone, PartialEq, Eq)]
 pub struct DeleteStickerFromSet {
     /// File identifier of the sticker
     pub sticker: String,
@@ -173,7 +173,7 @@ pub struct DeleteStickerFromSet {
 /// [`set_sticker_set_thumb`]:
 /// ../../api/trait.API.html#method.set_sticker_set_thumb
 #[build_struct]
-#[derive(Serialize, Deserialize, Debug, Clone, PartialEq)]
+#[derive(Serialize, Deserialize, Debug, Clone, PartialEq, Eq)]
 pub struct SetStickerSetThumb {
     /// Sticker set name
     pub name: String,
@@ -196,8 +196,9 @@ pub struct SetStickerSetThumb {
 /// [`get_custom_emoji_stickers`]:
 /// ../../api/trait.API.html#method.get_custom_emoji_stickers
 #[build_struct]
-#[derive(Serialize, Deserialize, Debug, Clone, PartialEq)]
+#[derive(Serialize, Deserialize, Debug, Clone, PartialEq, Eq)]
 pub struct GetCustomEmojiStickers {
-    /// List of custom emoji identifiers. At most 200 custom emoji identifiers can be specified.
+    /// List of custom emoji identifiers. At most 200 custom emoji identifiers
+    /// can be specified.
     pub custom_emoji_ids: Vec<String>,
 }

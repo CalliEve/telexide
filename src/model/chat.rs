@@ -4,7 +4,7 @@ use serde::{Deserialize, Serialize};
 use super::{raw::RawChat, utils::unix_date_formatting, User};
 
 /// A private chat object, also known as a DM, between the bot and an user
-#[derive(Serialize, Deserialize, Debug, Clone, PartialEq)]
+#[derive(Serialize, Deserialize, Debug, Clone, PartialEq, Eq)]
 pub struct PrivateChat {
     /// Unique identifier for this chat
     pub id: i64,
@@ -21,9 +21,9 @@ pub struct PrivateChat {
     /// Returned only in [`get_chat`].
     ///
     /// [`get_chat`]: ../../api/trait.API.html#method.get_chat
-    pub has_private_forwards: Option<bool>,
+    pub has_private_forwards: bool,
     /// True, if the privacy settings of the other party restrict sending voice
-    /// and video note messages in the private chat.Returned only in
+    /// and video note messages in the private chat. Returned only in
     /// [`get_chat`].
     ///
     /// [`get_chat`]: ../../api/trait.API.html#method.get_chat
@@ -34,12 +34,14 @@ pub struct PrivateChat {
     ///
     /// [`get_chat`]: ../../api/trait.API.html#method.get_chat
     pub photo: Option<ChatPhoto>,
-    /// If non-empty, the list of all active chat usernames. Returned only in [`get_chat`].
+    /// If non-empty, the list of all active chat usernames. Returned only in
+    /// [`get_chat`].
     ///
     /// [`get_chat`]: ../../api/trait.API.html#method.get_chat
     #[serde(default)]
     pub active_usernames: Vec<String>,
-    /// Custom emoji identifier of emoji status of the other party in a private chat. Returned only in [`get_chat`].
+    /// Custom emoji identifier of emoji status of the other party in a private
+    /// chat. Returned only in [`get_chat`].
     ///
     /// [`get_chat`]: ../../api/trait.API.html#method.get_chat
     pub emoji_status_custom_emoji_id: Option<String>,
@@ -74,11 +76,16 @@ pub struct GroupChat {
     ///
     /// [`get_chat`]: ../../api/trait.API.html#method.get_chat
     pub permissions: Option<super::ChatPermissions>,
+    /// True, if non-administrators can only get the list of bots and
+    /// administrators in the chat. Returned only in [`get_chat`].
+    ///
+    /// [`get_chat`]: ../../api/trait.API.html#method.get_chat
+    pub has_hidden_members: bool,
     /// True, if messages from the chat can't be forwarded to other chats.
     /// Returned only in [`get_chat`].
     ///
     /// [`get_chat`]: ../../api/trait.API.html#method.get_chat
-    pub has_protected_content: Option<bool>,
+    pub has_protected_content: bool,
 }
 
 /// A supergroup object (a group with more than 200 members)
@@ -92,12 +99,13 @@ pub struct SuperGroupChat {
     /// True, if the supergroup chat is a forum (has [topics] enabled)
     ///
     /// [topics]: https://telegram.org/blog/topics-in-groups-collectible-usernames#topics-in-groups
-    pub is_forum: Option<bool>,
+    pub is_forum: bool,
     /// Chat photo. Returned only in [`get_chat`].
     ///
     /// [`get_chat`]: ../../api/trait.API.html#method.get_chat
     pub photo: Option<ChatPhoto>,
-    /// If non-empty, the list of all active chat usernames. Returned only in [`get_chat`].
+    /// If non-empty, the list of all active chat usernames. Returned only in
+    /// [`get_chat`].
     ///
     /// [`get_chat`]: ../../api/trait.API.html#method.get_chat
     #[serde(default)]
@@ -106,12 +114,12 @@ pub struct SuperGroupChat {
     /// messages.Returned only in [`get_chat`].
     ///
     /// [`get_chat`]: ../../api/trait.API.html#method.get_chat
-    pub join_to_send_messages: Option<bool>,
+    pub join_to_send_messages: bool,
     /// True, if all users directly joining the supergroup need to be approved
     /// by supergroup administrators.Returned only in [`get_chat`].
     ///
     /// [`get_chat`]: ../../api/trait.API.html#method.get_chat
-    pub join_by_request: Option<bool>,
+    pub join_by_request: bool,
     /// Description. Returned only in [`get_chat`].
     ///
     /// [`get_chat`]: ../../api/trait.API.html#method.get_chat
@@ -131,11 +139,22 @@ pub struct SuperGroupChat {
     ///
     /// [`get_chat`]: ../../api/trait.API.html#method.get_chat
     pub slow_mode_delay: Option<usize>,
+    /// True, if aggressive anti-spam checks are enabled in the supergroup. The
+    /// field is only available to chat administrators. Returned only in
+    /// [`get_chat`].
+    ///
+    /// [`get_chat`]: ../../api/trait.API.html#method.get_chat
+    pub has_aggressive_anti_spam_enabled: bool,
+    /// True, if non-administrators can only get the list of bots and
+    /// administrators in the chat. Returned only in [`get_chat`].
+    ///
+    /// [`get_chat`]: ../../api/trait.API.html#method.get_chat
+    pub has_hidden_members: bool,
     /// True, if messages from the chat can't be forwarded to other chats.
     /// Returned only in [`get_chat`].
     ///
     /// [`get_chat`]: ../../api/trait.API.html#method.get_chat
-    pub has_protected_content: Option<bool>,
+    pub has_protected_content: bool,
     /// Name of group sticker set. Returned only in [`get_chat`].
     ///
     /// [`get_chat`]: ../../api/trait.API.html#method.get_chat
@@ -144,7 +163,7 @@ pub struct SuperGroupChat {
     /// [`get_chat`].
     ///
     /// [`get_chat`]: ../../api/trait.API.html#method.get_chat
-    pub can_set_sticker_set: Option<bool>,
+    pub can_set_sticker_set: bool,
     /// Unique identifier for the linked chat, i.e. the discussion group
     /// identifier for a channel and vice versa; for supergroups and channel
     /// chats. Returned only in [`get_chat`].
@@ -170,7 +189,8 @@ pub struct ChannelChat {
     ///
     /// [`get_chat`]: ../../api/trait.API.html#method.get_chat
     pub photo: Option<ChatPhoto>,
-    /// If non-empty, the list of all active chat usernames. Returned only in [`get_chat`].
+    /// If non-empty, the list of all active chat usernames. Returned only in
+    /// [`get_chat`].
     ///
     /// [`get_chat`]: ../../api/trait.API.html#method.get_chat
     #[serde(default)]
@@ -185,11 +205,16 @@ pub struct ChannelChat {
     ///
     /// [`get_chat`]: ../../api/trait.API.html#method.get_chat
     pub pinned_message: Option<Box<super::Message>>,
+    /// True, if non-administrators can only get the list of bots and
+    /// administrators in the chat. Returned only in [`get_chat`].
+    ///
+    /// [`get_chat`]: ../../api/trait.API.html#method.get_chat
+    pub has_hidden_members: bool,
     /// True, if messages from the chat can't be forwarded to other chats.
     /// Returned only in [`get_chat`].
     ///
     /// [`get_chat`]: ../../api/trait.API.html#method.get_chat
-    pub has_protected_content: Option<bool>,
+    pub has_protected_content: bool,
     /// Unique identifier for the linked chat, i.e. the discussion group
     /// identifier for a channel and vice versa; for supergroups and channel
     /// chats. Returned only in [`get_chat`].
@@ -225,7 +250,7 @@ pub struct ChatLocation {
 
 /// Describes actions that a non-administrator user is allowed to take in a
 /// chat.
-#[derive(Serialize, Deserialize, Debug, Clone, PartialEq)]
+#[derive(Serialize, Deserialize, Debug, Clone, PartialEq, Eq)]
 pub struct ChatPermissions {
     /// True, if the user is allowed to send text messages, contacts, locations
     /// and venues.
@@ -258,13 +283,14 @@ pub struct ChatPermissions {
     /// supergroups.
     #[serde(default)]
     pub can_pin_messages: bool,
-    /// True, if the user is allowed to create forum topics. If omitted defaults to the value of can_pin_messages
+    /// True, if the user is allowed to create forum topics. If omitted defaults
+    /// to the value of can_pin_messages
     #[serde(default)]
     pub can_manage_topics: bool,
 }
 
 /// This object represents a chat photo.
-#[derive(Serialize, Deserialize, Debug, Clone, PartialEq)]
+#[derive(Serialize, Deserialize, Debug, Clone, PartialEq, Eq)]
 pub struct ChatPhoto {
     /// File identifier of small (160x160) chat photo.
     /// This file_id can be used only for photo download and only for as long as
@@ -308,6 +334,7 @@ impl From<RawChat> for Chat {
                 description: raw.description,
                 pinned_message: raw.pinned_message.map(|m| Box::new((*m).into())),
                 invite_link: raw.invite_link,
+                has_hidden_members: raw.has_hidden_members,
                 has_protected_content: raw.has_protected_content,
                 linked_chat_id: raw.linked_chat_id,
             }),
@@ -333,6 +360,7 @@ impl From<RawChat> for Chat {
                 pinned_message: raw.pinned_message.map(|m| Box::new((*m).into())),
                 invite_link: raw.invite_link,
                 permissions: raw.permissions,
+                has_hidden_members: raw.has_hidden_members,
                 has_protected_content: raw.has_protected_content,
             }),
             ChatType::SuperGroup => Chat::SuperGroup(SuperGroupChat {
@@ -348,6 +376,8 @@ impl From<RawChat> for Chat {
                 pinned_message: raw.pinned_message.map(|m| Box::new((*m).into())),
                 invite_link: raw.invite_link,
                 permissions: raw.permissions,
+                has_aggressive_anti_spam_enabled: raw.has_aggressive_anti_spam_enabled,
+                has_hidden_members: raw.has_hidden_members,
                 has_protected_content: raw.has_protected_content,
                 sticker_set_name: raw.sticker_set_name,
                 can_set_sticker_set: raw.can_set_sticker_set,
@@ -376,20 +406,22 @@ impl From<Chat> for RawChat {
                 has_private_forwards: c.has_private_forwards,
                 message_auto_delete_time: c.message_auto_delete_time,
                 has_restricted_voice_and_video_messages: c.has_restricted_voice_and_video_messages,
-                join_to_send_messages: None,
-                join_by_request: None,
+                join_to_send_messages: false,
+                join_by_request: false,
                 title: None,
                 description: None,
                 pinned_message: None,
                 invite_link: None,
                 permissions: None,
-                has_protected_content: None,
+                has_aggressive_anti_spam_enabled: false,
+                has_hidden_members: false,
+                has_protected_content: false,
                 sticker_set_name: None,
-                can_set_sticker_set: None,
+                can_set_sticker_set: false,
                 slow_mode_delay: None,
                 linked_chat_id: None,
                 location: None,
-                is_forum: None,
+                is_forum: false,
             },
             Chat::Group(c) => RawChat {
                 chat_type: ChatType::Group,
@@ -400,22 +432,24 @@ impl From<Chat> for RawChat {
                 pinned_message: c.pinned_message.map(|m| Box::new((*m).into())),
                 invite_link: c.invite_link,
                 permissions: c.permissions,
+                has_hidden_members: c.has_hidden_members,
                 has_protected_content: c.has_protected_content,
                 username: None,
                 message_auto_delete_time: None,
                 sticker_set_name: None,
-                can_set_sticker_set: None,
+                can_set_sticker_set: false,
                 slow_mode_delay: None,
                 first_name: None,
                 last_name: None,
                 bio: None,
-                has_private_forwards: None,
+                has_private_forwards: false,
                 linked_chat_id: None,
                 location: None,
                 has_restricted_voice_and_video_messages: None,
-                join_to_send_messages: None,
-                join_by_request: None,
-                is_forum: None,
+                has_aggressive_anti_spam_enabled: false,
+                join_to_send_messages: false,
+                join_by_request: false,
+                is_forum: false,
                 active_usernames: Vec::new(),
                 emoji_status_custom_emoji_id: None,
             },
@@ -430,6 +464,8 @@ impl From<Chat> for RawChat {
                 pinned_message: c.pinned_message.map(|m| Box::new((*m).into())),
                 invite_link: c.invite_link,
                 permissions: c.permissions,
+                has_aggressive_anti_spam_enabled: c.has_aggressive_anti_spam_enabled,
+                has_hidden_members: c.has_hidden_members,
                 has_protected_content: c.has_protected_content,
                 sticker_set_name: c.sticker_set_name,
                 can_set_sticker_set: c.can_set_sticker_set,
@@ -441,7 +477,7 @@ impl From<Chat> for RawChat {
                 is_forum: c.is_forum,
                 has_restricted_voice_and_video_messages: None,
                 bio: None,
-                has_private_forwards: None,
+                has_private_forwards: false,
                 first_name: None,
                 last_name: None,
                 message_auto_delete_time: None,
@@ -457,22 +493,24 @@ impl From<Chat> for RawChat {
                 description: c.description,
                 pinned_message: c.pinned_message.map(|m| Box::new((*m).into())),
                 invite_link: c.invite_link,
+                has_hidden_members: c.has_hidden_members,
                 has_protected_content: c.has_protected_content,
                 linked_chat_id: c.linked_chat_id,
                 permissions: None,
                 message_auto_delete_time: None,
                 sticker_set_name: None,
-                can_set_sticker_set: None,
+                can_set_sticker_set: false,
                 slow_mode_delay: None,
                 first_name: None,
                 last_name: None,
                 bio: None,
-                has_private_forwards: None,
+                has_private_forwards: false,
                 location: None,
+                has_aggressive_anti_spam_enabled: false,
                 has_restricted_voice_and_video_messages: None,
-                join_to_send_messages: None,
-                join_by_request: None,
-                is_forum: None,
+                join_to_send_messages: false,
+                join_by_request: false,
+                is_forum: false,
                 emoji_status_custom_emoji_id: None,
             },
         }
@@ -480,7 +518,7 @@ impl From<Chat> for RawChat {
 }
 
 /// This object contains information about one member of a chat.
-#[derive(Serialize, Deserialize, Debug, Clone, PartialEq)]
+#[derive(Serialize, Deserialize, Debug, Clone, PartialEq, Eq)]
 #[serde(tag = "status")]
 pub enum ChatMember {
     #[serde(rename = "creator")]
@@ -498,7 +536,7 @@ pub enum ChatMember {
 }
 
 /// Represents a [`ChatMember`] who is the creator or owner of the [`Chat`].
-#[derive(Serialize, Deserialize, Debug, Clone, PartialEq)]
+#[derive(Serialize, Deserialize, Debug, Clone, PartialEq, Eq)]
 pub struct CreatorMemberStatus {
     /// Information about the user
     pub user: User,
@@ -511,7 +549,7 @@ pub struct CreatorMemberStatus {
 }
 
 /// Represents a [`ChatMember`] who is an Admin of the [`Chat`].
-#[derive(Serialize, Deserialize, Debug, Clone, PartialEq)]
+#[derive(Serialize, Deserialize, Debug, Clone, PartialEq, Eq)]
 pub struct AdministratorMemberStatus {
     /// Information about the user
     pub user: User,
@@ -547,21 +585,22 @@ pub struct AdministratorMemberStatus {
     /// True, if the administrator can manage video chats
     #[serde(default)]
     pub can_manage_video_chats: bool,
-    /// True, if the user is allowed to create, rename, close, and reopen forum topics; supergroups only
+    /// True, if the user is allowed to create, rename, close, and reopen forum
+    /// topics; supergroups only
     #[serde(default)]
     pub can_manage_topics: bool,
 }
 
 /// Represents a [`ChatMember`] who is a normal member of the [`Chat`] without
 /// any special powers.
-#[derive(Serialize, Deserialize, Debug, Clone, PartialEq)]
+#[derive(Serialize, Deserialize, Debug, Clone, PartialEq, Eq)]
 pub struct MemberMemberStatus {
     /// Information about the user
     pub user: User,
 }
 
 /// Represents a restricted [`ChatMember`] of a [`Chat`].
-#[derive(Serialize, Deserialize, Debug, Clone, PartialEq)]
+#[derive(Serialize, Deserialize, Debug, Clone, PartialEq, Eq)]
 pub struct RestrictedMemberStatus {
     /// Information about the user
     pub user: User,
@@ -606,14 +645,14 @@ pub struct RestrictedMemberStatus {
 }
 
 /// Represents a [`ChatMember`] who left the [`Chat`].
-#[derive(Serialize, Deserialize, Debug, Clone, PartialEq)]
+#[derive(Serialize, Deserialize, Debug, Clone, PartialEq, Eq)]
 pub struct LeftMemberStatus {
     /// Information about the user
     pub user: User,
 }
 
 /// Represents a [`ChatMember`] who has been kicked from the [`Chat`].
-#[derive(Serialize, Deserialize, Debug, Clone, PartialEq)]
+#[derive(Serialize, Deserialize, Debug, Clone, PartialEq, Eq)]
 pub struct KickedMemberStatus {
     /// Information about the user
     pub user: User,
@@ -637,7 +676,7 @@ impl ChatMember {
 }
 
 /// Represents an invite link for a chat.
-#[derive(Serialize, Deserialize, Debug, Clone, PartialEq)]
+#[derive(Serialize, Deserialize, Debug, Clone, PartialEq, Eq)]
 pub struct ChatInviteLink {
     /// The invite link. If the link was created by another chat administrator,
     /// then the second part of the link will be replaced with “…”.
@@ -686,7 +725,7 @@ pub struct ChatMemberUpdated {
 }
 
 /// The type of chat
-#[derive(Serialize, Deserialize, Debug, Clone, PartialEq)]
+#[derive(Serialize, Deserialize, Debug, Clone, PartialEq, Eq)]
 pub enum ChatType {
     #[serde(rename = "private")]
     Private,
@@ -719,11 +758,14 @@ pub struct ChatJoinRequest {
 }
 
 /// Represents the rights of an administrator in a chat.
-#[derive(Serialize, Deserialize, Debug, Clone, PartialEq)]
+#[derive(Serialize, Deserialize, Debug, Clone, PartialEq, Eq)]
 pub struct ChatAdministratorRights {
     /// True, if the user's presence in the chat is hidden
     pub is_anonymous: bool,
-    /// True, if the administrator can access the chat event log, chat statistics, message statistics in channels, see channel members, see anonymous administrators in supergroups and ignore slow mode. Implied by any other administrator privilege
+    /// True, if the administrator can access the chat event log, chat
+    /// statistics, message statistics in channels, see channel members, see
+    /// anonymous administrators in supergroups and ignore slow mode. Implied by
+    /// any other administrator privilege
     pub can_manage_chat: bool,
     /// True, if the administrator can delete messages of other users
     pub can_delete_messages: bool,
@@ -731,28 +773,35 @@ pub struct ChatAdministratorRights {
     pub can_manage_video_chats: bool,
     /// True, if the administrator can restrict, ban or unban chat members
     pub can_restrict_members: bool,
-    /// True, if the administrator can add new administrators with a subset of their own privileges or demote administrators that he has promoted, directly or indirectly (promoted by administrators that were appointed by the user)
+    /// True, if the administrator can add new administrators with a subset of
+    /// their own privileges or demote administrators that he has promoted,
+    /// directly or indirectly (promoted by administrators that were appointed
+    /// by the user)
     pub can_promote_members: bool,
-    /// True, if the user is allowed to change the chat title, photo and other settings
+    /// True, if the user is allowed to change the chat title, photo and other
+    /// settings
     pub can_change_info: bool,
     /// True, if the user is allowed to invite new users to the chat
     pub can_invite_users: bool,
     /// True, if the administrator can post in the channel; channels only
     #[serde(skip_serializing_if = "Option::is_none")]
     pub can_post_messages: Option<bool>,
-    /// True, if the administrator can edit messages of other users and can pin messages; channels only
+    /// True, if the administrator can edit messages of other users and can pin
+    /// messages; channels only
     #[serde(skip_serializing_if = "Option::is_none")]
     pub can_edit_messages: Option<bool>,
-    /// True, if the user is allowed to pin messages; groups and supergroups only
+    /// True, if the user is allowed to pin messages; groups and supergroups
+    /// only
     #[serde(skip_serializing_if = "Option::is_none")]
     pub can_pin_messages: Option<bool>,
-    /// True, if the user is allowed to create, rename, close, and reopen forum topics; supergroups only
+    /// True, if the user is allowed to create, rename, close, and reopen forum
+    /// topics; supergroups only
     #[serde(skip_serializing_if = "Option::is_none")]
     pub can_manage_topics: Option<bool>,
 }
 
 /// This object represents a forum topic.
-#[derive(Serialize, Deserialize, Debug, Clone, PartialEq)]
+#[derive(Serialize, Deserialize, Debug, Clone, PartialEq, Eq)]
 pub struct ForumTopic {
     /// Unique identifier of the forum topic
     pub message_thread_id: i64,

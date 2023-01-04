@@ -13,7 +13,7 @@ use telexide_proc_macros::build_struct;
 /// [`ban_chat_member`]:
 /// ../../api/trait.API.html#method.ban_chat_member
 #[build_struct]
-#[derive(Serialize, Deserialize, Debug, Clone, PartialEq)]
+#[derive(Serialize, Deserialize, Debug, Clone, PartialEq, Eq)]
 pub struct BanChatMember {
     /// Unique identifier for the target chat
     pub chat_id: IntegerOrString,
@@ -38,7 +38,7 @@ pub struct BanChatMember {
 /// [`unban_chat_member`]:
 /// ../../api/trait.API.html#method.unban_chat_member
 #[build_struct]
-#[derive(Serialize, Deserialize, Debug, Clone, PartialEq)]
+#[derive(Serialize, Deserialize, Debug, Clone, PartialEq, Eq)]
 pub struct UnbanChatMember {
     /// Unique identifier for the target chat
     pub chat_id: IntegerOrString,
@@ -55,7 +55,7 @@ pub struct UnbanChatMember {
 /// [`restrict_chat_member`]:
 /// ../../api/trait.API.html#method.restrict_chat_member
 #[build_struct]
-#[derive(Serialize, Deserialize, Debug, Clone, PartialEq)]
+#[derive(Serialize, Deserialize, Debug, Clone, PartialEq, Eq)]
 pub struct RestrictChatMember {
     /// Unique identifier for the target chat
     pub chat_id: IntegerOrString,
@@ -77,7 +77,7 @@ pub struct RestrictChatMember {
 /// [`promote_chat_member`]:
 /// ../../api/trait.API.html#method.promote_chat_member
 #[build_struct]
-#[derive(Serialize, Deserialize, Debug, Clone, PartialEq)]
+#[derive(Serialize, Deserialize, Debug, Clone, PartialEq, Eq)]
 pub struct PromoteChatMember {
     /// Unique identifier for the target chat
     pub chat_id: IntegerOrString,
@@ -123,7 +123,8 @@ pub struct PromoteChatMember {
     /// other administrator privilege.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub can_manage_chat: Option<bool>,
-    /// If the user is allowed to create, rename, close, and reopen forum topics, supergroups only
+    /// If the user is allowed to create, rename, close, and reopen forum
+    /// topics, supergroups only
     #[serde(skip_serializing_if = "Option::is_none")]
     pub can_manage_topics: Option<bool>,
 }
@@ -134,7 +135,7 @@ pub struct PromoteChatMember {
 /// [`set_chat_administrator_custom_title`]:
 /// ../../api/trait.API.html#method.set_chat_administrator_custom_title
 #[build_struct]
-#[derive(Serialize, Deserialize, Debug, Clone, PartialEq)]
+#[derive(Serialize, Deserialize, Debug, Clone, PartialEq, Eq)]
 pub struct SetChatAdministratorCustomTitle {
     /// Unique identifier for the target chat
     pub chat_id: IntegerOrString,
@@ -150,7 +151,7 @@ pub struct SetChatAdministratorCustomTitle {
 /// [`ban_chat_sender_chat`]:
 /// ../../api/trait.API.html#method.ban_chat_sender_chat
 #[build_struct]
-#[derive(Serialize, Deserialize, Debug, Clone, PartialEq)]
+#[derive(Serialize, Deserialize, Debug, Clone, PartialEq, Eq)]
 pub struct BanChatSenderChat {
     /// Unique identifier for the target chat
     pub chat_id: IntegerOrString,
@@ -163,7 +164,7 @@ pub struct BanChatSenderChat {
 /// [`unban_chat_sender_chat`]:
 /// ../../api/trait.API.html#method.unban_chat_sender_chat
 #[build_struct]
-#[derive(Serialize, Deserialize, Debug, Clone, PartialEq)]
+#[derive(Serialize, Deserialize, Debug, Clone, PartialEq, Eq)]
 pub struct UnbanChatSenderChat {
     /// Unique identifier for the target chat
     pub chat_id: IntegerOrString,
@@ -176,7 +177,7 @@ pub struct UnbanChatSenderChat {
 /// [`set_chat_permissions`]:
 /// ../../api/trait.API.html#method.set_chat_permissions
 #[build_struct]
-#[derive(Serialize, Deserialize, Debug, Clone, PartialEq)]
+#[derive(Serialize, Deserialize, Debug, Clone, PartialEq, Eq)]
 pub struct SetChatPermissions {
     /// Unique identifier for the target chat
     pub chat_id: IntegerOrString,
@@ -189,7 +190,7 @@ pub struct SetChatPermissions {
 /// [`export_chat_invite_link`]:
 /// ../../api/trait.API.html#method.export_chat_invite_link
 #[build_struct]
-#[derive(Serialize, Deserialize, Debug, Clone, PartialEq)]
+#[derive(Serialize, Deserialize, Debug, Clone, PartialEq, Eq)]
 pub struct ExportChatInviteLink {
     /// Unique identifier for the target chat
     pub chat_id: IntegerOrString,
@@ -201,7 +202,7 @@ pub struct ExportChatInviteLink {
 /// [`set_chat_photo`]:
 /// ../../api/trait.API.html#method.set_chat_photo
 #[build_struct]
-#[derive(Serialize, Deserialize, Debug, Clone, PartialEq)]
+#[derive(Serialize, Deserialize, Debug, Clone, PartialEq, Eq)]
 pub struct SetChatPhoto {
     /// Unique identifier for the target chat
     pub chat_id: IntegerOrString,
@@ -215,7 +216,7 @@ pub struct SetChatPhoto {
 /// [`delete_chat_photo`]:
 /// ../../api/trait.API.html#method.delete_chat_photo
 #[build_struct]
-#[derive(Serialize, Deserialize, Debug, Clone, PartialEq)]
+#[derive(Serialize, Deserialize, Debug, Clone, PartialEq, Eq)]
 pub struct DeleteChatPhoto {
     /// Unique identifier for the target chat
     pub chat_id: IntegerOrString,
@@ -227,7 +228,7 @@ pub struct DeleteChatPhoto {
 /// [`set_chat_title`]:
 /// ../../api/trait.API.html#method.set_chat_title
 #[build_struct]
-#[derive(Serialize, Deserialize, Debug, Clone, PartialEq)]
+#[derive(Serialize, Deserialize, Debug, Clone, PartialEq, Eq)]
 pub struct SetChatTitle {
     /// Unique identifier for the target chat
     pub chat_id: IntegerOrString,
@@ -241,7 +242,7 @@ pub struct SetChatTitle {
 /// [`set_chat_description`]:
 /// ../../api/trait.API.html#method.set_chat_description
 #[build_struct]
-#[derive(Serialize, Deserialize, Debug, Clone, PartialEq)]
+#[derive(Serialize, Deserialize, Debug, Clone, PartialEq, Eq)]
 pub struct SetChatDescription {
     /// Unique identifier for the target chat
     pub chat_id: IntegerOrString,
@@ -256,7 +257,7 @@ pub struct SetChatDescription {
 /// [`pin_chat_message`]:
 /// ../../api/trait.API.html#method.pin_chat_message
 #[build_struct]
-#[derive(Serialize, Deserialize, Debug, Clone, PartialEq)]
+#[derive(Serialize, Deserialize, Debug, Clone, PartialEq, Eq)]
 pub struct PinChatMessage {
     /// Unique identifier for the target chat
     pub chat_id: IntegerOrString,
@@ -274,7 +275,7 @@ pub struct PinChatMessage {
 /// [`unpin_chat_message`]:
 /// ../../api/trait.API.html#method.unpin_chat_message
 #[build_struct]
-#[derive(Serialize, Deserialize, Debug, Clone, PartialEq)]
+#[derive(Serialize, Deserialize, Debug, Clone, PartialEq, Eq)]
 pub struct UnpinChatMessage {
     /// Unique identifier for the target chat
     pub chat_id: IntegerOrString,
@@ -290,7 +291,7 @@ pub struct UnpinChatMessage {
 /// [`unpin_all_chat_messages`]:
 /// ../../api/trait.API.html#method.unpin_all_chat_message
 #[build_struct]
-#[derive(Serialize, Deserialize, Debug, Clone, PartialEq)]
+#[derive(Serialize, Deserialize, Debug, Clone, PartialEq, Eq)]
 pub struct UnpinAllChatMessages {
     /// Unique identifier for the target chat
     pub chat_id: IntegerOrString,
@@ -302,7 +303,7 @@ pub struct UnpinAllChatMessages {
 /// [`leave_chat`]:
 /// ../../api/trait.API.html#method.leave_chat
 #[build_struct]
-#[derive(Serialize, Deserialize, Debug, Clone, PartialEq)]
+#[derive(Serialize, Deserialize, Debug, Clone, PartialEq, Eq)]
 pub struct LeaveChat {
     /// Unique identifier for the target chat
     pub chat_id: IntegerOrString,
@@ -314,7 +315,7 @@ pub struct LeaveChat {
 /// [`get_chat`]:
 /// ../../api/trait.API.html#method.get_chat
 #[build_struct]
-#[derive(Serialize, Deserialize, Debug, Clone, PartialEq)]
+#[derive(Serialize, Deserialize, Debug, Clone, PartialEq, Eq)]
 pub struct GetChat {
     /// Unique identifier for the target chat
     pub chat_id: IntegerOrString,
@@ -326,7 +327,7 @@ pub struct GetChat {
 /// [`get_chat_administrator`]:
 /// ../../api/trait.API.html#method.get_chat_administrator
 #[build_struct]
-#[derive(Serialize, Deserialize, Debug, Clone, PartialEq)]
+#[derive(Serialize, Deserialize, Debug, Clone, PartialEq, Eq)]
 pub struct GetChatAdministrators {
     /// Unique identifier for the target chat
     pub chat_id: IntegerOrString,
@@ -338,7 +339,7 @@ pub struct GetChatAdministrators {
 /// [`get_chat_member_count`]:
 /// ../../api/trait.API.html#method.get_chat_member_count
 #[build_struct]
-#[derive(Serialize, Deserialize, Debug, Clone, PartialEq)]
+#[derive(Serialize, Deserialize, Debug, Clone, PartialEq, Eq)]
 pub struct GetChatMemberCount {
     /// Unique identifier for the target chat
     pub chat_id: IntegerOrString,
@@ -350,7 +351,7 @@ pub struct GetChatMemberCount {
 /// [`get_chat_member`]:
 /// ../../api/trait.API.html#method.get_chat_member
 #[build_struct]
-#[derive(Serialize, Deserialize, Debug, Clone, PartialEq)]
+#[derive(Serialize, Deserialize, Debug, Clone, PartialEq, Eq)]
 pub struct GetChatMember {
     /// Unique identifier for the target chat
     pub chat_id: IntegerOrString,
@@ -364,7 +365,7 @@ pub struct GetChatMember {
 /// [`set_chat_sticker_set`]:
 /// ../../api/trait.API.html#method.get_chat_sticker_set
 #[build_struct]
-#[derive(Serialize, Deserialize, Debug, Clone, PartialEq)]
+#[derive(Serialize, Deserialize, Debug, Clone, PartialEq, Eq)]
 pub struct SetChatStickerSet {
     /// Unique identifier for the target chat
     pub chat_id: IntegerOrString,
@@ -378,7 +379,7 @@ pub struct SetChatStickerSet {
 /// [`delete_chat_sticker_set`]:
 /// ../../api/trait.API.html#method.delete_chat_sticker_set
 #[build_struct]
-#[derive(Serialize, Deserialize, Debug, Clone, PartialEq)]
+#[derive(Serialize, Deserialize, Debug, Clone, PartialEq, Eq)]
 pub struct DeleteChatStickerSet {
     /// Unique identifier for the target chat
     pub chat_id: IntegerOrString,
@@ -389,7 +390,7 @@ pub struct DeleteChatStickerSet {
 /// [`create_chat_invite_link`]:
 /// ../../api/trait.API.html#method.create_chat_invite_link
 #[build_struct]
-#[derive(Serialize, Deserialize, Debug, Clone, PartialEq)]
+#[derive(Serialize, Deserialize, Debug, Clone, PartialEq, Eq)]
 pub struct CreateChatInviteLink {
     /// Unique identifier for the target chat
     pub chat_id: IntegerOrString,
@@ -414,7 +415,7 @@ pub struct CreateChatInviteLink {
 /// [`edit_chat_invite_link`]:
 /// ../../api/trait.API.html#method.edit_chat_invite_link
 #[build_struct]
-#[derive(Serialize, Deserialize, Debug, Clone, PartialEq)]
+#[derive(Serialize, Deserialize, Debug, Clone, PartialEq, Eq)]
 pub struct EditChatInviteLink {
     /// Unique identifier for the target chat
     pub chat_id: IntegerOrString,
@@ -441,7 +442,7 @@ pub struct EditChatInviteLink {
 /// [`revoke_chat_invite_link`]:
 /// ../../api/trait.API.html#method.revoke_chat_invite_link
 #[build_struct]
-#[derive(Serialize, Deserialize, Debug, Clone, PartialEq)]
+#[derive(Serialize, Deserialize, Debug, Clone, PartialEq, Eq)]
 pub struct RevokeChatInviteLink {
     /// Unique identifier for the target chat
     pub chat_id: IntegerOrString,
@@ -454,7 +455,7 @@ pub struct RevokeChatInviteLink {
 /// [`approve_chat_join_request`]:
 /// ../../api/trait.API.html#method.approve_chat_join_request
 #[build_struct]
-#[derive(Serialize, Deserialize, Debug, Clone, PartialEq)]
+#[derive(Serialize, Deserialize, Debug, Clone, PartialEq, Eq)]
 pub struct ApproveChatJoinRequest {
     /// Unique identifier for the target chat
     pub chat_id: IntegerOrString,
@@ -467,7 +468,7 @@ pub struct ApproveChatJoinRequest {
 /// [`decline_chat_join_request`]:
 /// ../../api/trait.API.html#method.decline_chat_join_request
 #[build_struct]
-#[derive(Serialize, Deserialize, Debug, Clone, PartialEq)]
+#[derive(Serialize, Deserialize, Debug, Clone, PartialEq, Eq)]
 pub struct DeclineChatJoinRequest {
     /// Unique identifier for the target chat
     pub chat_id: IntegerOrString,

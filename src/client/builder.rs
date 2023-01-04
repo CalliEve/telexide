@@ -108,7 +108,7 @@ impl ClientBuilder {
     /// [`ClientBuilder`] object
     pub fn build(&mut self) -> Client {
         if self.framework.is_some() && !self.allowed_updates.contains(&UpdateType::Message) {
-            self.allowed_updates.push(UpdateType::Message)
+            self.allowed_updates.push(UpdateType::Message);
         }
 
         self.api_client.clone().map_or_else(

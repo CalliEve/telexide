@@ -8,7 +8,7 @@ use telexide_proc_macros::build_struct;
 /// [`set_passport_data_errors`]:
 /// ../../api/trait.API.html#method.set_passport_data_errors
 #[build_struct]
-#[derive(Serialize, Deserialize, Debug, Clone, PartialEq)]
+#[derive(Serialize, Deserialize, Debug, Clone, PartialEq, Eq)]
 pub struct SetPassportDataErrors {
     /// User identifier
     pub user_id: i64,
@@ -18,7 +18,7 @@ pub struct SetPassportDataErrors {
 
 /// This object represents an error in the Telegram Passport element which was
 /// submitted that should be resolved by the user
-#[derive(Serialize, Deserialize, Debug, Clone, PartialEq)]
+#[derive(Serialize, Deserialize, Debug, Clone, PartialEq, Eq)]
 #[serde(tag = "source")]
 pub enum PassportElementError {
     #[serde(rename = "data")]
@@ -44,7 +44,7 @@ pub enum PassportElementError {
 /// Represents an issue in one of the data fields that was provided by the user.
 /// The error is considered resolved when the field's value changes.
 #[build_struct]
-#[derive(Serialize, Deserialize, Debug, Clone, PartialEq)]
+#[derive(Serialize, Deserialize, Debug, Clone, PartialEq, Eq)]
 pub struct PassportElementErrorDataField {
     /// The section of the user's Telegram Passport which has the error,
     /// one of “personal_details”, “passport”, “driver_license”,
@@ -63,7 +63,7 @@ pub struct PassportElementErrorDataField {
 /// The error is considered resolved when the file with the front side of the
 /// document changes.
 #[build_struct]
-#[derive(Serialize, Deserialize, Debug, Clone, PartialEq)]
+#[derive(Serialize, Deserialize, Debug, Clone, PartialEq, Eq)]
 pub struct PassportElementErrorFrontSide {
     /// The section of the user's Telegram Passport which has the issue,
     /// one of “passport”, “driver_license”, “identity_card”,
@@ -80,7 +80,7 @@ pub struct PassportElementErrorFrontSide {
 /// The error is considered resolved when the file with reverse side of the
 /// document changes.
 #[build_struct]
-#[derive(Serialize, Deserialize, Debug, Clone, PartialEq)]
+#[derive(Serialize, Deserialize, Debug, Clone, PartialEq, Eq)]
 pub struct PassportElementErrorReverseSide {
     /// The section of the user's Telegram Passport which has the issue,
     /// one of “driver_license”, “identity_card”
@@ -95,7 +95,7 @@ pub struct PassportElementErrorReverseSide {
 /// Represents an issue with the selfie with a document.
 /// The error is considered resolved when the file with the selfie changes.
 #[build_struct]
-#[derive(Serialize, Deserialize, Debug, Clone, PartialEq)]
+#[derive(Serialize, Deserialize, Debug, Clone, PartialEq, Eq)]
 pub struct PassportElementErrorSelfie {
     /// The section of the user's Telegram Passport which has the issue,
     /// one of “passport”, “driver_license”, “identity_card”,
@@ -112,7 +112,7 @@ pub struct PassportElementErrorSelfie {
 /// The error is considered resolved when the file with the document scan
 /// changes.
 #[build_struct]
-#[derive(Serialize, Deserialize, Debug, Clone, PartialEq)]
+#[derive(Serialize, Deserialize, Debug, Clone, PartialEq, Eq)]
 pub struct PassportElementErrorFile {
     /// The section of the user's Telegram Passport which has the issue
     /// one of “utility_bill”, “bank_statement”, “rental_agreement”,
@@ -129,7 +129,7 @@ pub struct PassportElementErrorFile {
 /// The error is considered resolved when the list of files containing the scans
 /// changes.
 #[build_struct]
-#[derive(Serialize, Deserialize, Debug, Clone, PartialEq)]
+#[derive(Serialize, Deserialize, Debug, Clone, PartialEq, Eq)]
 pub struct PassportElementErrorFiles {
     /// The section of the user's Telegram Passport which has the issue,
     /// one of “utility_bill”, “bank_statement”, “rental_agreement”,
@@ -145,7 +145,7 @@ pub struct PassportElementErrorFiles {
 /// Represents an issue with one of the files that constitute the translation of
 /// a document. The error is considered resolved when the file changes.
 #[build_struct]
-#[derive(Serialize, Deserialize, Debug, Clone, PartialEq)]
+#[derive(Serialize, Deserialize, Debug, Clone, PartialEq, Eq)]
 pub struct PassportElementErrorTranslationFile {
     /// Type of element of the user's Telegram Passport which has the issue,
     /// one of “passport”, “driver_license”, “identity_card”,
@@ -163,7 +163,7 @@ pub struct PassportElementErrorTranslationFile {
 /// The error is considered resolved when a file with the document translation
 /// change.
 #[build_struct]
-#[derive(Serialize, Deserialize, Debug, Clone, PartialEq)]
+#[derive(Serialize, Deserialize, Debug, Clone, PartialEq, Eq)]
 pub struct PassportElementErrorTranslationFiles {
     /// Type of element of the user's Telegram Passport which has the issue,
     /// one of “passport”, “driver_license”, “identity_card”,
@@ -180,7 +180,7 @@ pub struct PassportElementErrorTranslationFiles {
 /// Represents an issue in an unspecified place.
 /// The error is considered resolved when new data is added.
 #[build_struct]
-#[derive(Serialize, Deserialize, Debug, Clone, PartialEq)]
+#[derive(Serialize, Deserialize, Debug, Clone, PartialEq, Eq)]
 pub struct PassportElementErrorUnspecified {
     /// Type of element of the user's Telegram Passport which has the issue
     #[serde(rename = "type")]

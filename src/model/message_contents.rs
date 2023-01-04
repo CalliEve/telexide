@@ -5,7 +5,7 @@ use serde::{Deserialize, Serialize};
 
 /// This object represents an audio file to be treated as music by the Telegram
 /// clients.
-#[derive(Serialize, Deserialize, Debug, Clone, PartialEq)]
+#[derive(Serialize, Deserialize, Debug, Clone, PartialEq, Eq)]
 pub struct Audio {
     /// Identifier for this file, which can be used to download or reuse the
     /// file
@@ -32,7 +32,7 @@ pub struct Audio {
 
 /// This object represents a general file (as opposed to [photos][PhotoSize],
 /// [voice messages][Voice] and [audio files][Audio]).
-#[derive(Serialize, Deserialize, Debug, Clone, PartialEq)]
+#[derive(Serialize, Deserialize, Debug, Clone, PartialEq, Eq)]
 pub struct Document {
     /// Identifier for this file, which can be used to download or reuse the
     /// file
@@ -53,7 +53,7 @@ pub struct Document {
 
 /// This object represents an animation file (GIF or H.264/MPEG-4 AVC video
 /// without sound).
-#[derive(Serialize, Deserialize, Debug, Clone, PartialEq)]
+#[derive(Serialize, Deserialize, Debug, Clone, PartialEq, Eq)]
 pub struct Animation {
     /// Identifier for this file, which can be used to download or reuse the
     /// file
@@ -79,7 +79,7 @@ pub struct Animation {
 }
 
 /// This object represents one size of a photo or a file / sticker thumbnail
-#[derive(Serialize, Deserialize, Debug, Clone, PartialEq)]
+#[derive(Serialize, Deserialize, Debug, Clone, PartialEq, Eq)]
 pub struct PhotoSize {
     /// Identifier for this file, which can be used to download or reuse the
     /// file
@@ -97,7 +97,7 @@ pub struct PhotoSize {
 }
 
 /// This object represents a video file
-#[derive(Serialize, Deserialize, Debug, Clone, PartialEq)]
+#[derive(Serialize, Deserialize, Debug, Clone, PartialEq, Eq)]
 pub struct Video {
     /// Identifier for this file, which can be used to download or reuse the
     /// file
@@ -123,7 +123,7 @@ pub struct Video {
 }
 
 /// This object represents a voice note
-#[derive(Serialize, Deserialize, Debug, Clone, PartialEq)]
+#[derive(Serialize, Deserialize, Debug, Clone, PartialEq, Eq)]
 pub struct Voice {
     /// Identifier for this file, which can be used to download or reuse the
     /// file
@@ -141,7 +141,7 @@ pub struct Voice {
 }
 
 /// This object represents a [video message](https://telegram.org/blog/video-messages-and-telescope)
-#[derive(Serialize, Deserialize, Debug, Clone, PartialEq)]
+#[derive(Serialize, Deserialize, Debug, Clone, PartialEq, Eq)]
 pub struct VideoNote {
     /// Identifier for this file, which can be used to download or reuse the
     /// file
@@ -162,7 +162,7 @@ pub struct VideoNote {
 }
 
 /// This object represents a phone contact.
-#[derive(Serialize, Deserialize, Debug, Clone, PartialEq)]
+#[derive(Serialize, Deserialize, Debug, Clone, PartialEq, Eq)]
 pub struct Contact {
     /// Contact's phone number
     pub phone_number: String,
@@ -222,7 +222,7 @@ pub struct Venue {
 }
 
 /// This object contains information about a poll.
-#[derive(Serialize, Deserialize, Debug, Clone, PartialEq)]
+#[derive(Serialize, Deserialize, Debug, Clone, PartialEq, Eq)]
 pub struct Poll {
     /// Unique poll identifier
     pub id: String,
@@ -265,7 +265,7 @@ pub struct Poll {
 
 /// This object represents a dice with a random value from 1 to 6 for currently
 /// supported base emoji.
-#[derive(Serialize, Deserialize, Debug, Clone, PartialEq)]
+#[derive(Serialize, Deserialize, Debug, Clone, PartialEq, Eq)]
 pub struct Dice {
     /// Emoji on which the dice throw animation is based
     pub emoji: String,
@@ -275,7 +275,7 @@ pub struct Dice {
 }
 
 /// This object contains information about one answer option in a poll.
-#[derive(Serialize, Deserialize, Debug, Clone, PartialEq)]
+#[derive(Serialize, Deserialize, Debug, Clone, PartialEq, Eq)]
 pub struct PollOption {
     /// Option text, 1-100 characters
     pub text: String,
@@ -284,7 +284,7 @@ pub struct PollOption {
 }
 
 /// This object represents an answer of a user in a non-anonymous poll.
-#[derive(Serialize, Deserialize, Debug, Clone, PartialEq)]
+#[derive(Serialize, Deserialize, Debug, Clone, PartialEq, Eq)]
 pub struct PollAnswer {
     /// Unique poll identifier
     pub poll_id: String,
@@ -296,7 +296,7 @@ pub struct PollAnswer {
 }
 
 /// The type of the [`Poll`]
-#[derive(Serialize, Deserialize, Debug, Clone, PartialEq)]
+#[derive(Serialize, Deserialize, Debug, Clone, PartialEq, Eq)]
 pub enum PollType {
     #[serde(rename = "regular")]
     Regular,
@@ -310,7 +310,7 @@ pub enum PollType {
 /// needs to do is tap/click a button and confirm that they want to log in
 ///
 /// [Telegram Login Widget]: https://core.telegram.org/widgets/login
-#[derive(Serialize, Deserialize, Debug, Clone, PartialEq)]
+#[derive(Serialize, Deserialize, Debug, Clone, PartialEq, Eq)]
 pub struct LoginUrl {
     /// An HTTP URL to be opened with user authorization data added to the query
     /// string when the button is pressed. If the user refuses to provide
@@ -344,7 +344,7 @@ pub struct LoginUrl {
 
 /// This object represents the content of a service message, sent whenever a
 /// user in the chat triggers a proximity alert set by another user.
-#[derive(Serialize, Deserialize, Debug, Clone, PartialEq)]
+#[derive(Serialize, Deserialize, Debug, Clone, PartialEq, Eq)]
 pub struct ProximityAlertTriggered {
     /// User that triggered the alert
     pub traveler: User,
@@ -356,7 +356,7 @@ pub struct ProximityAlertTriggered {
 
 /// This object represents a service message about a voice chat scheduled in the
 /// chat.
-#[derive(Serialize, Deserialize, Debug, Clone, PartialEq)]
+#[derive(Serialize, Deserialize, Debug, Clone, PartialEq, Eq)]
 pub struct VideoChatScheduled {
     /// Point in time when the voice chat is supposed to be started by a chat
     /// administrator
@@ -366,12 +366,12 @@ pub struct VideoChatScheduled {
 
 /// This object represents a service message about a voice chat started in the
 /// chat. Currently holds no information.
-#[derive(Serialize, Deserialize, Debug, Clone, PartialEq)]
+#[derive(Serialize, Deserialize, Debug, Clone, PartialEq, Eq)]
 pub struct VideoChatStarted {}
 
 /// This object represents a service message about a voice chat ended in the
 /// chat.
-#[derive(Serialize, Deserialize, Debug, Clone, PartialEq)]
+#[derive(Serialize, Deserialize, Debug, Clone, PartialEq, Eq)]
 pub struct VideoChatEnded {
     /// Voice chat duration; in seconds
     pub duration: i64,
@@ -379,7 +379,7 @@ pub struct VideoChatEnded {
 
 /// This object represents a service message about new members invited to a
 /// voice chat.
-#[derive(Serialize, Deserialize, Debug, Clone, PartialEq)]
+#[derive(Serialize, Deserialize, Debug, Clone, PartialEq, Eq)]
 pub struct VideoChatParticipantsInvited {
     /// New members that were invited to the voice chat.
     #[serde(default)]
@@ -388,7 +388,7 @@ pub struct VideoChatParticipantsInvited {
 
 /// This object represents a service message about a change in auto-delete timer
 /// settings.
-#[derive(Serialize, Deserialize, Debug, Clone, PartialEq)]
+#[derive(Serialize, Deserialize, Debug, Clone, PartialEq, Eq)]
 pub struct MessageAutoDeleteTimerChanged {
     /// New auto-delete time for messages in the chat
     pub message_auto_delete_time: i64,
@@ -397,7 +397,7 @@ pub struct MessageAutoDeleteTimerChanged {
 /// Describes data sent from a [Web App] to the bot.
 ///
 /// [Web App]: https://core.telegram.org/bots/webapps
-#[derive(Serialize, Deserialize, Debug, Clone, PartialEq)]
+#[derive(Serialize, Deserialize, Debug, Clone, PartialEq, Eq)]
 pub struct WebAppData {
     /// The data. Be aware that a bad client can send arbitrary data in this
     /// field.
@@ -407,8 +407,9 @@ pub struct WebAppData {
     pub button_text: String,
 }
 
-/// This object represents a service message about a new forum topic created in the chat.
-#[derive(Serialize, Deserialize, Debug, Clone, PartialEq)]
+/// This object represents a service message about a new forum topic created in
+/// the chat.
+#[derive(Serialize, Deserialize, Debug, Clone, PartialEq, Eq)]
 pub struct ForumTopicCreated {
     /// Name of the topic
     pub name: String,
@@ -418,12 +419,37 @@ pub struct ForumTopicCreated {
     pub icon_custom_emoji_id: Option<String>,
 }
 
-/// This object represents a service message about a forum topic closed in the chat.
-/// Currently holds no information.
-#[derive(Serialize, Deserialize, Debug, Clone, PartialEq)]
+/// This object represents a service message about an edited forum topic.
+#[derive(Serialize, Deserialize, Debug, Clone, PartialEq, Eq)]
+pub struct ForumTopicEdited {
+    /// Name of the topic, if it was edited
+    pub name: Option<String>,
+    /// Unique identifier of the custom emoji shown as the topic icon, if it was
+    /// edited; an empty string if the icon was removed
+    pub icon_custom_emoji_id: Option<String>,
+}
+
+/// This object represents a service message about a forum topic closed in the
+/// chat. Currently holds no information.
+#[derive(Serialize, Deserialize, Debug, Clone, PartialEq, Eq)]
 pub struct ForumTopicClosed {}
 
-/// This object represents a service message about a forum topic reopened in the chat.
-/// Currently holds no information.
-#[derive(Serialize, Deserialize, Debug, Clone, PartialEq)]
+/// This object represents a service message about a forum topic reopened in the
+/// chat. Currently holds no information.
+#[derive(Serialize, Deserialize, Debug, Clone, PartialEq, Eq)]
 pub struct ForumTopicReopened {}
+
+/// This object represents a service message about General forum topic hidden in
+/// the chat. Currently holds no information.
+#[derive(Serialize, Deserialize, Debug, Clone, PartialEq, Eq)]
+pub struct GeneralForumTopicHidden {}
+
+/// This object represents a service message about General forum topic unhidden
+/// in the chat. Currently holds no information.
+#[derive(Serialize, Deserialize, Debug, Clone, PartialEq, Eq)]
+pub struct GeneralForumTopicUnhidden {}
+
+/// This object represents a service message about a user allowing a bot added
+/// to the attachment menu to write messages. Currently holds no information.
+#[derive(Serialize, Deserialize, Debug, Clone, PartialEq, Eq)]
+pub struct WriteAccessAllowed {}

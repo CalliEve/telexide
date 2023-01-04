@@ -3,7 +3,7 @@ use serde::{Deserialize, Serialize};
 use super::utils::IntegerOrString;
 
 /// A bot command
-#[derive(Serialize, Deserialize, Debug, Clone, PartialEq)]
+#[derive(Serialize, Deserialize, Debug, Clone, PartialEq, Eq)]
 pub struct BotCommand {
     /// the command name, for example "ping" for the command "/ping"
     pub command: String,
@@ -11,7 +11,7 @@ pub struct BotCommand {
     pub description: String,
 }
 
-#[derive(Serialize, Deserialize, Debug, Clone, PartialEq)]
+#[derive(Serialize, Deserialize, Debug, Clone, PartialEq, Eq)]
 #[serde(tag = "type")]
 pub enum BotCommandScope {
     #[serde(rename = "default")]

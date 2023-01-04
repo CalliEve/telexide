@@ -49,7 +49,7 @@ pub struct CallbackQuery {
 ///
 /// note: `Markdown` only exists for backwards-compatibility reasons, please use
 /// `MarkdownV2`
-#[derive(Serialize, Deserialize, Debug, Clone, PartialEq)]
+#[derive(Serialize, Deserialize, Debug, Clone, PartialEq, Eq)]
 pub enum ParseMode {
     MarkdownV2,
     Markdown,
@@ -57,7 +57,7 @@ pub enum ParseMode {
 }
 
 /// An action indicating to a user what they are about to receive
-#[derive(Serialize, Deserialize, Debug, Clone, PartialEq)]
+#[derive(Serialize, Deserialize, Debug, Clone, PartialEq, Eq)]
 pub enum ChatAction {
     /// for a text message
     #[serde(rename = "typing")]
@@ -94,7 +94,7 @@ pub enum ChatAction {
 /// Enum object for an inline keyboard, custom reply keyboard, instructions to
 /// remove reply keyboard or to force a reply from the user.
 #[allow(clippy::large_enum_variant)]
-#[derive(Serialize, Deserialize, Debug, Clone, PartialEq)]
+#[derive(Serialize, Deserialize, Debug, Clone, PartialEq, Eq)]
 #[serde(untagged)]
 pub enum ReplyMarkup {
     InlineKeyboardMarkup(InlineKeyboardMarkup),
@@ -111,7 +111,7 @@ pub enum ReplyMarkup {
 /// **Note:** The maximum file size to download is 20 MB
 ///
 /// [`get_file`]: ../api/trait.API.html#method.get_file
-#[derive(Serialize, Deserialize, Debug, Clone, PartialEq)]
+#[derive(Serialize, Deserialize, Debug, Clone, PartialEq, Eq)]
 pub struct File {
     /// Identifier for this file, which can be used to download or reuse the
     /// file
@@ -130,7 +130,7 @@ pub struct File {
 }
 
 /// Contains information about the current status of a webhook.
-#[derive(Serialize, Deserialize, Debug, Clone, PartialEq)]
+#[derive(Serialize, Deserialize, Debug, Clone, PartialEq, Eq)]
 pub struct WebhookInfo {
     /// Webhook URL, may be empty if webhook is not set up
     pub url: String,
@@ -143,7 +143,8 @@ pub struct WebhookInfo {
     /// an update via webhook
     #[serde(with = "unix_date_formatting::optional")]
     pub last_error_date: Option<DateTime<Utc>>,
-    /// Unix time of the most recent error that happened when trying to synchronize available updates with Telegram datacenters
+    /// Unix time of the most recent error that happened when trying to
+    /// synchronize available updates with Telegram datacenters
     #[serde(with = "unix_date_formatting::optional")]
     pub last_synchronization_error_date: Option<DateTime<Utc>>,
     /// Error message in human-readable format for the most recent error that
@@ -160,8 +161,10 @@ pub struct WebhookInfo {
 }
 
 /// This object describes the bot's menu button in a private chat.
-/// If a menu button other than Default is set for a private chat, then it is applied in the chat. Otherwise the default menu button is applied. By default, the menu button opens the list of bot commands.
-#[derive(Serialize, Deserialize, Debug, Clone, PartialEq)]
+/// If a menu button other than Default is set for a private chat, then it is
+/// applied in the chat. Otherwise the default menu button is applied. By
+/// default, the menu button opens the list of bot commands.
+#[derive(Serialize, Deserialize, Debug, Clone, PartialEq, Eq)]
 #[serde(tag = "type")]
 pub enum MenuButton {
     /// Describes that no specific value for the menu button was set.
@@ -174,7 +177,10 @@ pub enum MenuButton {
     WebApp {
         /// Text on the button
         text: String,
-        /// Description of the Web App that will be launched when the user presses the button. The Web App will be able to send an arbitrary message on behalf of the user using the method [`answer_web_app_query`].
+        /// Description of the Web App that will be launched when the user
+        /// presses the button. The Web App will be able to send an arbitrary
+        /// message on behalf of the user using the method
+        /// [`answer_web_app_query`].
         ///
         /// [`answer_web_app_query`]: ../api/trait.API.html#method.answer_web_app_query
         web_app: WebAppInfo,
