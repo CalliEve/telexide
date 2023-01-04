@@ -2,7 +2,7 @@ use super::User;
 use serde::{Deserialize, Serialize};
 
 /// This object contains basic information about an invoice.
-#[derive(Serialize, Deserialize, Debug, Clone, PartialEq)]
+#[derive(Serialize, Deserialize, Debug, Clone, PartialEq, Eq)]
 pub struct Invoice {
     /// Product name
     pub title: String,
@@ -22,7 +22,7 @@ pub struct Invoice {
 }
 
 /// This object contains basic information about a successful payment.
-#[derive(Serialize, Deserialize, Debug, Clone, PartialEq)]
+#[derive(Serialize, Deserialize, Debug, Clone, PartialEq, Eq)]
 pub struct SuccessfulPayment {
     /// Three-letter ISO 4217 [currency](https://core.telegram.org/bots/payments#supported-currencies) code
     pub currency: String,
@@ -45,7 +45,7 @@ pub struct SuccessfulPayment {
 }
 
 /// This object represents information about an order.
-#[derive(Serialize, Deserialize, Debug, Clone, PartialEq)]
+#[derive(Serialize, Deserialize, Debug, Clone, PartialEq, Eq)]
 pub struct OrderInfo {
     /// User name
     pub name: Option<String>,
@@ -58,7 +58,7 @@ pub struct OrderInfo {
 }
 
 /// This object represents a shipping address.
-#[derive(Serialize, Deserialize, Debug, Clone, PartialEq)]
+#[derive(Serialize, Deserialize, Debug, Clone, PartialEq, Eq)]
 pub struct ShippingAddress {
     /// ISO 3166-1 alpha-2 country code
     pub country_code: String,
@@ -75,7 +75,7 @@ pub struct ShippingAddress {
 }
 
 /// This object contains information about an incoming shipping query.
-#[derive(Serialize, Deserialize, Debug, Clone, PartialEq)]
+#[derive(Serialize, Deserialize, Debug, Clone, PartialEq, Eq)]
 pub struct ShippingQuery {
     /// Unique query identifier
     pub id: String,
@@ -88,7 +88,7 @@ pub struct ShippingQuery {
 }
 
 /// This object contains information about an incoming pre-checkout query.
-#[derive(Serialize, Deserialize, Debug, Clone, PartialEq)]
+#[derive(Serialize, Deserialize, Debug, Clone, PartialEq, Eq)]
 pub struct PreCheckoutQuery {
     /// Unique query identifier
     pub id: String,
@@ -111,7 +111,7 @@ pub struct PreCheckoutQuery {
 }
 
 /// This object represents one shipping option.
-#[derive(Serialize, Deserialize, Debug, Clone, PartialEq)]
+#[derive(Serialize, Deserialize, Debug, Clone, PartialEq, Eq)]
 pub struct ShippingOption {
     /// Shipping option identifier
     pub id: String,
@@ -122,7 +122,7 @@ pub struct ShippingOption {
 }
 
 /// This object represents a portion of the price for goods or services.
-#[derive(Serialize, Deserialize, Debug, Clone, PartialEq)]
+#[derive(Serialize, Deserialize, Debug, Clone, PartialEq, Eq)]
 pub struct LabeledPrice {
     /// Portion label
     pub label: String,

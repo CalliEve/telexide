@@ -11,7 +11,7 @@ use telexide_proc_macros::build_struct;
 /// [`set_my_commands`]:
 /// ../../api/trait.API.html#method.set_my_commands
 #[build_struct]
-#[derive(Serialize, Deserialize, Debug, Clone, PartialEq)]
+#[derive(Serialize, Deserialize, Debug, Clone, PartialEq, Eq)]
 pub struct SetMyCommands {
     pub commands: Vec<BotCommand>,
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -49,7 +49,7 @@ impl From<&Vec<TelegramCommand>> for SetMyCommands {
 /// [`get_my_commands`]:
 /// ../../api/trait.API.html#method.get_my_commands
 #[build_struct]
-#[derive(Serialize, Deserialize, Debug, Clone, PartialEq)]
+#[derive(Serialize, Deserialize, Debug, Clone, PartialEq, Eq)]
 pub struct GetMyCommands {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub language_code: Option<String>,
@@ -63,7 +63,7 @@ pub struct GetMyCommands {
 /// [`delete_my_commands`]:
 /// ../../api/trait.API.html#method.delete_my_commands
 #[build_struct]
-#[derive(Serialize, Deserialize, Debug, Clone, PartialEq)]
+#[derive(Serialize, Deserialize, Debug, Clone, PartialEq, Eq)]
 pub struct DeleteMyCommands {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub language_code: Option<String>,

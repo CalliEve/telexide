@@ -6,7 +6,7 @@ use std::{
     path::Path,
 };
 
-#[derive(Debug, Clone, PartialEq)]
+#[derive(Debug, Clone, PartialEq, Eq)]
 pub struct FormDataFile {
     pub bytes: Vec<u8>,
     pub name: String,
@@ -19,7 +19,7 @@ impl FormDataFile {
         Self {
             bytes: bytes.to_vec(),
             name: file_name
-                .splitn(1, '.')
+                .splitn(2, '.')
                 .collect::<Vec<&str>>()
                 .first()
                 .unwrap_or(&"new_file")
@@ -37,7 +37,7 @@ impl FormDataFile {
         Ok(Self {
             bytes,
             name: file_name
-                .splitn(1, '.')
+                .splitn(2, '.')
                 .collect::<Vec<&str>>()
                 .first()
                 .unwrap_or(&"new_file")
@@ -92,8 +92,8 @@ pub fn encode_multipart_form_data(files: &[FormDataFile]) -> Result<Vec<u8>> {
     Ok(data)
 }
 
-pub fn encode_file_as_multipart_form_data(mut file: &mut File, file_name: &str) -> Result<Vec<u8>> {
-    encode_multipart_form_data(&[FormDataFile::new_from_file(&mut file, file_name)?])
+pub fn encode_file_as_multipart_form_data(file: &mut File, file_name: &str) -> Result<Vec<u8>> {
+    encode_multipart_form_data(&[FormDataFile::new_from_file(file, file_name)?])
 }
 
 fn get_media_type(file_name: &str) -> Result<&str> {
@@ -153,7 +153,7 @@ impl AsFormData for Value {
                     .trim_matches('"')
                     .as_bytes()
                     .to_vec(),
-            })
+            });
         }
 
         Ok(res)

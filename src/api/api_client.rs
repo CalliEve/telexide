@@ -40,9 +40,10 @@ pub struct APIClient {
 impl APIClient {
     /// Creates a new `APIClient` with the provided token and hyper client (if
     /// it is Some).
-    pub fn new<T: ToString>(
+    #[allow(clippy::needless_pass_by_value)]
+    pub fn new(
         hyper_client: Option<Client<hyper_tls::HttpsConnector<HttpConnector>>>,
-        token: T,
+        token: impl ToString,
     ) -> Self {
         hyper_client.map_or_else(
             || Self {
@@ -58,11 +59,9 @@ impl APIClient {
 
     /// Creates a new `APIClient` with the provided token and the default hyper
     /// client.
-    pub fn new_default<T: ToString>(token: T) -> Self {
-        Self {
-            hyper_client: hyper::Client::builder().build(hyper_tls::HttpsConnector::new()),
-            token: token.to_string(),
-        }
+    #[allow(clippy::needless_pass_by_value)]
+    pub fn new_default(token: impl ToString) -> Self {
+        Self::new(None, token)
     }
 
     fn parse_endpoint(&self, endpoint: &APIEndpoint) -> String {
@@ -116,7 +115,7 @@ impl API for APIClient {
 
         let mut res: Vec<u8> = Vec::new();
         while let Some(chunk) = response.body_mut().data().await {
-            res.write_all(&chunk?)?
+            res.write_all(&chunk?)?;
         }
 
         Ok(serde_json::from_slice(&res)?)
@@ -142,7 +141,7 @@ impl API for APIClient {
 
         let mut res: Vec<u8> = Vec::new();
         while let Some(chunk) = response.body_mut().data().await {
-            res.write_all(&chunk?)?
+            res.write_all(&chunk?)?;
         }
 
         Ok(serde_json::from_slice(&res)?)
@@ -171,7 +170,7 @@ impl API for APIClient {
             .header("accept", "application/json");
 
         if data.is_some() {
-            files.append(&mut data.expect("no data").as_form_data()?)
+            files.append(&mut data.expect("no data").as_form_data()?);
         }
 
         let bytes = encode_multipart_form_data(&files)?;
@@ -182,7 +181,7 @@ impl API for APIClient {
 
         let mut res: Vec<u8> = Vec::new();
         while let Some(chunk) = response.body_mut().data().await {
-            res.write_all(&chunk?)?
+            res.write_all(&chunk?)?;
         }
 
         Ok(serde_json::from_slice(&res)?)

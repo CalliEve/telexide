@@ -11,7 +11,8 @@ pub struct Sticker {
     /// time and for different bots. Can't be used to download or reuse the
     /// file.
     pub file_unique_id: String,
-    /// Type of the sticker. The type of the sticker is independent from its format, which is determined by the fields is_animated and is_video.
+    /// Type of the sticker. The type of the sticker is independent from its
+    /// format, which is determined by the fields is_animated and is_video.
     #[serde(rename = "type")]
     pub kind: StickerType,
     /// Sticker width
@@ -47,7 +48,8 @@ pub struct StickerSet {
     pub name: String,
     /// Sticker set title
     pub title: String,
-    /// Type of stickers in the set, currently one of “regular”, “mask”, “custom_emoji”
+    /// Type of stickers in the set, currently one of “regular”, “mask”,
+    /// “custom_emoji”
     pub sticker_type: StickerType,
     /// True, if the sticker set contains [animated stickers](https://telegram.org/blog/animated-stickers)
     pub is_animated: bool,
@@ -76,7 +78,7 @@ pub struct MaskPosition {
 }
 
 /// The part of the face relative to which a mask should be placed
-#[derive(Serialize, Deserialize, Debug, Clone, PartialEq)]
+#[derive(Serialize, Deserialize, Debug, Clone, PartialEq, Eq)]
 pub enum MaskPoint {
     #[serde(rename = "forehead")]
     Forehead,
@@ -88,7 +90,7 @@ pub enum MaskPoint {
     Chin,
 }
 
-#[derive(Serialize, Deserialize, Debug, Clone, PartialEq)]
+#[derive(Serialize, Deserialize, Debug, Clone, PartialEq, Eq)]
 #[serde(untagged)]
 pub enum StickerType {
     #[serde(rename = "regular")]

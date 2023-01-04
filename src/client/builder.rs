@@ -52,8 +52,9 @@ impl ClientBuilder {
     }
 
     /// Sets the token to be used in authorizing the API requests of your bot
-    pub fn set_token(&mut self, token: &str) -> &mut Self {
-        self.token = Some(token.to_owned());
+    #[allow(clippy::needless_pass_by_value)]
+    pub fn set_token(&mut self, token: impl ToString) -> &mut Self {
+        self.token = Some(token.to_string());
         self
     }
 
@@ -108,7 +109,7 @@ impl ClientBuilder {
     /// [`ClientBuilder`] object
     pub fn build(&mut self) -> Client {
         if self.framework.is_some() && !self.allowed_updates.contains(&UpdateType::Message) {
-            self.allowed_updates.push(UpdateType::Message)
+            self.allowed_updates.push(UpdateType::Message);
         }
 
         self.api_client.clone().map_or_else(

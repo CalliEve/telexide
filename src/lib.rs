@@ -60,7 +60,8 @@
     clippy::missing_errors_doc,
     clippy::module_name_repetitions,
     clippy::struct_excessive_bools,
-    clippy::wildcard_imports
+    clippy::wildcard_imports,
+    clippy::too_many_lines
 )]
 
 pub mod api;

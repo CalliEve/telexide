@@ -1,15 +1,6 @@
 use super::{
-    raw::RawUpdate,
-    CallbackQuery,
-    ChatJoinRequest,
-    ChatMemberUpdated,
-    ChosenInlineResult,
-    InlineQuery,
-    Message,
-    Poll,
-    PollAnswer,
-    PreCheckoutQuery,
-    ShippingQuery,
+    raw::RawUpdate, CallbackQuery, ChatJoinRequest, ChatMemberUpdated, ChosenInlineResult,
+    InlineQuery, Message, Poll, PollAnswer, PreCheckoutQuery, ShippingQuery,
 };
 use serde::{Deserialize, Deserializer, Serialize, Serializer};
 
@@ -81,10 +72,7 @@ pub enum UpdateContent {
 impl From<RawUpdate> for Update {
     fn from(raw: RawUpdate) -> Update {
         let update_id = raw.update_id;
-        let make_update = |content: UpdateContent| Self {
-            update_id,
-            content,
-        };
+        let make_update = |content: UpdateContent| Self { update_id, content };
 
         macro_rules! set_content {
             ($data:expr, $kind:ident) => {
@@ -211,6 +199,6 @@ impl Serialize for Update {
     where
         S: Serializer,
     {
-        RawUpdate::from(self.to_owned()).serialize(serializer)
+        RawUpdate::from(self.clone()).serialize(serializer)
     }
 }

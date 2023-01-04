@@ -7,7 +7,7 @@ use telexide_proc_macros::build_struct;
 /// [`get_updates`]:
 /// ../../api/trait.API.html#method.get_updates
 #[build_struct]
-#[derive(Serialize, Deserialize, Debug, Clone, PartialEq)]
+#[derive(Serialize, Deserialize, Debug, Clone, PartialEq, Eq)]
 pub struct GetUpdates {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub offset: Option<i64>,
@@ -20,11 +20,12 @@ pub struct GetUpdates {
 }
 
 impl GetUpdates {
+    #[must_use]
     pub fn add_allowed_updates(mut self, allowed_update: UpdateType) -> Self {
         if let Some(ref mut a) = self.allowed_updates {
-            a.push(allowed_update)
+            a.push(allowed_update);
         } else {
-            self.allowed_updates = Some(vec![allowed_update])
+            self.allowed_updates = Some(vec![allowed_update]);
         }
         self
     }
@@ -38,7 +39,7 @@ impl std::default::Default for GetUpdates {
 
 /// The type of an update, can be used for specifying which update types you
 /// want to receive
-#[derive(Serialize, Deserialize, Debug, Clone, PartialEq)]
+#[derive(Serialize, Deserialize, Debug, Clone, PartialEq, Eq)]
 pub enum UpdateType {
     #[serde(rename = "message")]
     Message,

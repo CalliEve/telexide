@@ -11,8 +11,8 @@ jobs:
 
       - name: Prepare
         run: |
-          rustup toolchain install 1.60.0 --force
-          rustup override set 1.60.0
+          rustup toolchain install 1.63.0 --force
+          rustup override set 1.63.0
           sudo chmod +x scripts/build_examples.sh
 
       - name: Build
@@ -23,3 +23,9 @@ jobs:
 
       - name: Test
         run: cargo test --verbose
+
+      - name: Lint
+        run: |
+          rustup override unset
+          rustup component add clippy
+          cargo clippy

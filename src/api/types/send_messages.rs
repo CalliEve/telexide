@@ -18,7 +18,7 @@ use telexide_proc_macros::build_struct;
 /// [`send_message`]:
 /// ../../api/trait.API.html#method.send_message
 #[build_struct]
-#[derive(Serialize, Deserialize, Debug, Clone, PartialEq)]
+#[derive(Serialize, Deserialize, Debug, Clone, PartialEq, Eq)]
 pub struct SendMessage {
     /// Unique identifier for the target chat
     pub chat_id: IntegerOrString,
@@ -64,7 +64,7 @@ pub struct SendMessage {
 /// [`forward_message`]:
 /// ../../api/trait.API.html#method.forward_message
 #[build_struct]
-#[derive(Serialize, Deserialize, Debug, Clone, PartialEq)]
+#[derive(Serialize, Deserialize, Debug, Clone, PartialEq, Eq)]
 pub struct ForwardMessage {
     /// Unique identifier for the target chat
     pub chat_id: IntegerOrString,
@@ -102,7 +102,7 @@ impl ForwardMessage {
 ///
 /// [`copy_message`]: ../../api/trait.API.html#method.copy_message
 #[build_struct]
-#[derive(Serialize, Deserialize, Debug, Clone, PartialEq)]
+#[derive(Serialize, Deserialize, Debug, Clone, PartialEq, Eq)]
 pub struct CopyMessage {
     /// Unique identifier for the target chat
     pub chat_id: IntegerOrString,
@@ -169,7 +169,7 @@ impl CopyMessage {
 /// [`send_photo`]:
 /// ../../api/trait.API.html#method.send_photo
 #[build_struct]
-#[derive(Serialize, Deserialize, Debug, Clone, PartialEq)]
+#[derive(Serialize, Deserialize, Debug, Clone, PartialEq, Eq)]
 pub struct SendPhoto {
     /// Unique identifier for the target chat
     pub chat_id: IntegerOrString,
@@ -193,6 +193,9 @@ pub struct SendPhoto {
     /// fixed-width text or inline URLs in your bot's message.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub parse_mode: Option<ParseMode>,
+    /// Pass True if the photo needs to be covered with a spoiler animation.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub has_spoiler: Option<bool>,
     /// Sends the message silently. Users will receive a notification with no
     /// sound.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -221,6 +224,7 @@ impl SendPhoto {
             caption: None,
             caption_entities: None,
             parse_mode: None,
+            has_spoiler: None,
             disable_notification: None,
             protect_content: None,
             reply_to_message_id: None,
@@ -237,6 +241,7 @@ impl SendPhoto {
             caption: None,
             caption_entities: None,
             parse_mode: None,
+            has_spoiler: None,
             disable_notification: None,
             protect_content: None,
             reply_to_message_id: None,
@@ -252,7 +257,7 @@ impl SendPhoto {
 /// [`send_audio`]:
 /// ../../api/trait.API.html#method.send_audio
 #[build_struct]
-#[derive(Serialize, Deserialize, Debug, Clone, PartialEq)]
+#[derive(Serialize, Deserialize, Debug, Clone, PartialEq, Eq)]
 pub struct SendAudio {
     /// Unique identifier for the target chat
     pub chat_id: IntegerOrString,
@@ -339,7 +344,7 @@ impl SendAudio {
 /// [`send_document`]:
 /// ../../api/trait.API.html#method.send_document
 #[build_struct]
-#[derive(Serialize, Deserialize, Debug, Clone, PartialEq)]
+#[derive(Serialize, Deserialize, Debug, Clone, PartialEq, Eq)]
 pub struct SendDocument {
     /// Unique identifier for the target chat
     pub chat_id: IntegerOrString,
@@ -419,7 +424,7 @@ impl SendDocument {
 /// [`send_video`]:
 /// ../../api/trait.API.html#method.send_video
 #[build_struct]
-#[derive(Serialize, Deserialize, Debug, Clone, PartialEq)]
+#[derive(Serialize, Deserialize, Debug, Clone, PartialEq, Eq)]
 pub struct SendVideo {
     /// Unique identifier for the target chat
     pub chat_id: IntegerOrString,
@@ -465,6 +470,9 @@ pub struct SendVideo {
     /// fixed-width text or inline URLs in your bot's message.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub parse_mode: Option<ParseMode>,
+    /// Pass True if the video needs to be covered with a spoiler animation.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub has_spoiler: Option<bool>,
     /// Sends the message silently. Users will receive a notification with no
     /// sound.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -503,6 +511,7 @@ impl SendVideo {
             title: None,
             supports_streaming: None,
             parse_mode: None,
+            has_spoiler: None,
             disable_notification: None,
             protect_content: None,
             reply_to_message_id: None,
@@ -518,7 +527,7 @@ impl SendVideo {
 /// [`send_animation`]:
 /// ../../api/trait.API.html#method.send_animation
 #[build_struct]
-#[derive(Serialize, Deserialize, Debug, Clone, PartialEq)]
+#[derive(Serialize, Deserialize, Debug, Clone, PartialEq, Eq)]
 pub struct SendAnimation {
     /// Unique identifier for the target chat
     pub chat_id: IntegerOrString,
@@ -564,6 +573,9 @@ pub struct SendAnimation {
     /// fixed-width text or inline URLs in your bot's message.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub parse_mode: Option<ParseMode>,
+    /// Pass True if the animation needs to be covered with a spoiler animation.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub has_spoiler: Option<bool>,
     /// Sends the message silently. Users will receive a notification with no
     /// sound.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -598,6 +610,7 @@ impl SendAnimation {
             performer: None,
             title: None,
             parse_mode: None,
+            has_spoiler: None,
             disable_notification: None,
             protect_content: None,
             reply_to_message_id: None,
@@ -613,7 +626,7 @@ impl SendAnimation {
 /// [`send_voice`]:
 /// ../../api/trait.API.html#method.send_voice
 #[build_struct]
-#[derive(Serialize, Deserialize, Debug, Clone, PartialEq)]
+#[derive(Serialize, Deserialize, Debug, Clone, PartialEq, Eq)]
 pub struct SendVoice {
     /// Unique identifier for the target chat
     pub chat_id: IntegerOrString,
@@ -684,7 +697,7 @@ impl SendVoice {
 /// [`send_video_note`]:
 /// ../../api/trait.API.html#method.send_video_note
 #[build_struct]
-#[derive(Serialize, Deserialize, Debug, Clone, PartialEq)]
+#[derive(Serialize, Deserialize, Debug, Clone, PartialEq, Eq)]
 pub struct SendVideoNote {
     /// Unique identifier for the target chat
     pub chat_id: IntegerOrString,
@@ -752,7 +765,7 @@ impl SendVideoNote {
 /// [`send_media_group`]:
 /// ../../api/trait.API.html#method.send_media_group
 #[build_struct]
-#[derive(Serialize, Deserialize, Debug, Clone, PartialEq)]
+#[derive(Serialize, Deserialize, Debug, Clone, PartialEq, Eq)]
 pub struct SendMediaGroup {
     /// Unique identifier for the target chat
     pub chat_id: IntegerOrString,
@@ -883,7 +896,7 @@ pub struct SendVenue {
 /// [`send_contact`]:
 /// ../../api/trait.API.html#method.send_contact
 #[build_struct]
-#[derive(Serialize, Deserialize, Debug, Clone, PartialEq)]
+#[derive(Serialize, Deserialize, Debug, Clone, PartialEq, Eq)]
 pub struct SendContact {
     /// Unique identifier for the target chat
     pub chat_id: IntegerOrString,
@@ -926,7 +939,7 @@ pub struct SendContact {
 /// [`send_poll`]:
 /// ../../api/trait.API.html#method.send_poll
 #[build_struct]
-#[derive(Serialize, Deserialize, Debug, Clone, PartialEq)]
+#[derive(Serialize, Deserialize, Debug, Clone, PartialEq, Eq)]
 pub struct SendPoll {
     /// Unique identifier for the target chat
     pub chat_id: IntegerOrString,
@@ -1003,7 +1016,7 @@ pub struct SendPoll {
 /// [`send_dice`]:
 /// ../../api/trait.API.html#method.send_dice
 #[build_struct]
-#[derive(Serialize, Deserialize, Debug, Clone, PartialEq)]
+#[derive(Serialize, Deserialize, Debug, Clone, PartialEq, Eq)]
 pub struct SendDice {
     /// Unique identifier for the target chat
     pub chat_id: IntegerOrString,
@@ -1046,10 +1059,13 @@ pub struct SendDice {
 /// ../../api/trait.API.html#method.send_chat_action
 /// [API docs]: https://core.telegram.org/bots/api#sendchataction
 #[build_struct]
-#[derive(Serialize, Deserialize, Debug, Clone, PartialEq)]
+#[derive(Serialize, Deserialize, Debug, Clone, PartialEq, Eq)]
 pub struct SendChatAction {
     /// Unique identifier for the target chat
     pub chat_id: IntegerOrString,
+    /// Unique identifier for the target message thread; supergroups only
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub message_thread_id: Option<i64>,
     /// Type of action to broadcast.
     pub action: ChatAction,
 }

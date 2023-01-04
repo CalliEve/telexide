@@ -5,7 +5,7 @@ use serde::{Deserialize, Serialize};
 /// message it belongs to.
 ///
 /// [inline keyboard]: https://core.telegram.org/bots#inline-keyboards-and-on-the-fly-updating
-#[derive(Serialize, Deserialize, Debug, Clone, PartialEq)]
+#[derive(Serialize, Deserialize, Debug, Clone, PartialEq, Eq)]
 pub struct InlineKeyboardMarkup {
     /// Vec of button rows, each represented by a Vec of
     /// [`InlineKeyboardButton`] objects
@@ -14,7 +14,7 @@ pub struct InlineKeyboardMarkup {
 
 /// This object represents one button of an inline keyboard.
 /// You **must** use exactly one of the optional fields.
-#[derive(Serialize, Deserialize, Debug, Clone, PartialEq)]
+#[derive(Serialize, Deserialize, Debug, Clone, PartialEq, Eq)]
 pub struct InlineKeyboardButton {
     /// Label text on the button
     pub text: String,
@@ -30,7 +30,10 @@ pub struct InlineKeyboardButton {
     ///
     /// [callback query]: ../model/struct.CallbackQuery.html
     pub callback_data: Option<String>,
-    /// Description of the Web App that will be launched when the user presses the button. The Web App will be able to send an arbitrary message on behalf of the user using the method [`answer_web_app_query`]. Available only in private chats between a user and the bot.
+    /// Description of the Web App that will be launched when the user presses
+    /// the button. The Web App will be able to send an arbitrary message on
+    /// behalf of the user using the method [`answer_web_app_query`]. Available
+    /// only in private chats between a user and the bot.
     ///
     /// [`answer_web_app_query`]: ../api/trait.API.html#method.answer_web_app_query
     pub web_app: Option<WebAppInfo>,
@@ -75,11 +78,16 @@ pub struct InlineKeyboardButton {
 /// (see [Introduction to bots][keyboards] for details and examples).
 ///
 /// [keyboards]: https://core.telegram.org/bots#keyboards
-#[derive(Serialize, Deserialize, Debug, Clone, PartialEq)]
+#[derive(Serialize, Deserialize, Debug, Clone, PartialEq, Eq)]
 pub struct ReplyKeyboardMarkup {
     /// Vec of button rows, each represented by a Vec of [`KeyboardButton`]
     /// objects
     pub keyboard: Vec<Vec<KeyboardButton>>,
+    /// Requests clients to always show the keyboard when the regular keyboard
+    /// is hidden. Defaults to false, in which case the custom keyboard can be
+    /// hidden and opened with a keyboard icon.
+    #[serde(default)]
+    pub is_persistent: bool,
     /// Requests clients to resize the keyboard vertically for optimal fit
     /// (e.g., make the keyboard smaller if there are just two rows of buttons).
     /// Defaults to false, in which case the custom keyboard is always of the
@@ -115,7 +123,7 @@ pub struct ReplyKeyboardMarkup {
 /// By default, custom keyboards are displayed until a new keyboard is sent by a
 /// bot. An exception is made for one-time keyboards that are hidden immediately
 /// after the user presses a button (see [`ReplyKeyboardMarkup`]).
-#[derive(Serialize, Deserialize, Debug, Clone, PartialEq)]
+#[derive(Serialize, Deserialize, Debug, Clone, PartialEq, Eq)]
 pub struct ReplyKeyboardRemove {
     /// Requests clients to remove the custom keyboard (user will not be able to
     /// summon this keyboard; if you want to hide the keyboard from sight
@@ -146,7 +154,7 @@ pub struct ReplyKeyboardRemove {
 /// [privacy mode].
 ///
 /// [privacy mode]: https://core.telegram.org/bots#privacy-mode
-#[derive(Serialize, Deserialize, Debug, Clone, PartialEq)]
+#[derive(Serialize, Deserialize, Debug, Clone, PartialEq, Eq)]
 pub struct ForceReply {
     /// Upon receiving a message with this object, Telegram clients will display
     /// a reply interface to the user (act as if the user has selected the bot‘s
@@ -177,7 +185,7 @@ pub struct ForceReply {
 ///
 /// **Note:** Optional fields `request_contact`, `request_location`, and
 /// `request_poll` are mutually exclusive.
-#[derive(Serialize, Deserialize, Debug, Clone, PartialEq)]
+#[derive(Serialize, Deserialize, Debug, Clone, PartialEq, Eq)]
 pub struct KeyboardButton {
     /// Text of the button. If none of the optional fields are used,
     /// it will be sent as a message when the button is pressed
@@ -191,13 +199,15 @@ pub struct KeyboardButton {
     /// If specified, the user will be asked to create a poll and send it to the
     /// bot when the button is pressed. Available in private chats only
     pub request_poll: Option<KeyboardButtonPollType>,
-    /// If specified, the described Web App will be launched when the button is pressed. The Web App will be able to send a “web_app_data” service message. Available in private chats only.
+    /// If specified, the described Web App will be launched when the button is
+    /// pressed. The Web App will be able to send a “web_app_data” service
+    /// message. Available in private chats only.
     pub web_app: Option<WebAppInfo>,
 }
 
 /// This object represents type of a poll, which is allowed to be created and
 /// sent when the corresponding button is pressed.
-#[derive(Serialize, Deserialize, Debug, Clone, PartialEq)]
+#[derive(Serialize, Deserialize, Debug, Clone, PartialEq, Eq)]
 pub struct KeyboardButtonPollType {
     /// If quiz is passed, the user will be allowed to create only polls in the
     /// quiz mode. If regular is passed, only regular polls will be allowed.
@@ -209,9 +219,10 @@ pub struct KeyboardButtonPollType {
 /// Describes a [Web App].
 ///
 /// [Web App]: https://core.telegram.org/bots/webapps
-#[derive(Serialize, Deserialize, Debug, Clone, PartialEq)]
+#[derive(Serialize, Deserialize, Debug, Clone, PartialEq, Eq)]
 pub struct WebAppInfo {
-    /// An HTTPS URL of a Web App to be opened with additional data as specified in [Initializing Web Apps]
+    /// An HTTPS URL of a Web App to be opened with additional data as specified
+    /// in [Initializing Web Apps]
     ///
     /// [Initializing Web Apps]: https://core.telegram.org/bots/webapps#initializing-web-apps
     pub url: String,

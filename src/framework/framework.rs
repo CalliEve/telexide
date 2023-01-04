@@ -23,11 +23,7 @@ impl Framework {
     }
 
     fn match_command(&self, message: &Message, name: &str) -> bool {
-        if let MessageContent::Text {
-            entities,
-            content,
-        } = &message.content
-        {
+        if let MessageContent::Text { entities, content } = &message.content {
             for entity in entities {
                 if let MessageEntity::BotCommand(ref t) = entity {
                     let t = t.get_text(content);
@@ -43,7 +39,7 @@ impl Framework {
     fn fire_message_commands(&self, context: Context, message: Message) {
         for command in &self.commands {
             match command.command.clone() {
-                CommandTypes::Default(c) if self.match_command(&message, &command.options.name) => {
+                CommandTypes::Default(c) if self.match_command(&message, command.options.name) => {
                     let ctx = context.clone();
                     let msg = message.clone();
                     let command_name = command.options.name;
@@ -56,18 +52,18 @@ impl Framework {
                                 "command {} returned error: {}",
                                 &command_name,
                                 res.unwrap_err().0
-                            )
+                            );
                         }
                     });
                 },
-                _ => (),
+                CommandTypes::Default(_) => (),
             }
         }
     }
 
     /// add a command to the registered commands
     pub fn add_command(&mut self, command: &TelegramCommand) {
-        self.commands.push(command.clone())
+        self.commands.push(command.clone());
     }
 
     /// get all registered commands

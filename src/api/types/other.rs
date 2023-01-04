@@ -1,7 +1,9 @@
-use crate::model::{ChatAdministratorRights, MenuButton};
-use crate::utils::{
-    result::{Result, TelegramError},
-    FormDataFile,
+use crate::{
+    model::{ChatAdministratorRights, MenuButton},
+    utils::{
+        result::{Result, TelegramError},
+        FormDataFile,
+    },
 };
 use serde::{Deserialize, Deserializer, Serialize, Serializer};
 use std::{fs::File, path::Path};
@@ -13,7 +15,7 @@ use telexide_proc_macros::build_struct;
 /// [`get_user_profile_photos`]:
 /// ../../api/trait.API.html#method.get_user_profile_photos
 #[build_struct]
-#[derive(Serialize, Deserialize, Debug, Clone, PartialEq)]
+#[derive(Serialize, Deserialize, Debug, Clone, PartialEq, Eq)]
 pub struct GetUserProfilePhotos {
     /// Unique identifier of the target user
     pub user_id: i64,
@@ -33,7 +35,7 @@ pub struct GetUserProfilePhotos {
 /// [`get_file`]:
 /// ../../api/trait.API.html#method.get_file
 #[build_struct]
-#[derive(Serialize, Deserialize, Debug, Clone, PartialEq)]
+#[derive(Serialize, Deserialize, Debug, Clone, PartialEq, Eq)]
 pub struct GetFile {
     /// File identifier to get info about
     pub file_id: String,
@@ -45,7 +47,7 @@ pub struct GetFile {
 /// [`answer_callback_query`]:
 /// ../../api/trait.API.html#method.answer_callback_query
 #[build_struct]
-#[derive(Serialize, Deserialize, Debug, Clone, PartialEq)]
+#[derive(Serialize, Deserialize, Debug, Clone, PartialEq, Eq)]
 pub struct AnswerCallbackQuery {
     /// Unique identifier for the query to be answered
     pub callback_query_id: String,
@@ -74,7 +76,7 @@ pub struct AnswerCallbackQuery {
 }
 
 /// Is either true (the bool), or is object T
-#[derive(Serialize, Deserialize, Debug, Clone, PartialEq)]
+#[derive(Serialize, Deserialize, Debug, Clone, PartialEq, Eq)]
 #[serde(untagged)]
 pub enum TrueOrObject<T> {
     True(bool),
@@ -84,17 +86,15 @@ pub enum TrueOrObject<T> {
 
 /// This object represents either the `file_id`, http url or the contents of a
 /// file to be uploaded.
-#[derive(Debug, Clone, PartialEq)]
+#[derive(Debug, Clone, PartialEq, Eq)]
 pub enum InputFile {
     String(String),
     File(FormDataFile),
 }
 
 impl InputFile {
-    pub fn new_file(mut file: &mut File, file_name: &str) -> Result<Self> {
-        Ok(Self::File(FormDataFile::new_from_file(
-            &mut file, file_name,
-        )?))
+    pub fn new_file(file: &mut File, file_name: &str) -> Result<Self> {
+        Ok(Self::File(FormDataFile::new_from_file(file, file_name)?))
     }
 
     pub fn new(string: &str) -> Self {
@@ -168,12 +168,14 @@ impl<'de> Deserialize<'de> for InputFile {
 /// [`set_chat_menu_button`]:
 /// ../../api/trait.API.html#method.set_chat_menu_button
 #[build_struct]
-#[derive(Serialize, Deserialize, Debug, Clone, PartialEq)]
+#[derive(Serialize, Deserialize, Debug, Clone, PartialEq, Eq)]
 pub struct SetChatMenuButton {
-    /// Unique identifier for the target private chat. If not specified, default bot's menu button will be changed
+    /// Unique identifier for the target private chat. If not specified, default
+    /// bot's menu button will be changed
     #[serde(skip_serializing_if = "Option::is_none")]
     pub chat_id: Option<i64>,
-    /// A JSON-serialized object for the bot's new menu button. Defaults to [`MenuButton::Default`]
+    /// A JSON-serialized object for the bot's new menu button. Defaults to
+    /// [`MenuButton::Default`]
     #[serde(skip_serializing_if = "Option::is_none")]
     pub menu_button: Option<MenuButton>,
 }
@@ -184,9 +186,10 @@ pub struct SetChatMenuButton {
 /// [`get_chat_menu_button`]:
 /// ../../api/trait.API.html#method.get_chat_menu_button
 #[build_struct]
-#[derive(Serialize, Deserialize, Debug, Clone, PartialEq)]
+#[derive(Serialize, Deserialize, Debug, Clone, PartialEq, Eq)]
 pub struct GetChatMenuButton {
-    /// Unique identifier for the target private chat. If not specified, default bot's menu button will be returned
+    /// Unique identifier for the target private chat. If not specified, default
+    /// bot's menu button will be returned
     #[serde(skip_serializing_if = "Option::is_none")]
     pub chat_id: Option<i64>,
 }
@@ -197,12 +200,15 @@ pub struct GetChatMenuButton {
 /// [`set_my_default_administrator_rights`]:
 /// ../../api/trait.API.html#method.set_my_default_administrator_rights
 #[build_struct]
-#[derive(Serialize, Deserialize, Debug, Clone, PartialEq)]
+#[derive(Serialize, Deserialize, Debug, Clone, PartialEq, Eq)]
 pub struct SetMyDefaultAdministratorRights {
-    /// A JSON-serialized object describing new default administrator rights. If not specified, the default administrator rights will be cleared.
+    /// A JSON-serialized object describing new default administrator rights. If
+    /// not specified, the default administrator rights will be cleared.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub rights: Option<ChatAdministratorRights>,
-    /// Pass True to change the default administrator rights of the bot in channels. Otherwise, the default administrator rights of the bot for groups and supergroups will be changed.
+    /// Pass True to change the default administrator rights of the bot in
+    /// channels. Otherwise, the default administrator rights of the bot for
+    /// groups and supergroups will be changed.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub channels: Option<bool>,
 }
@@ -213,9 +219,11 @@ pub struct SetMyDefaultAdministratorRights {
 /// [`set_my_default_administrator_rights`]:
 /// ../../api/trait.API.html#method.set_my_default_administrator_rights
 #[build_struct]
-#[derive(Serialize, Deserialize, Debug, Clone, PartialEq)]
+#[derive(Serialize, Deserialize, Debug, Clone, PartialEq, Eq)]
 pub struct GetMyDefaultAdministratorRights {
-    /// Pass True to get the default administrator rights of the bot in channels. Otherwise, the default administrator rights of the bot for groups and supergroups will be returned.
+    /// Pass True to get the default administrator rights of the bot in
+    /// channels. Otherwise, the default administrator rights of the bot for
+    /// groups and supergroups will be returned.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub channels: Option<bool>,
 }

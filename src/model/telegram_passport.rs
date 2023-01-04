@@ -4,7 +4,7 @@ use serde::{Deserialize, Serialize};
 
 /// Contains information about Telegram Passport data shared with the bot by the
 /// user.
-#[derive(Serialize, Deserialize, Debug, Clone, PartialEq)]
+#[derive(Serialize, Deserialize, Debug, Clone, PartialEq, Eq)]
 pub struct PassportData {
     /// Vec with information about documents and other Telegram Passport
     /// elements that was shared with the bot
@@ -16,7 +16,7 @@ pub struct PassportData {
 /// This object represents a file uploaded to Telegram Passport.
 /// Currently all Telegram Passport files are in JPEG format when decrypted and
 /// don't exceed 10MB.
-#[derive(Serialize, Deserialize, Debug, Clone, PartialEq)]
+#[derive(Serialize, Deserialize, Debug, Clone, PartialEq, Eq)]
 pub struct PassportFile {
     /// Identifier for this file, which can be used to download or reuse the
     /// file
@@ -34,7 +34,7 @@ pub struct PassportFile {
 
 /// Contains information about documents or other Telegram Passport elements
 /// shared with the bot by the user.
-#[derive(Serialize, Deserialize, Debug, Clone, PartialEq)]
+#[derive(Serialize, Deserialize, Debug, Clone, PartialEq, Eq)]
 pub struct EncryptedPassportElement {
     /// Element type.
     pub element_type: TelegramPassportElement,
@@ -87,7 +87,7 @@ pub struct EncryptedPassportElement {
 /// [`EncryptedPassportElement`]. See the [Telegram Passport Documentation](https://core.telegram.org/passport#receiving-information)
 /// for a complete description of the data decryption and authentication
 /// processes.
-#[derive(Serialize, Deserialize, Debug, Clone, PartialEq)]
+#[derive(Serialize, Deserialize, Debug, Clone, PartialEq, Eq)]
 pub struct EncryptedCredentials {
     /// Base64-encoded encrypted JSON-serialized data with unique user's
     /// payload, data hashes and secrets required for
@@ -101,7 +101,7 @@ pub struct EncryptedCredentials {
 }
 
 /// The type of a telegram passport element
-#[derive(Serialize, Deserialize, Debug, Clone, PartialEq)]
+#[derive(Serialize, Deserialize, Debug, Clone, PartialEq, Eq)]
 pub enum TelegramPassportElement {
     #[serde(rename = "personal_details")]
     PersonalDetails,

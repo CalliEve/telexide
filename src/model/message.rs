@@ -11,7 +11,8 @@ use super::{
 pub struct Message {
     /// Unique message identifier inside this chat
     pub message_id: i64,
-    /// Unique identifier of a message thread to which the message belongs; for supergroups only
+    /// Unique identifier of a message thread to which the message belongs; for
+    /// supergroups only
     pub message_thread_id: Option<i64>,
     /// Sender, empty for messages sent to channels
     pub from: Option<super::User>,
@@ -31,7 +32,8 @@ pub struct Message {
     /// True, if the message is sent to a forum topic
     pub is_topic_message: bool,
     /// For replies, the original message.
-    /// Note that the Message object in this field will not contain further reply_to_message fields even if it itself is a reply.
+    /// Note that the Message object in this field will not contain further
+    /// reply_to_message fields even if it itself is a reply.
     pub reply_to_message: Option<Box<Message>>,
     /// Bot through which the message was sent
     pub via_bot: Option<User>,
@@ -91,6 +93,8 @@ pub enum MessageContent {
         /// Special entities like usernames, URLs, bot commands, etc. that
         /// appear in the caption
         caption_entities: Option<Vec<MessageEntity>>,
+        /// If the message media is covered by a spoiler animation
+        has_spoiler: bool,
     },
     Video {
         /// Information about the video
@@ -103,6 +107,8 @@ pub enum MessageContent {
         /// The unique identifier of a media message group this message belongs
         /// to
         media_group_id: Option<String>,
+        /// If the message media is covered by a spoiler animation
+        has_spoiler: bool,
     },
     Voice {
         /// Information about the voice file
@@ -124,6 +130,8 @@ pub enum MessageContent {
         /// The unique identifier of a media message group this message belongs
         /// to
         media_group_id: Option<String>,
+        /// If the message media is covered by a spoiler animation
+        has_spoiler: bool,
     },
 
     Game {
@@ -238,13 +246,26 @@ pub enum MessageContent {
         /// Information about the forum topic that was created
         content: ForumTopicCreated,
     },
+    ForumTopicEdited {
+        /// Information about the forum topic that was created
+        content: ForumTopicEdited,
+    },
 
-    /// This object represents a service message about a forum topic closed in the chat.
-    /// Currently holds no information.
+    /// This object represents a service message about a forum topic closed in
+    /// the chat. Currently holds no information.
     ForumTopicClosed,
-    /// This object represents a service message about a forum topic reopened in the chat.
-    /// Currently holds no information.
+    /// This object represents a service message about a forum topic reopened in
+    /// the chat. Currently holds no information.
     ForumTopicReopened,
+    /// This object represents a service message about General forum topic
+    /// hidden in the chat. Currently holds no information.
+    GeneralForumTopicHidden,
+    /// This object represents a service message about General forum topic
+    /// unhidden in the chat. Currently holds no information.
+    GeneralForumTopicUnhidden,
+    /// Service message: the user allowed the bot added to the attachment menu
+    /// to write messages
+    WriteAccessAllowed,
     /// Service message: the chat photo was deleted
     DeleteChatPhoto,
     /// Service message: the group has been created
@@ -310,7 +331,7 @@ impl From<RawMessage> for Message {
         let message_id = raw.message_id;
         let message_thread_id = raw.message_thread_id;
         let from = raw.from;
-        let sender_chat = raw.sender_chat.map(|c| c.into());
+        let sender_chat = raw.sender_chat.map(Into::into);
         let date = raw.date;
         let chat = raw.chat.into();
         let reply_to_message = raw.reply_to_message.map(|r| Box::new((*r).into()));
@@ -326,7 +347,7 @@ impl From<RawMessage> for Message {
         let forward_data = if let Some(d) = raw.forward_date {
             Some(ForwardData {
                 from: raw.forward_from,
-                from_chat: raw.forward_from_chat.map(|c| c.into()),
+                from_chat: raw.forward_from_chat.map(Into::into),
                 from_message_id: raw.forward_from_message_id,
                 signature: raw.forward_signature,
                 sender_name: raw.forward_sender_name,
@@ -345,16 +366,16 @@ impl From<RawMessage> for Message {
             date,
             chat,
             forward_data,
+            is_topic_message,
             reply_to_message,
             via_bot,
             edit_date,
             author_signature,
+            has_protected_content,
             content,
             connected_website,
             passport_data,
             reply_markup,
-            has_protected_content,
-            is_topic_message,
         };
 
         if let Some(c) = raw.text {
@@ -368,6 +389,14 @@ impl From<RawMessage> for Message {
                 caption: raw.caption,
                 caption_entities: raw.caption_entities,
                 media_group_id: raw.media_group_id,
+                has_spoiler: raw.has_media_spoiler,
+            });
+        } else if let Some(c) = raw.animation {
+            return fill_in_content(MessageContent::Animation {
+                content: c,
+                caption: raw.caption,
+                caption_entities: raw.caption_entities,
+                has_spoiler: raw.has_media_spoiler,
             });
         } else if let Some(c) = raw.photo {
             return fill_in_content(MessageContent::Photo {
@@ -375,6 +404,7 @@ impl From<RawMessage> for Message {
                 caption: raw.caption,
                 caption_entities: raw.caption_entities,
                 media_group_id: raw.media_group_id,
+                has_spoiler: raw.has_media_spoiler,
             });
         } else if let Some(c) = raw.pinned_message {
             return fill_in_content(MessageContent::PinnedMessage {
@@ -419,7 +449,6 @@ impl From<RawMessage> for Message {
         }
 
         content_with_captions!(raw.audio, Audio);
-        content_with_captions!(raw.animation, Animation);
         content_with_captions!(raw.document, Document);
         content_with_captions!(raw.voice, Voice);
 
@@ -453,6 +482,7 @@ impl From<RawMessage> for Message {
         );
         content!(raw.web_app_data, WebAppData);
         content!(raw.forum_topic_created, ForumTopicCreated);
+        content!(raw.forum_topic_edited, ForumTopicEdited);
 
         bool_content!(raw.delete_chat_photo, DeleteChatPhoto);
         bool_content!(raw.group_chat_created, GroupChatCreated);
@@ -461,6 +491,9 @@ impl From<RawMessage> for Message {
 
         content_is_some!(raw.forum_topic_closed, ForumTopicClosed);
         content_is_some!(raw.forum_topic_reopened, ForumTopicReopened);
+        content_is_some!(raw.general_forum_topic_hidden, GeneralForumTopicHidden);
+        content_is_some!(raw.general_forum_topic_unhidden, GeneralForumTopicUnhidden);
+        content_is_some!(raw.write_access_allowed, WriteAccessAllowed);
 
         fill_in_content(MessageContent::Unknown)
     }
@@ -473,7 +506,7 @@ impl From<Message> for RawMessage {
             message_id: message.message_id,
             message_thread_id: message.message_thread_id,
             from: message.from,
-            sender_chat: message.sender_chat.map(|c| c.into()),
+            sender_chat: message.sender_chat.map(Into::into),
             date: message.date,
             chat: message.chat.into(),
             reply_to_message: message.reply_to_message.map(|r| Box::new((*r).into())),
@@ -490,6 +523,7 @@ impl From<Message> for RawMessage {
             forward_from_chat: None,
             is_topic_message: message.is_topic_message,
             is_automatic_forward: false,
+            has_media_spoiler: false,
 
             has_protected_content: message.has_protected_content,
 
@@ -531,8 +565,12 @@ impl From<Message> for RawMessage {
             voice_chat_ended: None,
             voice_chat_participants_invited: None,
             forum_topic_created: None,
+            forum_topic_edited: None,
             forum_topic_closed: None,
             forum_topic_reopened: None,
+            general_forum_topic_hidden: None,
+            general_forum_topic_unhidden: None,
+            write_access_allowed: None,
 
             web_app_data: None,
 
@@ -547,7 +585,7 @@ impl From<Message> for RawMessage {
             ret.forward_signature = d.signature;
             ret.forward_from_message_id = d.from_message_id;
             ret.forward_from = d.from;
-            ret.forward_from_chat = d.from_chat.map(|c| c.into());
+            ret.forward_from_chat = d.from_chat.map(Into::into);
             ret.is_automatic_forward = d.is_automatic_forward;
         }
 
@@ -581,10 +619,12 @@ impl From<Message> for RawMessage {
                 content,
                 caption,
                 caption_entities,
+                has_spoiler,
             } => {
                 ret.animation = Some(content);
                 ret.caption = caption;
                 ret.caption_entities = caption_entities;
+                ret.has_media_spoiler = has_spoiler;
                 ret
             },
             MessageContent::Voice {
@@ -602,11 +642,13 @@ impl From<Message> for RawMessage {
                 caption,
                 caption_entities,
                 media_group_id,
+                has_spoiler,
             } => {
                 ret.video = Some(content);
                 ret.caption = caption;
                 ret.caption_entities = caption_entities;
                 ret.media_group_id = media_group_id;
+                ret.has_media_spoiler = has_spoiler;
                 ret
             },
             MessageContent::Photo {
@@ -614,15 +656,13 @@ impl From<Message> for RawMessage {
                 caption,
                 caption_entities,
                 media_group_id,
+                has_spoiler,
             } => {
                 ret.photo = Some(content);
                 ret.caption = caption;
                 ret.caption_entities = caption_entities;
                 ret.media_group_id = media_group_id;
-                ret
-            },
-            MessageContent::ForumTopicCreated { content } => {
-                ret.forum_topic_created = Some(content);
+                ret.has_media_spoiler = has_spoiler;
                 ret
             },
             MessageContent::Game { content } => {
@@ -721,6 +761,14 @@ impl From<Message> for RawMessage {
                 ret.web_app_data = Some(content);
                 ret
             },
+            MessageContent::ForumTopicCreated { content } => {
+                ret.forum_topic_created = Some(content);
+                ret
+            },
+            MessageContent::ForumTopicEdited { content } => {
+                ret.forum_topic_edited = Some(content);
+                ret
+            },
             MessageContent::DeleteChatPhoto => {
                 ret.delete_chat_photo = true;
                 ret
@@ -745,6 +793,18 @@ impl From<Message> for RawMessage {
                 ret.forum_topic_reopened = Some(ForumTopicReopened {});
                 ret
             },
+            MessageContent::GeneralForumTopicHidden => {
+                ret.general_forum_topic_hidden = Some(GeneralForumTopicHidden {});
+                ret
+            },
+            MessageContent::GeneralForumTopicUnhidden => {
+                ret.general_forum_topic_unhidden = Some(GeneralForumTopicUnhidden {});
+                ret
+            },
+            MessageContent::WriteAccessAllowed => {
+                ret.write_access_allowed = Some(WriteAccessAllowed {});
+                ret
+            },
             MessageContent::Unknown => ret,
         }
     }
@@ -766,12 +826,12 @@ impl Serialize for Message {
     where
         S: Serializer,
     {
-        RawMessage::from(self.to_owned()).serialize(serializer)
+        RawMessage::from(self.clone()).serialize(serializer)
     }
 }
 
 /// This object represents a unique message identifier.
-#[derive(Serialize, Deserialize, Debug, Clone, PartialEq)]
+#[derive(Serialize, Deserialize, Debug, Clone, PartialEq, Eq)]
 pub struct MessageId {
     /// Unique message identifier
     pub message_id: i64,

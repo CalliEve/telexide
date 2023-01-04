@@ -52,8 +52,9 @@ pub struct ChosenInlineResult {
 /// Describes an inline message sent by a [Web App] on behalf of a user.
 ///
 /// [Web App]: https://core.telegram.org/bots/webapps
-#[derive(Serialize, Deserialize, Debug, Clone, PartialEq)]
+#[derive(Serialize, Deserialize, Debug, Clone, PartialEq, Eq)]
 pub struct SentWebAppMessage {
-    /// Identifier of the sent inline message. Available only if there is an inline keyboard attached to the message.
+    /// Identifier of the sent inline message. Available only if there is an
+    /// inline keyboard attached to the message.
     pub inline_message_id: Option<String>,
 }

@@ -1,10 +1,6 @@
 use super::InputMedia;
 use crate::model::{
-    utils::IntegerOrString,
-    InlineKeyboardMarkup,
-    Message,
-    MessageEntity,
-    ParseMode,
+    utils::IntegerOrString, InlineKeyboardMarkup, Message, MessageEntity, ParseMode,
 };
 use serde::{Deserialize, Serialize};
 use telexide_proc_macros::build_struct;
@@ -15,7 +11,7 @@ use telexide_proc_macros::build_struct;
 /// [`edit_message_text`]:
 /// ../../api/trait.API.html#method.edit_message_text
 #[build_struct]
-#[derive(Serialize, Deserialize, Debug, Clone, PartialEq)]
+#[derive(Serialize, Deserialize, Debug, Clone, PartialEq, Eq)]
 pub struct EditMessageText {
     /// Required if inline_message_id is not specified. Unique identifier for
     /// the target chat.
@@ -67,7 +63,7 @@ impl EditMessageText {
 /// [`edit_message_caption`]:
 /// ../../api/trait.API.html#method.edit_message_caption
 #[build_struct]
-#[derive(Serialize, Deserialize, Debug, Clone, PartialEq)]
+#[derive(Serialize, Deserialize, Debug, Clone, PartialEq, Eq)]
 pub struct EditMessageCaption {
     /// Required if inline_message_id is not specified. Unique identifier for
     /// the target chat.
@@ -116,7 +112,7 @@ impl EditMessageCaption {
 /// [`edit_message_media`]:
 /// ../../api/trait.API.html#method.edit_message_media
 #[build_struct]
-#[derive(Serialize, Deserialize, Debug, Clone, PartialEq)]
+#[derive(Serialize, Deserialize, Debug, Clone, PartialEq, Eq)]
 pub struct EditMessageMedia {
     /// Required if inline_message_id is not specified. Unique identifier for
     /// the target chat.
@@ -141,7 +137,7 @@ impl EditMessageMedia {
         Self {
             chat_id: Some(message.chat.get_id()),
             message_id: Some(message.message_id),
-            media: new_media.to_owned(),
+            media: new_media.clone(),
             inline_message_id: None,
             reply_markup: None,
         }
@@ -154,7 +150,7 @@ impl EditMessageMedia {
 /// [`edit_message_reply_markup`]:
 /// ../../api/trait.API.html#method.edit_message_reply_markup
 #[build_struct]
-#[derive(Serialize, Deserialize, Debug, Clone, PartialEq)]
+#[derive(Serialize, Deserialize, Debug, Clone, PartialEq, Eq)]
 pub struct EditMessageReplyMarkup {
     /// Required if inline_message_id is not specified. Unique identifier for
     /// the target chat.
@@ -190,7 +186,7 @@ impl EditMessageReplyMarkup {
 /// [`stop_poll`]:
 /// ../../api/trait.API.html#method.stop_poll
 #[build_struct]
-#[derive(Serialize, Deserialize, Debug, Clone, PartialEq)]
+#[derive(Serialize, Deserialize, Debug, Clone, PartialEq, Eq)]
 pub struct StopPoll {
     /// Unique identifier for the target chat
     pub chat_id: IntegerOrString,
@@ -217,7 +213,7 @@ impl StopPoll {
 /// [`delete_message`]:
 /// ../../api/trait.API.html#method.delete_message
 #[build_struct]
-#[derive(Serialize, Deserialize, Debug, Clone, PartialEq)]
+#[derive(Serialize, Deserialize, Debug, Clone, PartialEq, Eq)]
 pub struct DeleteMessage {
     /// Unique identifier for the target chat
     pub chat_id: IntegerOrString,
@@ -277,7 +273,7 @@ pub struct EditMessageLiveLocation {
 /// [`stop_message_live_location`]:
 /// ../../api/trait.API.html#method.edit_message_live_location
 #[build_struct]
-#[derive(Serialize, Deserialize, Debug, Clone, PartialEq)]
+#[derive(Serialize, Deserialize, Debug, Clone, PartialEq, Eq)]
 pub struct StopMessageLiveLocation {
     /// Unique identifier for the target chat
     #[serde(skip_serializing_if = "Option::is_none")]

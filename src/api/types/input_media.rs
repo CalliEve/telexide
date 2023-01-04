@@ -4,7 +4,7 @@ use serde::{Deserialize, Serialize};
 use telexide_proc_macros::build_struct;
 
 /// This object represents the content of a media message to be sent
-#[derive(Serialize, Deserialize, Debug, Clone, PartialEq)]
+#[derive(Serialize, Deserialize, Debug, Clone, PartialEq, Eq)]
 #[serde(tag = "type")]
 pub enum InputMedia {
     #[serde(rename = "photo")]
@@ -21,7 +21,7 @@ pub enum InputMedia {
 
 /// Represents a photo to be sent.
 #[build_struct]
-#[derive(Serialize, Deserialize, Debug, Clone, PartialEq)]
+#[derive(Serialize, Deserialize, Debug, Clone, PartialEq, Eq)]
 pub struct InputMediaPhoto {
     /// File to send. Pass a file_id to send a file that exists on the Telegram
     /// servers (recommended), pass an HTTP URL for Telegram to get a file
@@ -39,10 +39,13 @@ pub struct InputMediaPhoto {
     /// specified instead of parse_mode
     #[serde(skip_serializing_if = "Option::is_none")]
     pub caption_entities: Option<Vec<MessageEntity>>,
+    /// Pass True if the photo needs to be covered with a spoiler animation.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub has_spoiler: Option<bool>,
 }
 
 #[build_struct]
-#[derive(Serialize, Deserialize, Debug, Clone, PartialEq)]
+#[derive(Serialize, Deserialize, Debug, Clone, PartialEq, Eq)]
 pub struct InputMediaVideo {
     /// File to send. Pass a file_id to send a file that exists on the Telegram
     /// servers (recommended), pass an HTTP URL for Telegram to get a file
@@ -72,12 +75,15 @@ pub struct InputMediaVideo {
     /// If the uploaded video is suitable for streaming
     #[serde(skip_serializing_if = "Option::is_none")]
     pub supports_streaming: Option<bool>,
+    /// Pass True if the video needs to be covered with a spoiler animation.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub has_spoiler: Option<bool>,
 }
 
 /// Represents an animation file (GIF or H.264/MPEG-4 AVC video without sound)
 /// to be sent.
 #[build_struct]
-#[derive(Serialize, Deserialize, Debug, Clone, PartialEq)]
+#[derive(Serialize, Deserialize, Debug, Clone, PartialEq, Eq)]
 pub struct InputMediaAnimation {
     /// File to send. Pass a file_id to send a file that exists on the Telegram
     /// servers (recommended), pass an HTTP URL for Telegram to get a file
@@ -104,11 +110,14 @@ pub struct InputMediaAnimation {
     /// Animation height
     #[serde(skip_serializing_if = "Option::is_none")]
     pub height: Option<i64>,
+    /// Pass True if the animation needs to be covered with a spoiler animation.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub has_spoiler: Option<bool>,
 }
 
 /// Represents an audio file to be treated as music to be sent.
 #[build_struct]
-#[derive(Serialize, Deserialize, Debug, Clone, PartialEq)]
+#[derive(Serialize, Deserialize, Debug, Clone, PartialEq, Eq)]
 pub struct InputMediaAudio {
     /// File to send. Pass a file_id to send a file that exists on the Telegram
     /// servers (recommended), pass an HTTP URL for Telegram to get a file
@@ -139,7 +148,7 @@ pub struct InputMediaAudio {
 
 /// Represents a general file to be sent.
 #[build_struct]
-#[derive(Serialize, Deserialize, Debug, Clone, PartialEq)]
+#[derive(Serialize, Deserialize, Debug, Clone, PartialEq, Eq)]
 pub struct InputMediaDocument {
     /// File to send. Pass a file_id to send a file that exists on the Telegram
     /// servers (recommended), pass an HTTP URL for Telegram to get a file

@@ -133,7 +133,8 @@ pub trait API: Sync {
         .into()
     }
 
-    /// Use this method to change the bot's menu button in a private chat, or the default menu button. Returns True on success.
+    /// Use this method to change the bot's menu button in a private chat, or
+    /// the default menu button. Returns True on success.
     async fn set_chat_menu_button(&self, data: SetChatMenuButton) -> Result<bool> {
         self.post(
             APIEndpoint::SetChatMenuButton,
@@ -143,7 +144,9 @@ pub trait API: Sync {
         .into()
     }
 
-    /// Use this method to get the current value of the bot's menu button in a private chat, or the default menu button. Returns [`MenuButton`] on success.
+    /// Use this method to get the current value of the bot's menu button in a
+    /// private chat, or the default menu button. Returns [`MenuButton`] on
+    /// success.
     async fn get_chat_menu_button(&self, data: GetChatMenuButton) -> Result<MenuButton> {
         self.get(
             APIEndpoint::GetChatMenuButton,
@@ -153,7 +156,10 @@ pub trait API: Sync {
         .into()
     }
 
-    /// Use this method to change the default administrator rights requested by the bot when it's added as an administrator to groups or channels. These rights will be suggested to users, but they are are free to modify the list before adding the bot. Returns True on success.
+    /// Use this method to change the default administrator rights requested by
+    /// the bot when it's added as an administrator to groups or channels. These
+    /// rights will be suggested to users, but they are are free to modify the
+    /// list before adding the bot. Returns True on success.
     async fn set_my_default_administrator_rights(
         &self,
         data: SetMyDefaultAdministratorRights,
@@ -166,7 +172,8 @@ pub trait API: Sync {
         .into()
     }
 
-    /// Use this method to get the current default administrator rights of the bot. Returns [`ChatAdministratorRights`] on success.
+    /// Use this method to get the current default administrator rights of the
+    /// bot. Returns [`ChatAdministratorRights`] on success.
     async fn get_my_default_administrator_right(
         &self,
         data: GetMyDefaultAdministratorRights,
@@ -803,7 +810,7 @@ pub trait API: Sync {
         let mut files = Vec::new();
         match &data.photo {
             InputFile::File(f) => files.push(f.clone()),
-            _ => {
+            InputFile::String(_) => {
                 return Err(TelegramError::InvalidArgument(
                     "this endpoint only accepts files to be uploaded".to_owned(),
                 )
@@ -1004,10 +1011,10 @@ pub trait API: Sync {
         .into()
     }
 
-    /// Use this method to edit name and icon of a topic in a forum supergroup chat.
-    /// The bot must be an administrator in the chat for this to work and must
-    /// have can_manage_topics administrator rights, unless it is the creator of the topic.
-    /// Returns True on success.
+    /// Use this method to edit name and icon of a topic in a forum supergroup
+    /// chat. The bot must be an administrator in the chat for this to work
+    /// and must have can_manage_topics administrator rights, unless it is
+    /// the creator of the topic. Returns True on success.
     async fn edit_forum_topic(&self, data: EditForumTopic) -> Result<bool> {
         self.post(
             APIEndpoint::EditForumTopic,
@@ -1019,8 +1026,8 @@ pub trait API: Sync {
 
     /// Use this method to close an open topic in a forum supergroup chat.
     /// The bot must be an administrator in the chat for this to work and must
-    /// have the can_manage_topics administrator rights, unless it is the creator of the topic.
-    /// Returns True on success.
+    /// have the can_manage_topics administrator rights, unless it is the
+    /// creator of the topic. Returns True on success.
     async fn close_forum_topic(&self, data: CloseForumTopic) -> Result<bool> {
         self.post(
             APIEndpoint::CloseForumTopic,
@@ -1032,8 +1039,8 @@ pub trait API: Sync {
 
     /// Use this method to reopen a closed topic in a forum supergroup chat.
     /// The bot must be an administrator in the chat for this to work and must
-    /// have the can_manage_topics administrator rights, unless it is the creator of the topic.
-    /// Returns True on success.
+    /// have the can_manage_topics administrator rights, unless it is the
+    /// creator of the topic. Returns True on success.
     async fn reopen_forum_topic(&self, data: ReopenForumTopic) -> Result<bool> {
         self.post(
             APIEndpoint::ReopenForumTopic,
@@ -1043,10 +1050,10 @@ pub trait API: Sync {
         .into()
     }
 
-    /// Use this method to delete a forum topic along with all its messages in a forum supergroup chat.
-    /// The bot must be an administrator in the chat for this to work and must
-    /// have the can_delete_messages administrator rights.
-    /// Returns True on success.
+    /// Use this method to delete a forum topic along with all its messages in a
+    /// forum supergroup chat. The bot must be an administrator in the chat
+    /// for this to work and must have the can_delete_messages administrator
+    /// rights. Returns True on success.
     async fn delete_forum_topic(&self, data: DeleteForumTopic) -> Result<bool> {
         self.post(
             APIEndpoint::DeleteForumTopic,
@@ -1066,6 +1073,71 @@ pub trait API: Sync {
     ) -> Result<bool> {
         self.post(
             APIEndpoint::UnpinAllForumTopicMessages,
+            Some(serde_json::to_value(data)?),
+        )
+        .await?
+        .into()
+    }
+
+    /// Use this method to edit the name of the 'General' topic in a forum
+    /// supergroup chat. The bot must be an administrator in the chat for this
+    /// to work and must have can_manage_topics administrator rights. Returns
+    /// True on success.
+    async fn edit_general_forum_topic(&self, data: EditGeneralForumTopic) -> Result<bool> {
+        self.post(
+            APIEndpoint::EditGeneralForumTopic,
+            Some(serde_json::to_value(data)?),
+        )
+        .await?
+        .into()
+    }
+
+    /// Use this method to close an open 'General' topic in a forum supergroup
+    /// chat. The bot must be an administrator in the chat for this to work and
+    /// must have the can_manage_topics administrator rights. Returns True on
+    /// success.
+    async fn close_general_forum_topic(&self, data: CloseGeneralForumTopic) -> Result<bool> {
+        self.post(
+            APIEndpoint::CloseGeneralForumTopic,
+            Some(serde_json::to_value(data)?),
+        )
+        .await?
+        .into()
+    }
+
+    /// Use this method to reopen a closed 'General' topic in a forum supergroup
+    /// chat. The bot must be an administrator in the chat for this to work and
+    /// must have the can_manage_topics administrator rights. The topic will be
+    /// automatically unhidden if it was hidden. Returns True on success.
+    async fn reopen_general_forum_topic(&self, data: ReopenGeneralForumTopic) -> Result<bool> {
+        self.post(
+            APIEndpoint::ReopenGeneralForumTopic,
+            Some(serde_json::to_value(data)?),
+        )
+        .await?
+        .into()
+    }
+
+    /// Use this method to hide the 'General' topic in a forum supergroup chat.
+    /// The bot must be an administrator in the chat for this to work and must
+    /// have the can_manage_topics administrator rights. The topic will be
+    /// automatically closed if it was open. Returns True on success.
+    async fn hide_general_forum_topic(&self, data: HideGeneralForumTopic) -> Result<bool> {
+        self.post(
+            APIEndpoint::HideGeneralForumTopic,
+            Some(serde_json::to_value(data)?),
+        )
+        .await?
+        .into()
+    }
+
+    /// Use this method to unhide the 'General' topic in a forum supergroup
+    /// chat. The bot must be an administrator in the chat for this to work and
+    /// must have the can_manage_topics administrator rights. Returns True on
+    /// success.
+    async fn unhide_general_forum_topic(&self, data: UnhideGeneralForumTopic) -> Result<bool> {
+        self.post(
+            APIEndpoint::UnhideGeneralForumTopic,
             Some(serde_json::to_value(data)?),
         )
         .await?
@@ -1114,7 +1186,8 @@ pub trait API: Sync {
         .into()
     }
 
-    /// Use this method to get information about custom emoji stickers by their identifiers. Returns a Vec of [Sticker] objects.
+    /// Use this method to get information about custom emoji stickers by their
+    /// identifiers. Returns a Vec of [Sticker] objects.
     async fn get_custom_emoji_stickers(
         &self,
         data: GetCustomEmojiStickers,
@@ -1147,7 +1220,7 @@ pub trait API: Sync {
                 )
                 .await?
                 .into(),
-            _ => Err(TelegramError::InvalidArgument(
+            InputFile::String(_) => Err(TelegramError::InvalidArgument(
                 "upload_sticker_file only accepts files, not urls/ids".to_owned(),
             )
             .into()),
@@ -1179,7 +1252,7 @@ pub trait API: Sync {
         if data.tgs_sticker.is_some() {
             match data.tgs_sticker.as_ref().unwrap() {
                 InputFile::File(f) => files.push(f.clone()),
-                _ => {
+                InputFile::String(_) => {
                     return Err(TelegramError::InvalidArgument(
                         "tgs_sticker only accepts files, not urls/ids".to_owned(),
                     )
@@ -1223,7 +1296,7 @@ pub trait API: Sync {
         if data.tgs_sticker.is_some() {
             match data.tgs_sticker.as_ref().unwrap() {
                 InputFile::File(f) => files.push(f.clone()),
-                _ => {
+                InputFile::String(_) => {
                     return Err(TelegramError::InvalidArgument(
                         "tgs_sticker only accepts files, not urls/ids.".to_owned(),
                     )
@@ -1304,7 +1377,10 @@ pub trait API: Sync {
         .into()
     }
 
-    /// Use this method to set the result of an interaction with a [Web App] and send a corresponding message on behalf of the user to the chat from which the query originated. On success, a [`SentWebAppMessage`] object is returned.
+    /// Use this method to set the result of an interaction with a [Web App] and
+    /// send a corresponding message on behalf of the user to the chat from
+    /// which the query originated. On success, a [`SentWebAppMessage`] object
+    /// is returned.
     ///
     /// [Web App]: https://core.telegram.org/bots/webapps
     async fn answer_web_app_query(&self, data: AnswerWebAppQuery) -> Result<SentWebAppMessage> {
@@ -1324,7 +1400,8 @@ pub trait API: Sync {
             .into()
     }
 
-    /// Use this method to create a link for an invoice. Returns the created invoice link as String on success.
+    /// Use this method to create a link for an invoice. Returns the created
+    /// invoice link as String on success.
     async fn create_invoice_link(&self, data: CreateInvoiceLink) -> Result<String> {
         self.post(
             APIEndpoint::CreateInvoiceLink,

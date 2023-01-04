@@ -43,6 +43,8 @@ pub struct RawMessage {
 
     #[serde(default)]
     pub has_protected_content: bool,
+    #[serde(default)]
+    pub has_media_spoiler: bool,
 
     pub media_group_id: Option<String>,
     pub author_signature: Option<String>,
@@ -89,6 +91,7 @@ pub struct RawMessage {
     pub successful_payment: Option<SuccessfulPayment>,
 
     pub connected_website: Option<String>,
+    pub write_access_allowed: Option<WriteAccessAllowed>,
     pub passport_data: Option<PassportData>,
     pub proximity_alert_triggered: Option<ProximityAlertTriggered>,
     pub reply_markup: Option<InlineKeyboardMarkup>,
@@ -99,8 +102,11 @@ pub struct RawMessage {
     pub voice_chat_participants_invited: Option<VideoChatParticipantsInvited>,
 
     pub forum_topic_created: Option<ForumTopicCreated>,
+    pub forum_topic_edited: Option<ForumTopicEdited>,
     pub forum_topic_closed: Option<ForumTopicClosed>,
     pub forum_topic_reopened: Option<ForumTopicReopened>,
+    pub general_forum_topic_hidden: Option<GeneralForumTopicHidden>,
+    pub general_forum_topic_unhidden: Option<GeneralForumTopicUnhidden>,
 
     pub web_app_data: Option<WebAppData>,
 }
@@ -123,15 +129,18 @@ pub struct RawChat {
     /// Last name of the other party in a private chat
     pub last_name: Option<String>,
     /// True, if the supergroup chat is a forum
-    pub is_forum: Option<bool>,
+    #[serde(default)]
+    pub is_forum: bool,
     /// Chat photo. Returned only in getChat.
     pub photo: Option<ChatPhoto>,
-    /// If non-empty, the list of all active chat usernames. Returned only in [`get_chat`].
+    /// If non-empty, the list of all active chat usernames. Returned only in
+    /// [`get_chat`].
     ///
     /// [`get_chat`]: ../../api/trait.API.html#method.get_chat
     #[serde(default)]
     pub active_usernames: Vec<String>,
-    /// Custom emoji identifier of emoji status of the other party in a private chat. Returned only in [`get_chat`].
+    /// Custom emoji identifier of emoji status of the other party in a private
+    /// chat. Returned only in [`get_chat`].
     ///
     /// [`get_chat`]: ../../api/trait.API.html#method.get_chat
     pub emoji_status_custom_emoji_id: Option<String>,
@@ -144,7 +153,8 @@ pub struct RawChat {
     /// Returned only in [`get_chat`].
     ///
     /// [`get_chat`]: ../../api/trait.API.html#method.get_chat
-    pub has_private_forwards: Option<bool>,
+    #[serde(default)]
+    pub has_private_forwards: bool,
     /// True, if the privacy settings of the other party restrict sending voice
     /// and video note messages in the private chat.Returned only in
     /// [`get_chat`].
@@ -155,12 +165,14 @@ pub struct RawChat {
     /// messages.Returned only in [`get_chat`].
     ///
     /// [`get_chat`]: ../../api/trait.API.html#method.get_chat
-    pub join_to_send_messages: Option<bool>,
+    #[serde(default)]
+    pub join_to_send_messages: bool,
     /// True, if all users directly joining the supergroup need to be approved
     /// by supergroup administrators.Returned only in [`get_chat`].
     ///
     /// [`get_chat`]: ../../api/trait.API.html#method.get_chat
-    pub join_by_request: Option<bool>,
+    #[serde(default)]
+    pub join_by_request: bool,
     /// Description, for groups, supergroups and channel chats. Returned only in
     /// [`get_chat`].
     ///
@@ -188,11 +200,25 @@ pub struct RawChat {
     ///
     /// [`get_chat`]: ../../api/trait.API.html#method.get_chat
     pub message_auto_delete_time: Option<usize>,
+    /// True, if aggressive anti-spam checks are enabled in the supergroup. The
+    /// field is only available to chat administrators. Returned only in
+    /// [`get_chat`].
+    ///
+    /// [`get_chat`]: ../../api/trait.API.html#method.get_chat
+    #[serde(default)]
+    pub has_aggressive_anti_spam_enabled: bool,
+    /// True, if non-administrators can only get the list of bots and
+    /// administrators in the chat. Returned only in [`get_chat`].
+    ///
+    /// [`get_chat`]: ../../api/trait.API.html#method.get_chat
+    #[serde(default)]
+    pub has_hidden_members: bool,
     /// True, if messages from the chat can't be forwarded to other chats.
     /// Returned only in [`get_chat`].
     ///
     /// [`get_chat`]: ../../api/trait.API.html#method.get_chat
-    pub has_protected_content: Option<bool>,
+    #[serde(default)]
+    pub has_protected_content: bool,
     /// For supergroups, name of group sticker set. Returned only in
     /// [`get_chat`].
     ///
@@ -202,7 +228,8 @@ pub struct RawChat {
     /// [`get_chat`].
     ///
     /// [`get_chat`]: ../../api/trait.API.html#method.get_chat
-    pub can_set_sticker_set: Option<bool>,
+    #[serde(default)]
+    pub can_set_sticker_set: bool,
     /// Unique identifier for the linked chat, i.e. the discussion group
     /// identifier for a channel and vice versa; for supergroups and channel
     /// chats. This identifier may be greater than 32 bits and some

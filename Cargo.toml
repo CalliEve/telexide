@@ -1,6 +1,6 @@
 [package]
 name = "telexide"
-version = "0.1.9"
+version = "0.1.10"
 description = "An async Rust library for the telegram bot API."
 documentation = "https://docs.rs/telexide"
 repository = "https://github.com/callieve/telexide"
@@ -25,7 +25,7 @@ tokio = { version = "1.3", features = ["rt", "net", "time", "macros", "sync", "s
 http = "^0.2.3"
 async-trait = "0.1"
 futures = "^0.3.13"
-typemap_rev = "0.2"
+typemap_rev = "0.3"
 parking_lot = "0.12"
 paste = "1.0"
 log = "0.4"

@@ -573,7 +573,7 @@ pub struct InlineQueryResultContact {
 
 /// Represents a Game.
 #[build_struct]
-#[derive(Serialize, Deserialize, Debug, Clone, PartialEq)]
+#[derive(Serialize, Deserialize, Debug, Clone, PartialEq, Eq)]
 pub struct InlineQueryResultGame {
     /// Unique identifier for this result, 1-64 bytes
     pub id: String,
@@ -598,7 +598,7 @@ pub enum InputMessageContent {
 /// Represents the content of a text message to be sent as the result of an
 /// inline query.
 #[build_struct]
-#[derive(Serialize, Deserialize, Debug, Clone, PartialEq)]
+#[derive(Serialize, Deserialize, Debug, Clone, PartialEq, Eq)]
 pub struct InputTextMessageContent {
     /// Text of the message to be sent, 1-4096 characters
     pub message_text: String,
@@ -670,7 +670,7 @@ pub struct InputVenueMessageContent {
 /// Represents the content of a contact message to be sent as the result of an
 /// inline query.
 #[build_struct]
-#[derive(Serialize, Deserialize, Debug, Clone, PartialEq)]
+#[derive(Serialize, Deserialize, Debug, Clone, PartialEq, Eq)]
 pub struct InputContactMessageContent {
     /// Contact's phone number
     pub phone_number: String,
@@ -687,7 +687,7 @@ pub struct InputContactMessageContent {
 /// Represents the content of an invoice message to be sent as the result of an
 /// inline query.
 #[build_struct]
-#[derive(Serialize, Deserialize, Debug, Clone, PartialEq)]
+#[derive(Serialize, Deserialize, Debug, Clone, PartialEq, Eq)]
 pub struct InputInvoiceMessageContent {
     /// Product name, 1-32 characters
     pub title: String,

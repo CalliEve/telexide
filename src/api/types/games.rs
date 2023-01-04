@@ -8,7 +8,7 @@ use telexide_proc_macros::build_struct;
 /// [`send_game`]:
 /// ../../api/trait.API.html#method.send_game
 #[build_struct]
-#[derive(Serialize, Deserialize, Debug, Clone, PartialEq)]
+#[derive(Serialize, Deserialize, Debug, Clone, PartialEq, Eq)]
 pub struct SendGame {
     /// Unique identifier for the target chat
     pub chat_id: IntegerOrString,
@@ -40,7 +40,7 @@ pub struct SendGame {
 /// [`set_game_score`]:
 /// ../../api/trait.API.html#method.set_game_score
 #[build_struct]
-#[derive(Serialize, Deserialize, Debug, Clone, PartialEq)]
+#[derive(Serialize, Deserialize, Debug, Clone, PartialEq, Eq)]
 pub struct SetGameScore {
     /// User identifier
     pub user_id: i64,
@@ -74,7 +74,7 @@ pub struct SetGameScore {
 /// [`get_game_high_scores`]:
 /// ../../api/trait.API.html#method.get_game_high_scores
 #[build_struct]
-#[derive(Serialize, Deserialize, Debug, Clone, PartialEq)]
+#[derive(Serialize, Deserialize, Debug, Clone, PartialEq, Eq)]
 pub struct GetGameHighScores {
     /// Target user id
     pub user_id: i64,

@@ -4,7 +4,7 @@ use serde::{Deserialize, Serialize};
 /// This object represents a game. Use [@BotFather](https://t.me/botfather) to create and edit games,
 /// their short names will act as unique identifiers.
 #[allow(clippy::doc_markdown)]
-#[derive(Serialize, Deserialize, Debug, Clone, PartialEq)]
+#[derive(Serialize, Deserialize, Debug, Clone, PartialEq, Eq)]
 pub struct Game {
     /// Title of the game
     pub title: String,
@@ -29,11 +29,11 @@ pub struct Game {
 }
 
 /// A placeholder, currently holds no information.
-#[derive(Serialize, Deserialize, Debug, Clone, PartialEq)]
+#[derive(Serialize, Deserialize, Debug, Clone, PartialEq, Eq)]
 pub struct CallbackGame {}
 
 /// This object represents one row of the high scores table for a game.
-#[derive(Serialize, Deserialize, Debug, Clone, PartialEq)]
+#[derive(Serialize, Deserialize, Debug, Clone, PartialEq, Eq)]
 pub struct GameHighScore {
     /// Position in high score table for the game
     pub position: i64,

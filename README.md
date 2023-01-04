@@ -3,7 +3,7 @@
 [![Crate](https://img.shields.io/crates/v/telexide?style=flat-square)](https://crates.io/crates/telexide)
 [![Docs](https://docs.rs/telexide/badge.svg)](https://docs.rs/telexide)
 [![Build Status](https://img.shields.io/endpoint.svg?url=https%3A%2F%2Factions-badge.atrox.dev%2Fcallieve%2Ftelexide%2Fbadge&style=flat-square)](https://actions-badge.atrox.dev/callieve/telexide/goto)
-[![Rust Version](https://img.shields.io/badge/rust-1.46.0+-93450a.svg?style=flat-square)](https://blog.rust-lang.org/2020/01/30/Rust-1.46.0.html)
+[![Rust Version](https://img.shields.io/badge/rust-1.63.0+-93450a.svg?style=flat-square)](https://blog.rust-lang.org/2020/01/30/Rust-1.63.0.html)
 
 Telexide is an easy to use library for making a telegram bot, built on tokio and hyper.
 
@@ -38,7 +38,7 @@ use telexide::{api::types::SendMessage, prelude::*};
 async fn ping(context: Context, message: Message) -> CommandResult {
     context
         .api
-        .send_message(SendMessage::new(message.chat.get_id(), "pong"))
+        .send_message(SendMessage::new(message.chat.get_id().into(), "pong"))
         .await?;
     Ok(())
 }
@@ -46,19 +46,22 @@ async fn ping(context: Context, message: Message) -> CommandResult {
 #[tokio::main]
 async fn main() -> telexide::Result<()> {
     let token = env::var("BOT_TOKEN").expect("no token environment variable set");
+    let bot_name = "ping-pong";
 
-    ClientBuilder::with_framework(
-        create_framework!("ping-pong", ping),
-        token
-    ).start().await
+    ClientBuilder::new()
+        .set_token(&token)
+        .set_framework(create_framework!(bot_name, ping))
+        .build()
+        .start()
+        .await
 }
 ```
 
-For more examples, please see the examples dir.
+For more examples, please see the examples directory.
 
 ## Features
 
-- [x] Supports all of the telegram bot API, up to and including version 6.2
+- [x] Supports all of the telegram bot API, up to and including version 6.4
 - [x] easy to use and customisable client
 - [x] long-polling based update handling
   - [x] set your own timeout
@@ -86,12 +89,12 @@ Add the following to your `Cargo.toml` file:
 
 ```toml
 [dependencies]
-telexide = "0.1.9"
+telexide = "0.1.10"
 ```
 
 ## Supported Rust Versions
 
-The minimum supported version is 1.60. The current Telexide version is not guaranteed to build on Rust versions earlier than the minimum supported version.
+The minimum supported version is 1.63. The current Telexide version is not guaranteed to build on Rust versions earlier than the minimum supported version.
 
 [examples]: https://github.com/callieve/telexide/blob/master/examples
 [client]: https://docs.rs/telexide/*/telexide/client/index.html
