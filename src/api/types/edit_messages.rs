@@ -1,6 +1,10 @@
 use super::InputMedia;
 use crate::model::{
-    utils::IntegerOrString, InlineKeyboardMarkup, Message, MessageEntity, ParseMode,
+    utils::IntegerOrString,
+    InlineKeyboardMarkup,
+    Message,
+    MessageEntity,
+    ParseMode,
 };
 use serde::{Deserialize, Serialize};
 use telexide_proc_macros::build_struct;

@@ -453,3 +453,33 @@ pub struct GeneralForumTopicUnhidden {}
 /// to the attachment menu to write messages. Currently holds no information.
 #[derive(Serialize, Deserialize, Debug, Clone, PartialEq, Eq)]
 pub struct WriteAccessAllowed {}
+
+/// This object contains information about the user whose identifier was shared
+/// with the bot using a [`KeyboardButtonRequestUser`] button.
+///
+/// [`KeyboardButtonRequestUser`]: ../model/struct.KeyboardButtonRequestUser.html
+#[derive(Serialize, Deserialize, Debug, Clone, PartialEq, Eq)]
+pub struct UserShared {
+    /// Identifier of the request
+    pub request_id: i64,
+    /// Identifier of the shared user.
+    /// The bot may not have access to the user and could be unable to use this
+    /// identifier, unless the user is already known to the bot by some other
+    /// means.
+    pub user_id: i64,
+}
+
+/// This object contains information about the user whose identifier was shared
+/// with the bot using a [`KeyboardButtonRequestChat`] button.
+///
+/// [`KeyboardButtonRequestChat`]: ../model/struct.KeyboardButtonRequestChat.html
+#[derive(Serialize, Deserialize, Debug, Clone, PartialEq, Eq)]
+pub struct ChatShared {
+    /// Identifier of the request
+    pub request_id: i64,
+    /// Identifier of the shared chat.
+    /// The bot may not have access to the chat and could be unable to use this
+    /// identifier, unless the chat is already known to the bot by some other
+    /// means.
+    pub chat_id: i64,
+}

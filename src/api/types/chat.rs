@@ -1,7 +1,8 @@
 use super::InputFile;
 use crate::model::{
     utils::{unix_date_formatting, IntegerOrString},
-    Chat, ChatPermissions,
+    Chat,
+    ChatPermissions,
 };
 use chrono::{DateTime, Utc};
 use serde::{Deserialize, Serialize};
@@ -63,6 +64,14 @@ pub struct RestrictChatMember {
     pub user_id: i64,
     /// New user permissions
     pub permissions: ChatPermissions,
+    /// Pass True if chat permissions are set independently. Otherwise, the
+    /// can_send_other_messages and can_add_web_page_previews permissions will
+    /// imply the can_send_messages, can_send_audios, can_send_documents,
+    /// can_send_photos, can_send_videos, can_send_video_notes, and
+    /// can_send_voice_notes permissions; the can_send_polls permission will
+    /// imply the can_send_messages permission.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub use_independent_chat_permissions: Option<bool>,
     /// Date when the user will be unbanned, unix time.
     /// If user is banned for more than 366 days or less than 30 seconds from
     /// the current time they are considered to be banned forever
@@ -183,6 +192,14 @@ pub struct SetChatPermissions {
     pub chat_id: IntegerOrString,
     /// New default chat permissions
     pub permissions: ChatPermissions,
+    /// Pass True if chat permissions are set independently. Otherwise, the
+    /// can_send_other_messages and can_add_web_page_previews permissions will
+    /// imply the can_send_messages, can_send_audios, can_send_documents,
+    /// can_send_photos, can_send_videos, can_send_video_notes, and
+    /// can_send_voice_notes permissions; the can_send_polls permission will
+    /// imply the can_send_messages permission.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub use_independent_chat_permissions: Option<bool>,
 }
 
 /// struct for holding data needed to call [`export_chat_invite_link`]

@@ -2,10 +2,26 @@ use chrono::{DateTime, Utc};
 use serde::{Deserialize, Serialize};
 
 use super::{
-    message_contents::*, message_entity::*, utils::unix_date_formatting, CallbackQuery,
-    ChatJoinRequest, ChatLocation, ChatMemberUpdated, ChatPhoto, ChatType, ChosenInlineResult,
-    Game, InlineKeyboardMarkup, InlineQuery, Invoice, PassportData, PreCheckoutQuery,
-    ShippingQuery, Sticker, SuccessfulPayment, User,
+    message_contents::*,
+    message_entity::*,
+    utils::unix_date_formatting,
+    CallbackQuery,
+    ChatJoinRequest,
+    ChatLocation,
+    ChatMemberUpdated,
+    ChatPhoto,
+    ChatType,
+    ChosenInlineResult,
+    Game,
+    InlineKeyboardMarkup,
+    InlineQuery,
+    Invoice,
+    PassportData,
+    PreCheckoutQuery,
+    ShippingQuery,
+    Sticker,
+    SuccessfulPayment,
+    User,
 };
 
 /// The raw message, for most usages the [`Message`] object is easier to use
@@ -89,6 +105,9 @@ pub struct RawMessage {
     pub pinned_message: Option<Box<RawMessage>>,
     pub invoice: Option<Invoice>,
     pub successful_payment: Option<SuccessfulPayment>,
+
+    pub user_shared: Option<UserShared>,
+    pub chat_shared: Option<ChatShared>,
 
     pub connected_website: Option<String>,
     pub write_access_allowed: Option<WriteAccessAllowed>,

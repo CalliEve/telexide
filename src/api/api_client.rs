@@ -1,6 +1,10 @@
 use super::{api::API, endpoints::APIEndpoint, response::Response};
 use crate::utils::{
-    encode_multipart_form_data, result::Result, AsFormData, FormDataFile, BOUNDARY,
+    encode_multipart_form_data,
+    result::Result,
+    AsFormData,
+    FormDataFile,
+    BOUNDARY,
 };
 use async_trait::async_trait;
 use hyper::{body::HttpBody, client::HttpConnector, Body, Client, Request};

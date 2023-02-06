@@ -2,7 +2,12 @@ use super::{InputFile, InputMedia};
 use crate::{
     model::{
         utils::{unix_date_formatting, IntegerOrString},
-        ChatAction, MessageEntity, ParseMode, PhotoSize, PollType, ReplyMarkup,
+        ChatAction,
+        MessageEntity,
+        ParseMode,
+        PhotoSize,
+        PollType,
+        ReplyMarkup,
     },
     prelude::Message,
     utils::result::Result,

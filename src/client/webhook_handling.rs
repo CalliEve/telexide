@@ -11,7 +11,13 @@ use crate::{
 use hyper::{
     body::HttpBody,
     service::{make_service_fn, service_fn},
-    Body, Method, Request, Response, Server, StatusCode, Uri,
+    Body,
+    Method,
+    Request,
+    Response,
+    Server,
+    StatusCode,
+    Uri,
 };
 use tokio::sync::mpsc::{channel, Receiver, Sender};
 
@@ -25,7 +31,9 @@ pub struct Webhook {
 impl Webhook {
     /// creates a new `Webhook` based on the provided `WebhookOptions`
     pub fn new(opts: &WebhookOptions) -> Self {
-        Self { opts: opts.clone() }
+        Self {
+            opts: opts.clone(),
+        }
     }
 
     /// starts the webhandling and returns a [`Receiver`], which will allow you

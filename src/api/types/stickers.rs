@@ -77,7 +77,7 @@ pub struct CreateNewStickerSet {
     /// Short name of sticker set, to be used in t.me/addstickers/ URLs (e.g.,
     /// animals). Can contain only english letters, digits and underscores.
     /// Must begin with a letter, can't contain consecutive underscores and
-    /// must end in “_by_<bot username>”. <bot_username> is case
+    /// must end in “\_by\_<bot_username>”. <bot_username> is case
     /// insensitive. 1-64 characters.
     pub name: String,
     /// Sticker set title, 1-64 characters

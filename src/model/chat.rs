@@ -256,10 +256,24 @@ pub struct ChatPermissions {
     /// and venues.
     #[serde(default)]
     pub can_send_messages: bool,
-    /// True, if the user is allowed to send audios, documents, photos, videos,
-    /// video notes and voice notes, implies can_send_messages to be true.
+    /// True, if the user is allowed to send audios
     #[serde(default)]
-    pub can_send_media_messages: bool,
+    pub can_send_audios: bool,
+    /// True, if the user is allowed to send documents
+    #[serde(default)]
+    pub can_send_documents: bool,
+    /// True, if the user is allowed to send photos
+    #[serde(default)]
+    pub can_send_photos: bool,
+    /// True, if the user is allowed to send videos
+    #[serde(default)]
+    pub can_send_videos: bool,
+    /// True, if the user is allowed to send video notes
+    #[serde(default)]
+    pub can_send_video_notes: bool,
+    /// True, if the user is allowed to send voice notes
+    #[serde(default)]
+    pub can_send_voice_notes: bool,
     /// True, if the user is allowed to send polls, implies can_send_messages to
     /// be true.
     #[serde(default)]
@@ -604,20 +618,6 @@ pub struct MemberMemberStatus {
 pub struct RestrictedMemberStatus {
     /// Information about the user
     pub user: User,
-    /// Date when restrictions will be lifted for this user; unix time
-    #[serde(with = "unix_date_formatting::optional")]
-    pub until_date: Option<DateTime<Utc>>,
-    #[serde(default)]
-    /// True, if the user is allowed to change the chat title, photo and other
-    /// settings
-    pub can_change_info: bool,
-    /// True, if the user is allowed to invite new users to the chat
-    #[serde(default)]
-    pub can_invite_users: bool,
-    ///  True, if the user is allowed to pin messages; groups and supergroups
-    /// only
-    #[serde(default)]
-    pub can_pin_messages: bool,
     /// True, if the user is a member of the chat at the moment of the request
     #[serde(default)]
     pub is_member: bool,
@@ -625,10 +625,24 @@ pub struct RestrictedMemberStatus {
     /// and venues
     #[serde(default)]
     pub can_send_messages: bool,
-    /// True, if the user is allowed to send audios, documents, photos, videos,
-    /// video notes and voice notes
+    /// True, if the user is allowed to send audios
     #[serde(default)]
-    pub can_send_media_messages: bool,
+    pub can_send_audios: bool,
+    /// True, if the user is allowed to send documents
+    #[serde(default)]
+    pub can_send_documents: bool,
+    /// True, if the user is allowed to send photos
+    #[serde(default)]
+    pub can_send_photos: bool,
+    /// True, if the user is allowed to send videos
+    #[serde(default)]
+    pub can_send_videos: bool,
+    /// True, if the user is allowed to send video notes
+    #[serde(default)]
+    pub can_send_video_notes: bool,
+    /// True, if the user is allowed to send voice notes
+    #[serde(default)]
+    pub can_send_voice_notes: bool,
     /// True, if the user is allowed to send polls
     #[serde(default)]
     pub can_send_polls: bool,
@@ -639,9 +653,23 @@ pub struct RestrictedMemberStatus {
     /// True, if the user is allowed to add web page previews to their messages
     #[serde(default)]
     pub can_add_web_page_previews: bool,
+    #[serde(default)]
+    /// True, if the user is allowed to change the chat title, photo and other
+    /// settings
+    pub can_change_info: bool,
+    /// True, if the user is allowed to invite new users to the chat
+    #[serde(default)]
+    pub can_invite_users: bool,
+    /// True, if the user is allowed to pin messages; groups and supergroups
+    /// only
+    #[serde(default)]
+    pub can_pin_messages: bool,
     /// True, if the user is allowed to create forum topics
     #[serde(default)]
     pub can_manage_topics: bool,
+    /// Date when restrictions will be lifted for this user; unix time
+    #[serde(with = "unix_date_formatting::optional")]
+    pub until_date: Option<DateTime<Utc>>,
 }
 
 /// Represents a [`ChatMember`] who left the [`Chat`].
@@ -746,6 +774,11 @@ pub struct ChatJoinRequest {
     pub chat: Chat,
     /// User that sent the join request
     pub from: User,
+    /// Identifier of a private chat with the user who sent the join request.
+    /// The bot can use this identifier for 24 hours to send messages until the
+    /// join request is processed, assuming no other administrator contacted the
+    /// user.
+    pub user_chat_id: i64,
     /// Date the request was sent in Unix time.
     #[serde(with = "unix_date_formatting")]
     pub date: DateTime<Utc>,
