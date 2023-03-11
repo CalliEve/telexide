@@ -280,7 +280,7 @@ pub struct SendAudio {
     /// should not exceed 320. Ignored if the file is not uploaded using
     /// multipart/form-data.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub thumb: Option<InputFile>,
+    pub thumbnail: Option<InputFile>,
     /// Audio caption (may also be used when resending audio files by file_id),
     /// 0-1024 characters after entities parsing
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -327,7 +327,7 @@ impl SendAudio {
             chat_id,
             audio: InputFile::from_path(path)?,
             message_thread_id: None,
-            thumb: None,
+            thumbnail: None,
             caption: None,
             caption_entities: None,
             performer: None,
@@ -367,7 +367,7 @@ pub struct SendDocument {
     /// should not exceed 320. Ignored if the file is not uploaded using
     /// multipart/form-data.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub thumb: Option<InputFile>,
+    pub thumbnail: Option<InputFile>,
     /// Document caption (may also be used when resending documents by file_id),
     /// 0-1024 characters after entities parsing
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -409,7 +409,7 @@ impl SendDocument {
             chat_id,
             document: InputFile::from_path(path)?,
             message_thread_id: None,
-            thumb: None,
+            thumbnail: None,
             caption: None,
             caption_entities: None,
             parse_mode: None,
@@ -447,7 +447,7 @@ pub struct SendVideo {
     /// should not exceed 320. Ignored if the file is not uploaded using
     /// multipart/form-data.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub thumb: Option<InputFile>,
+    pub thumbnail: Option<InputFile>,
     /// Video caption (may also be used when resending video files by file_id),
     /// 0-1024 characters after entities parsing
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -506,7 +506,7 @@ impl SendVideo {
             chat_id,
             video: InputFile::from_path(path)?,
             message_thread_id: None,
-            thumb: None,
+            thumbnail: None,
             caption: None,
             caption_entities: None,
             duration: None,
@@ -550,7 +550,7 @@ pub struct SendAnimation {
     /// should not exceed 320. Ignored if the file is not uploaded using
     /// multipart/form-data.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub thumb: Option<InputFile>,
+    pub thumbnail: Option<InputFile>,
     /// Animation caption (may also be used when resending animation files by
     /// file_id), 0-1024 characters after entities parsing
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -606,7 +606,7 @@ impl SendAnimation {
             chat_id,
             animation: InputFile::from_path(path)?,
             message_thread_id: None,
-            thumb: None,
+            thumbnail: None,
             caption: None,
             caption_entities: None,
             duration: None,
@@ -720,7 +720,7 @@ pub struct SendVideoNote {
     /// should not exceed 320. Ignored if the file is not uploaded using
     /// multipart/form-data.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub thumb: Option<InputFile>,
+    pub thumbnail: Option<InputFile>,
     /// Duration of the voice message in seconds
     #[serde(skip_serializing_if = "Option::is_none")]
     pub duration: Option<i64>,
@@ -752,7 +752,7 @@ impl SendVideoNote {
             chat_id,
             video_note: InputFile::from_path(path)?,
             message_thread_id: None,
-            thumb: None,
+            thumbnail: None,
             duration: None,
             length: None,
             disable_notification: None,

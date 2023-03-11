@@ -105,6 +105,7 @@ impl Stream for UpdatesStream {
 }
 
 impl UpdatesStream {
+    #[allow(clippy::redundant_async_block)] // It is not redundant
     fn poll_telegram(&mut self) {
         let mut data = GetUpdates::new();
         data.set_limit(self.limit)

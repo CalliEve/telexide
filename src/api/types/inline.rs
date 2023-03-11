@@ -108,13 +108,13 @@ pub struct InlineQueryResultArticle {
     pub description: Option<String>,
     /// Url of the thumbnail for the result
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub thumb_url: Option<String>,
+    pub thumbnail_url: Option<String>,
     /// Thumbnail width
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub thumb_width: Option<i64>,
+    pub thumbnail_width: Option<i64>,
     /// Thumbnail height
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub thumb_height: Option<i64>,
+    pub thumbnail_height: Option<i64>,
 }
 
 /// Represents a link to a photo. By default, this photo will be sent by the
@@ -130,7 +130,7 @@ pub struct InlineQueryResultPhoto {
     /// not exceed 5MB
     pub photo_url: String,
     /// Url of the thumbnail for the photo
-    pub thumb_url: String,
+    pub thumbnail_url: String,
     /// Photo width
     #[serde(skip_serializing_if = "Option::is_none")]
     pub photo_width: Option<i64>,
@@ -176,7 +176,7 @@ pub struct InlineQueryResultGif {
     pub gif_url: String,
     /// URL of the static (JPEG or GIF) or animated (MPEG4) thumbnail for the
     /// result
-    pub thumb_url: String,
+    pub thumbnail_url: String,
     /// Width of the GIF
     #[serde(skip_serializing_if = "Option::is_none")]
     pub gif_width: Option<i64>,
@@ -189,7 +189,7 @@ pub struct InlineQueryResultGif {
     /// MIME type of the thumbnail, must be one of “image/jpeg”, “image/gif”, or
     /// “video/mp4”. Defaults to “image/jpeg”
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub thumb_mime_type: Option<String>,
+    pub thumbnail_mime_type: Option<String>,
     /// Title of the result
     #[serde(skip_serializing_if = "Option::is_none")]
     pub title: Option<String>,
@@ -225,7 +225,7 @@ pub struct InlineQueryResultMpeg4Gif {
     pub mpeg4_url: String,
     /// URL of the static (JPEG or GIF) or animated (MPEG4) thumbnail for the
     /// result
-    pub thumb_url: String,
+    pub thumbnail_url: String,
     /// Width of the video
     #[serde(skip_serializing_if = "Option::is_none")]
     pub mpeg4_width: Option<i64>,
@@ -238,7 +238,7 @@ pub struct InlineQueryResultMpeg4Gif {
     /// MIME type of the thumbnail, must be one of “image/jpeg”, “image/gif”, or
     /// “video/mp4”. Defaults to “image/jpeg”
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub thumb_mime_type: Option<String>,
+    pub thumbnail_mime_type: Option<String>,
     /// Title of the result
     #[serde(skip_serializing_if = "Option::is_none")]
     pub title: Option<String>,
@@ -274,7 +274,7 @@ pub struct InlineQueryResultVideo {
     /// A valid URL for the embedded video player or video file
     pub video_url: String,
     /// URL of the thumbnail (jpeg only) for the video
-    pub thumb_url: String,
+    pub thumbnail_url: String,
     /// Mime type of the content of video url, “text/html” or “video/mp4”
     pub mime_type: String,
     /// Width of the video
@@ -427,13 +427,13 @@ pub struct InlineQueryResultDocument {
     pub reply_markup: Option<InlineKeyboardMarkup>,
     /// URL of the thumbnail (jpeg only) for the file
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub thumb_url: Option<String>,
+    pub thumbnail_url: Option<String>,
     /// Thumbnail width
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub thumb_width: Option<i64>,
+    pub thumbnail_width: Option<i64>,
     /// Thumbnail height
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub thumb_height: Option<i64>,
+    pub thumbnail_height: Option<i64>,
 }
 
 /// Represents a location on a map. By default, the location will be sent by the
@@ -474,13 +474,13 @@ pub struct InlineQueryResultLocation {
     pub reply_markup: Option<InlineKeyboardMarkup>,
     /// Url of the thumbnail for the result
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub thumb_url: Option<String>,
+    pub thumbnail_url: Option<String>,
     /// Thumbnail width
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub thumb_width: Option<i64>,
+    pub thumbnail_width: Option<i64>,
     /// Thumbnail height
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub thumb_height: Option<i64>,
+    pub thumbnail_height: Option<i64>,
 }
 
 /// Represents a venue. By default, the venue will be sent by the user.
@@ -527,13 +527,13 @@ pub struct InlineQueryResultVenue {
     pub reply_markup: Option<InlineKeyboardMarkup>,
     /// Url of the thumbnail for the result
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub thumb_url: Option<String>,
+    pub thumbnail_url: Option<String>,
     /// Thumbnail width
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub thumb_width: Option<i64>,
+    pub thumbnail_width: Option<i64>,
     /// Thumbnail height
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub thumb_height: Option<i64>,
+    pub thumbnail_height: Option<i64>,
 }
 
 /// Represents a contact with a phone number. By default, this contact will be
@@ -562,13 +562,13 @@ pub struct InlineQueryResultContact {
     pub reply_markup: Option<InlineKeyboardMarkup>,
     /// Url of the thumbnail for the result
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub thumb_url: Option<String>,
+    pub thumbnail_url: Option<String>,
     /// Thumbnail width
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub thumb_width: Option<i64>,
+    pub thumbnail_width: Option<i64>,
     /// Thumbnail height
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub thumb_height: Option<i64>,
+    pub thumbnail_height: Option<i64>,
 }
 
 /// Represents a Game.

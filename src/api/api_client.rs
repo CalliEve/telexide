@@ -1,10 +1,6 @@
 use super::{api::API, endpoints::APIEndpoint, response::Response};
 use crate::utils::{
-    encode_multipart_form_data,
-    result::Result,
-    AsFormData,
-    FormDataFile,
-    BOUNDARY,
+    encode_multipart_form_data, result::Result, AsFormData, FormDataFile, BOUNDARY,
 };
 use async_trait::async_trait;
 use hyper::{body::HttpBody, client::HttpConnector, Body, Client, Request};
@@ -169,7 +165,7 @@ impl API for APIClient {
         let req_builder = Request::post(self.parse_endpoint(&endpoint))
             .header(
                 "content-type",
-                format!("multipart/form-data; boundary={}", BOUNDARY),
+                format!("multipart/form-data; boundary={BOUNDARY}"),
             )
             .header("accept", "application/json");
 

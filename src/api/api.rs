@@ -133,6 +133,54 @@ pub trait API: Sync {
         .into()
     }
 
+    /// Use this method to change the bot's description, which is shown in the
+    /// chat with the bot if the chat is empty. Returns True on success.
+    async fn set_my_description(&self, data: SetMyDescription) -> Result<bool> {
+        self.post(
+            APIEndpoint::SetMyDescription,
+            Some(serde_json::to_value(data)?),
+        )
+        .await?
+        .into()
+    }
+
+    /// Use this method to get the current bot description for the given user
+    /// language. Returns [`BotDescription`] on success.
+    async fn get_my_description(&self, data: GetMyDescription) -> Result<BotDescription> {
+        self.get(
+            APIEndpoint::GetMyDescription,
+            Some(serde_json::to_value(data)?),
+        )
+        .await?
+        .into()
+    }
+
+    /// Use this method to change the bot's short description, which is shown on
+    /// the bot's profile page and is sent together with the link when users
+    /// share the bot. Returns True on success.
+    async fn set_my_short_description(&self, data: SetMyShortDescription) -> Result<bool> {
+        self.post(
+            APIEndpoint::SetMyShortDescription,
+            Some(serde_json::to_value(data)?),
+        )
+        .await?
+        .into()
+    }
+
+    /// Use this method to get the current bot short description for the given
+    /// user language. Returns [`BotShortDescription`] on success.
+    async fn get_my_short_description(
+        &self,
+        data: GetMyShortDescription,
+    ) -> Result<BotShortDescription> {
+        self.get(
+            APIEndpoint::GetMyShortDescription,
+            Some(serde_json::to_value(data)?),
+        )
+        .await?
+        .into()
+    }
+
     /// Use this method to change the bot's menu button in a private chat, or
     /// the default menu button. Returns True on success.
     async fn set_chat_menu_button(&self, data: SetChatMenuButton) -> Result<bool> {
@@ -252,8 +300,8 @@ pub trait API: Sync {
         if let InputFile::File(f) = &data.audio {
             files.push(f.clone());
         }
-        if data.thumb.is_some() {
-            if let InputFile::File(f) = data.thumb.as_ref().unwrap() {
+        if data.thumbnail.is_some() {
+            if let InputFile::File(f) = data.thumbnail.as_ref().unwrap() {
                 files.push(f.clone());
             }
         }
@@ -276,8 +324,8 @@ pub trait API: Sync {
             files.push(f.clone());
         }
 
-        if data.thumb.is_some() {
-            if let InputFile::File(f) = data.thumb.as_ref().unwrap() {
+        if data.thumbnail.is_some() {
+            if let InputFile::File(f) = data.thumbnail.as_ref().unwrap() {
                 files.push(f.clone());
             }
         }
@@ -301,8 +349,8 @@ pub trait API: Sync {
             files.push(f.clone());
         }
 
-        if data.thumb.is_some() {
-            if let InputFile::File(f) = data.thumb.as_ref().unwrap() {
+        if data.thumbnail.is_some() {
+            if let InputFile::File(f) = data.thumbnail.as_ref().unwrap() {
                 files.push(f.clone());
             }
         }
@@ -326,8 +374,8 @@ pub trait API: Sync {
             files.push(f.clone());
         }
 
-        if data.thumb.is_some() {
-            if let InputFile::File(f) = data.thumb.as_ref().unwrap() {
+        if data.thumbnail.is_some() {
+            if let InputFile::File(f) = data.thumbnail.as_ref().unwrap() {
                 files.push(f.clone());
             }
         }
@@ -371,8 +419,8 @@ pub trait API: Sync {
             files.push(f.clone());
         }
 
-        if data.thumb.is_some() {
-            if let InputFile::File(f) = data.thumb.as_ref().unwrap() {
+        if data.thumbnail.is_some() {
+            if let InputFile::File(f) = data.thumbnail.as_ref().unwrap() {
                 files.push(f.clone());
             }
         }
@@ -1211,7 +1259,7 @@ pub trait API: Sync {
     /// createNewStickerSet and addStickerToSet methods (can be used
     /// multiple times). Returns the uploaded [File] on success.
     async fn upload_sticker_file(&self, data: UploadStickerFile) -> Result<File> {
-        match &data.png_sticker {
+        match &data.sticker {
             InputFile::File(f) => self
                 .post_file(
                     APIEndpoint::UploadStickerFile,
@@ -1232,32 +1280,25 @@ pub trait API: Sync {
     /// You must use exactly one of the fields png_sticker or tgs_sticker.
     /// Returns True on success.
     async fn create_new_sticker_set(&self, data: CreateNewStickerSet) -> Result<bool> {
-        if (data.png_sticker.is_some() && data.tgs_sticker.is_some())
-            || (data.png_sticker.is_none() && data.tgs_sticker.is_none())
-        {
+        if data.stickers.is_empty() || data.stickers.len() > 50 {
             return Err(TelegramError::InvalidArgument(
-                "You must use exactly one of the fields png_sticker or tgs_sticker".to_owned(),
+                "You must pass between 1 and 50 initial stickers for the set".to_owned(),
             )
             .into());
         }
 
         let mut files = Vec::new();
 
-        if data.png_sticker.is_some() {
-            if let InputFile::File(f) = data.png_sticker.as_ref().unwrap() {
-                files.push(f.clone());
-            }
-        }
-
-        if data.tgs_sticker.is_some() {
-            match data.tgs_sticker.as_ref().unwrap() {
-                InputFile::File(f) => files.push(f.clone()),
-                InputFile::String(_) => {
+        for sticker in &data.stickers {
+            match sticker.sticker {
+                InputFile::File(ref f) => files.push(f.clone()),
+                InputFile::String(_) if data.sticker_format != StickerFormat::Static => {
                     return Err(TelegramError::InvalidArgument(
-                        "tgs_sticker only accepts files, not urls/ids".to_owned(),
+                        "video or animated stickers only accept files, not urls/ids".to_owned(),
                     )
                     .into())
                 },
+                InputFile::String(_) => {},
             }
         }
 
@@ -1276,33 +1317,9 @@ pub trait API: Sync {
     /// them. Animated sticker sets can have up to 50 stickers. Static
     /// sticker sets can have up to 120 stickers. Returns True on success.
     async fn add_sticker_to_set(&self, data: AddStickerToSet) -> Result<bool> {
-        if (data.png_sticker.is_some() && data.tgs_sticker.is_some())
-            || (data.png_sticker.is_none() && data.tgs_sticker.is_none())
-        {
-            return Err(TelegramError::InvalidArgument(
-                "You must use exactly one of the fields png_sticker or tgs_sticker.".to_owned(),
-            )
-            .into());
-        }
-
         let mut files = Vec::new();
-
-        if data.png_sticker.is_some() {
-            if let InputFile::File(f) = data.png_sticker.as_ref().unwrap() {
-                files.push(f.clone());
-            }
-        }
-
-        if data.tgs_sticker.is_some() {
-            match data.tgs_sticker.as_ref().unwrap() {
-                InputFile::File(f) => files.push(f.clone()),
-                InputFile::String(_) => {
-                    return Err(TelegramError::InvalidArgument(
-                        "tgs_sticker only accepts files, not urls/ids.".to_owned(),
-                    )
-                    .into())
-                },
-            }
+        if let InputFile::File(ref f) = data.sticker.sticker {
+            files.push(f.clone());
         }
 
         self.post_file(
@@ -1336,27 +1353,101 @@ pub trait API: Sync {
         .into()
     }
 
+    /// Use this method to change the list of emoji assigned to a regular or
+    /// custom emoji sticker. The sticker must belong to a sticker set
+    /// created by the bot. Returns True on success.
+    async fn set_sticker_emoji_list(&self, data: SetStickerEmojiList) -> Result<bool> {
+        self.post(
+            APIEndpoint::SetStickerEmojiList,
+            Some(serde_json::to_value(data)?),
+        )
+        .await?
+        .into()
+    }
+
+    /// Use this method to change search keywords assigned to a regular or
+    /// custom emoji sticker. The sticker must belong to a sticker set
+    /// created by the bot. Returns True on success.
+    async fn set_sticker_keywords(&self, data: SetStickerKeywords) -> Result<bool> {
+        self.post(
+            APIEndpoint::SetStickerKeywords,
+            Some(serde_json::to_value(data)?),
+        )
+        .await?
+        .into()
+    }
+
+    /// Use this method to change the [mask position] of a mask sticker. The
+    /// sticker must belong to a sticker set that was created by the bot.
+    /// Returns True on success.
+    ///
+    /// [mask position]: https://core.telegram.org/bots/api#maskposition
+    async fn set_sticker_mask_position(&self, data: SetStickerMaskPosition) -> Result<bool> {
+        self.post(
+            APIEndpoint::SetStickerMaskPosition,
+            Some(serde_json::to_value(data)?),
+        )
+        .await?
+        .into()
+    }
+
+    /// Use this method to set the title of a created sticker set. Returns True
+    /// on success.
+    async fn set_sticker_set_title(&self, data: SetStickerSetTitle) -> Result<bool> {
+        self.post(
+            APIEndpoint::SetStickerSetTitle,
+            Some(serde_json::to_value(data)?),
+        )
+        .await?
+        .into()
+    }
+
     /// Use this method to set the thumbnail of a sticker set.
     /// Animated thumbnails can be set for animated sticker sets only. Returns
     /// True on success.
-    async fn set_sticker_set_thumb(&self, data: SetStickerSetThumb) -> Result<bool> {
-        match &data.thumb {
+    async fn set_sticker_set_thumbnail(&self, data: SetStickerSetThumbnail) -> Result<bool> {
+        match &data.thumbnail {
             Some(InputFile::String(_)) | None => self
                 .post(
-                    APIEndpoint::SetStickerSetThumb,
+                    APIEndpoint::SetStickerSetThumbnail,
                     Some(serde_json::to_value(&data)?),
                 )
                 .await?
                 .into(),
             Some(InputFile::File(f)) => self
                 .post_file(
-                    APIEndpoint::SetStickerSetThumb,
+                    APIEndpoint::SetStickerSetThumbnail,
                     Some(serde_json::to_value(&data)?),
                     Some(vec![f.clone()]),
                 )
                 .await?
                 .into(),
         }
+    }
+
+    /// Use this method to set the thumbnail of a custom emoji sticker set.
+    /// Returns True on success.
+    async fn set_custom_emoji_sticker_set_thumbnail(
+        &self,
+        data: SetCustomEmojiStickerSetThumbnail,
+    ) -> Result<bool> {
+        self.post(
+            APIEndpoint::SetCustomEmojiStickerSetThumbnail,
+            Some(serde_json::to_value(data)?),
+        )
+        .await?
+        .into()
+    }
+
+    /// Use this method to delete a sticker set that was created by the bot.
+    /// Returns True on success.
+    async fn delete_sticker_set(&self, data: DeleteStickerSet) -> Result<bool> {
+        self.post(
+            APIEndpoint::DeleteStickerSet,
+            Some(serde_json::to_value(data)?),
+        )
+        .await?
+        .into()
     }
 
     /// Use this method to send answers to an inline query. On success, True is

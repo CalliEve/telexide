@@ -1,12 +1,6 @@
 use super::{
-    utils::unix_date_formatting,
-    ForceReply,
-    InlineKeyboardMarkup,
-    Message,
-    ReplyKeyboardMarkup,
-    ReplyKeyboardRemove,
-    User,
-    WebAppInfo,
+    utils::unix_date_formatting, ForceReply, InlineKeyboardMarkup, Message, ReplyKeyboardMarkup,
+    ReplyKeyboardRemove, User, WebAppInfo,
 };
 use crate::api::types::UpdateType;
 use chrono::{DateTime, Utc};
@@ -99,7 +93,7 @@ pub enum ChatAction {
 
 /// Enum object for an inline keyboard, custom reply keyboard, instructions to
 /// remove reply keyboard or to force a reply from the user.
-#[allow(clippy::large_enum_variant)]
+#[allow(clippy::large_enum_variant)] // Using a box makes it more user-unfriendly
 #[derive(Serialize, Deserialize, Debug, Clone, PartialEq, Eq)]
 #[serde(untagged)]
 pub enum ReplyMarkup {
@@ -191,4 +185,18 @@ pub enum MenuButton {
         /// [`answer_web_app_query`]: ../api/trait.API.html#method.answer_web_app_query
         web_app: WebAppInfo,
     },
+}
+
+/// This object represents the bot's description.
+#[derive(Serialize, Deserialize, Debug, Clone, PartialEq, Eq)]
+pub struct BotDescription {
+    /// The bot's description
+    description: String,
+}
+
+/// This object represents the bot's short description.
+#[derive(Serialize, Deserialize, Debug, Clone, PartialEq, Eq)]
+pub struct BotShortDescription {
+    /// The bot's short description
+    description: String,
 }

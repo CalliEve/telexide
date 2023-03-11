@@ -48,9 +48,7 @@ async fn handle_next(context: Context, update: Update) {
     }
 
     let image = match message.content {
-        MessageContent::Photo {
-            ref content, ..
-        } => content.first(),
+        MessageContent::Photo { ref content, .. } => content.first(),
         _ => return,
     };
 

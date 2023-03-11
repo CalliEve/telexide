@@ -89,7 +89,7 @@ Add the following to your `Cargo.toml` file:
 
 ```toml
 [dependencies]
-telexide = "0.1.11"
+telexide = "0.1.12"
 ```
 
 ## Supported Rust Versions

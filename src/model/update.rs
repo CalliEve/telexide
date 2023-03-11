@@ -1,15 +1,6 @@
 use super::{
-    raw::RawUpdate,
-    CallbackQuery,
-    ChatJoinRequest,
-    ChatMemberUpdated,
-    ChosenInlineResult,
-    InlineQuery,
-    Message,
-    Poll,
-    PollAnswer,
-    PreCheckoutQuery,
-    ShippingQuery,
+    raw::RawUpdate, CallbackQuery, ChatJoinRequest, ChatMemberUpdated, ChosenInlineResult,
+    InlineQuery, Message, Poll, PollAnswer, PreCheckoutQuery, ShippingQuery,
 };
 use serde::{Deserialize, Deserializer, Serialize, Serializer};
 
@@ -29,7 +20,7 @@ pub struct Update {
 }
 
 /// The content of an [`Update`]
-#[allow(clippy::large_enum_variant)]
+#[allow(clippy::large_enum_variant)] // Using a box makes it more user-unfriendly
 #[derive(Debug, Clone, PartialEq)]
 pub enum UpdateContent {
     /// New incoming message of any kind — text, photo, sticker, etc.
@@ -81,10 +72,7 @@ pub enum UpdateContent {
 impl From<RawUpdate> for Update {
     fn from(raw: RawUpdate) -> Update {
         let update_id = raw.update_id;
-        let make_update = |content: UpdateContent| Self {
-            update_id,
-            content,
-        };
+        let make_update = |content: UpdateContent| Self { update_id, content };
 
         macro_rules! set_content {
             ($data:expr, $kind:ident) => {

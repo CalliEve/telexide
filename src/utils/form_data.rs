@@ -55,7 +55,7 @@ pub fn encode_multipart_form_data(files: &[FormDataFile]) -> Result<Vec<u8>> {
     let mut data = Vec::new();
 
     for file in files {
-        write!(&mut data, "--{}\r\n", BOUNDARY)?;
+        write!(&mut data, "--{BOUNDARY}\r\n")?;
 
         if file.file_name.is_some() {
             write!(
@@ -87,7 +87,7 @@ pub fn encode_multipart_form_data(files: &[FormDataFile]) -> Result<Vec<u8>> {
         write!(&mut data, "\r\n")?;
     }
 
-    write!(&mut data, "--{}--\r\n", BOUNDARY)?;
+    write!(&mut data, "--{BOUNDARY}--\r\n")?;
 
     Ok(data)
 }

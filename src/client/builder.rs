@@ -22,6 +22,7 @@ pub struct ClientBuilder {
 
 impl ClientBuilder {
     /// Creates a bare builder
+    // Providing a default gives the impression that is enough, but it is not
     #[allow(clippy::new_without_default)]
     pub fn new() -> Self {
         Self {
@@ -52,7 +53,7 @@ impl ClientBuilder {
     }
 
     /// Sets the token to be used in authorizing the API requests of your bot
-    #[allow(clippy::needless_pass_by_value)]
+    #[allow(clippy::needless_pass_by_value)] // Otherwise string literals don't work
     pub fn set_token(&mut self, token: impl ToString) -> &mut Self {
         self.token = Some(token.to_string());
         self

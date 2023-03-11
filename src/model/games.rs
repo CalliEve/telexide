@@ -3,7 +3,7 @@ use serde::{Deserialize, Serialize};
 
 /// This object represents a game. Use [@BotFather](https://t.me/botfather) to create and edit games,
 /// their short names will act as unique identifiers.
-#[allow(clippy::doc_markdown)]
+#[allow(clippy::doc_markdown)] // BotFather is a thing
 #[derive(Serialize, Deserialize, Debug, Clone, PartialEq, Eq)]
 pub struct Game {
     /// Title of the game

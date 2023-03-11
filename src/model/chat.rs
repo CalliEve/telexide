@@ -225,6 +225,7 @@ pub struct ChannelChat {
 
 /// This object represents a chat. It can be a private, group, supergroup or
 /// channel chat
+#[allow(clippy::large_enum_variant)] // Using a box makes it more user-unfriendly
 #[derive(Serialize, Deserialize, Debug, Clone, PartialEq)]
 #[serde(tag = "type")]
 pub enum Chat {

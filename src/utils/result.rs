@@ -53,11 +53,11 @@ impl TelegramError {
             TelegramError::InvalidCommandType => {
                 "This action cannot be done on this command type".to_owned()
             },
-            TelegramError::InvalidArgument(ref e) => format!("Invalid argument provided: {}", e),
+            TelegramError::InvalidArgument(ref e) => format!("Invalid argument provided: {e}"),
             TelegramError::APIResponseError(ref e) => {
-                format!("the telegram api returned an error: {}", e)
+                format!("the telegram api returned an error: {e}")
             },
-            TelegramError::Unknown(ref e) => format!("unknown error occurred: {}", e),
+            TelegramError::Unknown(ref e) => format!("unknown error occurred: {e}"),
         }
     }
 }

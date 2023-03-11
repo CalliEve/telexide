@@ -227,3 +227,67 @@ pub struct GetMyDefaultAdministratorRights {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub channels: Option<bool>,
 }
+
+/// struct for holding data needed to call
+/// [`set_my_description`]
+///
+/// [`set_my_description`]:
+/// ../../api/trait.API.html#method.set_my_description
+#[build_struct]
+#[derive(Serialize, Deserialize, Debug, Clone, PartialEq, Eq)]
+pub struct SetMyDescription {
+    /// New bot description; 0-512 characters. Pass an empty string to remove
+    /// the dedicated description for the given language.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub description: Option<String>,
+    /// A two-letter ISO 639-1 language code. If empty, the description will be
+    /// applied to all users for whose language there is no dedicated
+    /// description.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub language_code: Option<String>,
+}
+
+/// struct for holding data needed to call
+/// [`get_my_description`]
+///
+/// [`get_my_description`]:
+/// ../../api/trait.API.html#method.get_my_description
+#[build_struct]
+#[derive(Serialize, Deserialize, Debug, Clone, PartialEq, Eq)]
+pub struct GetMyDescription {
+    /// A two-letter ISO 639-1 language code
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub language_code: Option<String>,
+}
+
+/// struct for holding data needed to call
+/// [`set_my_short_description`]
+///
+/// [`set_my_short_description`]:
+/// ../../api/trait.API.html#method.set_my_short_description
+#[build_struct]
+#[derive(Serialize, Deserialize, Debug, Clone, PartialEq, Eq)]
+pub struct SetMyShortDescription {
+    /// New bot description; 0-120 characters. Pass an empty string to remove
+    /// the dedicated description for the given language.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub description: Option<String>,
+    /// A two-letter ISO 639-1 language code. If empty, the description will be
+    /// applied to all users for whose language there is no dedicated
+    /// description.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub language_code: Option<String>,
+}
+
+/// struct for holding data needed to call
+/// [`get_my_short_description`]
+///
+/// [`get_my_short_description`]:
+/// ../../api/trait.API.html#method.get_my_short_description
+#[build_struct]
+#[derive(Serialize, Deserialize, Debug, Clone, PartialEq, Eq)]
+pub struct GetMyShortDescription {
+    /// A two-letter ISO 639-1 language code
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub language_code: Option<String>,
+}

@@ -1,12 +1,6 @@
 use super::{
-    APIConnector,
-    ClientBuilder,
-    Context,
-    EventHandlerFunc,
-    RawEventHandlerFunc,
-    UpdatesStream,
-    Webhook,
-    WebhookOptions,
+    APIConnector, ClientBuilder, Context, EventHandlerFunc, RawEventHandlerFunc, UpdatesStream,
+    Webhook, WebhookOptions,
 };
 use crate::{
     api::{
@@ -219,13 +213,13 @@ impl Client {
         for h in self.raw_event_handlers.clone() {
             let ctx = Context::new(self.api_client.clone(), self.data.clone());
             let u = update.clone();
-            tokio::spawn(async move { h(ctx, u.into()).await });
+            tokio::spawn(h(ctx, u.into()));
         }
 
         for h in self.event_handlers.clone() {
             let ctx = Context::new(self.api_client.clone(), self.data.clone());
             let u = update.clone();
-            tokio::spawn(async move { h(ctx, u).await });
+            tokio::spawn(h(ctx, u));
         }
 
         if self.framework.is_some() {

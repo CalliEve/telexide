@@ -1,5 +1,8 @@
+use crate::api::types::InputFile;
+
 use super::{File, PhotoSize};
 use serde::{Deserialize, Serialize};
+use telexide_proc_macros::build_struct;
 
 /// This object represents a sticker.
 #[derive(Serialize, Deserialize, Debug, Clone, PartialEq)]
@@ -26,7 +29,7 @@ pub struct Sticker {
     #[serde(default)]
     pub is_video: bool,
     /// Sticker thumbnail in the .WEBP or .JPG format
-    pub thumb: Option<PhotoSize>,
+    pub thumbnail: Option<PhotoSize>,
     /// Emoji associated with the sticker
     pub emoji: Option<String>,
     /// Name of the sticker set to which the sticker belongs
@@ -37,6 +40,11 @@ pub struct Sticker {
     pub mask_position: Option<MaskPosition>,
     /// For custom emoji stickers, unique identifier of the custom emoji
     pub custom_emoji_id: Option<String>,
+    /// True, if the sticker must be repainted to a text color in messages, the
+    /// color of the Telegram Premium badge in emoji status, white color on chat
+    /// photos, or another appropriate color in other places
+    #[serde(default)]
+    pub needs_repainting: bool,
     /// File size
     pub file_size: Option<usize>,
 }
@@ -56,12 +64,35 @@ pub struct StickerSet {
     /// List of all set stickers
     pub stickers: Vec<Sticker>,
     /// Optional. Sticker set thumbnail in the .WEBP or .TGS format
-    pub thumb: Option<PhotoSize>,
+    pub thumbnail: Option<PhotoSize>,
+}
+
+/// This object describes a sticker to be added to a sticker set.
+#[derive(Serialize, Deserialize, Debug, Clone, PartialEq)]
+#[build_struct]
+pub struct InputSticker {
+    /// The added sticker. Pass a file_id as a String to send a file that
+    /// already exists on the Telegram servers, pass an HTTP URL as a String for
+    /// Telegram to get a file from the Internet, or upload a new one using
+    /// multipart/form-data. Animated and video stickers can't be uploaded via
+    /// HTTP URL.
+    pub sticker: InputFile,
+    /// List of 1-20 emoji associated with the sticker.
+    pub emoji_list: Vec<String>,
+    /// position where the mask should be placed on faces. For “mask” stickers
+    /// only.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub mask_position: Option<MaskPosition>,
+    /// List of 0-20 search keywords for the sticker with total length of up to
+    /// 64 characters. For “regular” and “custom_emoji” stickers only.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub keywords: Option<Vec<String>>,
 }
 
 /// This object describes the position on faces where a mask should be placed by
 /// default.
 #[derive(Serialize, Deserialize, Debug, Clone, PartialEq)]
+#[build_struct]
 pub struct MaskPosition {
     /// The part of the face relative to which the mask should be placed
     pub point: MaskPoint,
@@ -99,4 +130,15 @@ pub enum StickerType {
     Mask,
     #[serde(rename = "custom_emoji")]
     CustomEmoji,
+}
+
+#[derive(Serialize, Deserialize, Debug, Clone, PartialEq, Eq)]
+#[serde(untagged)]
+pub enum StickerFormat {
+    #[serde(rename = "static")]
+    Static,
+    #[serde(rename = "animated")]
+    Animated,
+    #[serde(rename = "video")]
+    Video,
 }

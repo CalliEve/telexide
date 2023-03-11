@@ -27,7 +27,7 @@ pub struct Audio {
     /// File size
     pub file_size: Option<usize>,
     /// Thumbnail of the album cover to which the music file belongs
-    pub thumb: Option<PhotoSize>,
+    pub thumbnail: Option<PhotoSize>,
 }
 
 /// This object represents a general file (as opposed to [photos][PhotoSize],
@@ -42,7 +42,7 @@ pub struct Document {
     /// file.
     pub file_unique_id: String,
     /// Document thumbnail as defined by sender
-    pub thumb: Option<PhotoSize>,
+    pub thumbnail: Option<PhotoSize>,
     /// Original filename as defined by sender
     pub file_name: Option<String>,
     /// MIME type of the file as defined by sender
@@ -69,7 +69,7 @@ pub struct Animation {
     /// Duration of the video in seconds as defined by sender
     pub duration: usize,
     /// Animation thumbnail as defined by sender
-    pub thumb: Option<PhotoSize>,
+    pub thumbnail: Option<PhotoSize>,
     /// MIME type of the file as defined by sender
     pub mime_type: Option<String>,
     /// File size
@@ -113,7 +113,7 @@ pub struct Video {
     /// Duration of the video in seconds as defined by sender
     pub duration: usize,
     /// Video thumbnail
-    pub thumb: Option<PhotoSize>,
+    pub thumbnail: Option<PhotoSize>,
     /// Original filename as defined by sender
     pub file_name: Option<String>,
     /// Mime type of a file as defined by sender
@@ -156,7 +156,7 @@ pub struct VideoNote {
     /// Duration of the video in seconds as defined by sender
     pub duration: usize,
     /// Video thumbnail
-    pub thumb: Option<PhotoSize>,
+    pub thumbnail: Option<PhotoSize>,
     /// File size
     pub file_size: Option<usize>,
 }
