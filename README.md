@@ -59,7 +59,7 @@ async fn main() -> telexide::Result<()> {
 
 For more examples, please see the examples directory.
 
-## Features
+## Crate Features
 
 - [x] Supports all of the telegram bot API, up to and including version 6.5
 - [x] easy to use and customisable client
@@ -89,8 +89,16 @@ Add the following to your `Cargo.toml` file:
 
 ```toml
 [dependencies]
-telexide = "0.1.12"
+telexide = "0.1.13"
 ```
+
+### Feature Flags
+
+Telexide uses a set of [feature flags] to allow switching between rustls and native-tls for tls support.
+In the future flags may be added to enable/disable optional parts of the crate.
+
+- `rustls`: Makes the api client use `hyper-rustls` to create the tls connector. Enabled by default.
+- `native-tls`: Makes the api client use `hyper-tls` to create the tls connector. Overwrites the `rustls` feature if enabled.
 
 ## Supported Rust Versions
 
@@ -108,3 +116,4 @@ The minimum supported version is 1.63. The current Telexide version is not guara
 [tg_commands]: https://core.telegram.org/bots#commands
 [`framework`]: https://docs.rs/telexide/*/telexide/framework/struct.Framework.html
 [framework]: https://docs.rs/telexide/*/telexide/framework/index.html
+[feature flags]: https://doc.rust-lang.org/cargo/reference/features.html#the-features-section

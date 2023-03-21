@@ -1,6 +1,6 @@
 use super::{APIConnector, Client, EventHandlerFunc, RawEventHandlerFunc, WebhookOptions};
 use crate::{
-    api::{types::UpdateType, APIClient},
+    api::{types::UpdateType, APIClient, TlsClient},
     framework::Framework,
 };
 
@@ -10,7 +10,7 @@ use typemap_rev::TypeMap;
 
 /// A builder for the [`Client`] object to make customisation easier
 pub struct ClientBuilder {
-    hyper_client: Option<hyper::Client<hyper_tls::HttpsConnector<hyper::client::HttpConnector>>>,
+    hyper_client: Option<TlsClient>,
     api_client: Option<Arc<Box<APIConnector>>>,
     webhook: Option<WebhookOptions>,
     framework: Option<Arc<Framework>>,
@@ -60,10 +60,7 @@ impl ClientBuilder {
     }
 
     /// Sets the custom hyper client for the `APIClient` to use
-    pub fn set_hyper_client(
-        &mut self,
-        client: hyper::Client<hyper_tls::HttpsConnector<hyper::client::HttpConnector>>,
-    ) -> &mut Self {
+    pub fn set_hyper_client(&mut self, client: TlsClient) -> &mut Self {
         self.hyper_client = Some(client);
         self
     }

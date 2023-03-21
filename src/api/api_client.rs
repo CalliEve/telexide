@@ -8,6 +8,11 @@ use std::io::Write;
 
 static TELEGRAM_API: &str = "https://api.telegram.org/bot";
 
+#[cfg(feature = "native-tls")]
+pub type TlsClient = Client<hyper_tls::HttpsConnector<HttpConnector>>;
+#[cfg(all(feature = "rustls", not(feature = "native-tls")))]
+pub type TlsClient = Client<hyper_rustls::HttpsConnector<HttpConnector>>;
+
 /// A default implementation of the [`API`] trait.
 ///
 /// It requires your bot token in order to interact with the telegram API and
@@ -33,7 +38,7 @@ static TELEGRAM_API: &str = "https://api.telegram.org/bot";
 ///
 /// [`Client`]: ../client/struct.Client.html
 pub struct APIClient {
-    hyper_client: Client<hyper_tls::HttpsConnector<HttpConnector>>,
+    hyper_client: TlsClient,
     token: String,
 }
 
@@ -41,19 +46,32 @@ impl APIClient {
     /// Creates a new `APIClient` with the provided token and hyper client (if
     /// it is Some).
     #[allow(clippy::needless_pass_by_value)]
-    pub fn new(
-        hyper_client: Option<Client<hyper_tls::HttpsConnector<HttpConnector>>>,
-        token: impl ToString,
-    ) -> Self {
+    pub fn new(hyper_client: Option<TlsClient>, token: impl ToString) -> Self {
         hyper_client.map_or_else(
             || Self {
-                hyper_client: hyper::Client::builder().build(hyper_tls::HttpsConnector::new()),
+                hyper_client: Self::make_default_client(),
                 token: token.to_string(),
             },
             |c| Self {
                 hyper_client: c,
                 token: token.to_string(),
             },
+        )
+    }
+
+    #[cfg(feature = "native-tls")]
+    fn make_default_client() -> TlsClient {
+        hyper::Client::builder().build(hyper_tls::HttpsConnector::new())
+    }
+
+    #[cfg(all(feature = "rustls", not(feature = "native-tls")))]
+    fn make_default_client() -> TlsClient {
+        hyper::Client::builder().build(
+            hyper_rustls::HttpsConnectorBuilder::new()
+                .with_native_roots()
+                .https_or_http()
+                .enable_http1()
+                .build(),
         )
     }
 
@@ -88,7 +106,7 @@ impl APIClient {
 
     /// gets a reference to the underlying hyper client, for example so you can
     /// make custom api requests
-    pub fn get_hyper(&self) -> &Client<hyper_tls::HttpsConnector<HttpConnector>> {
+    pub fn get_hyper(&self) -> &TlsClient {
         &self.hyper_client
     }
 }

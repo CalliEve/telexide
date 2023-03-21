@@ -5,7 +5,7 @@ authors = ["my name <my@email.address>"]
 edition = "2021"
 
 [dependencies]
-telexide = { path = "../../" }
+telexide = { path = "../../", features = ["native-tls"]}
 tokio = { version = "1", features = ["full"] }
 typemap_rev = "0.3.0"
 parking_lot = "0.12"

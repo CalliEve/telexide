@@ -12,5 +12,6 @@ pub mod types;
 
 pub use api::API;
 pub use api_client::APIClient;
+pub use api_client::TlsClient;
 pub use endpoints::APIEndpoint;
 pub use response::Response;
