@@ -1,6 +1,6 @@
 use super::{response::Response, types::*, APIEndpoint};
 use crate::{
-    model::*,
+    model::{*, raw::RawChat},
     utils::{
         result::{Result, TelegramError},
         FormDataFile,
@@ -966,9 +966,14 @@ pub trait API: Sync {
     /// of a user, group or channel, etc.). Returns a [`Chat`] object on
     /// success.
     async fn get_chat(&self, data: GetChat) -> Result<Chat> {
-        self.get(APIEndpoint::GetChat, Some(serde_json::to_value(data)?))
-            .await?
-            .into()
+        Ok(
+            Into::<Chat>::into(
+                Into::<Result<RawChat>>::into(
+                    self.get(APIEndpoint::GetChat, Some(serde_json::to_value(data)?))
+                    .await?
+                )?
+            )
+        )
     }
 
     /// Use this method to get a list of administrators in a chat.
