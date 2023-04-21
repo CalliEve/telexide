@@ -1,6 +1,6 @@
 use super::{response::Response, types::*, APIEndpoint};
 use crate::{
-    model::{*, raw::RawChat},
+    model::{raw::RawChat, *},
     utils::{
         result::{Result, TelegramError},
         FormDataFile,
@@ -131,6 +131,21 @@ pub trait API: Sync {
         )
         .await?
         .into()
+    }
+
+    /// Use this method to change the bot's name. Returns True on success.
+    async fn set_my_name(&self, data: SetMyName) -> Result<bool> {
+        self.post(APIEndpoint::SetMyName, Some(serde_json::to_value(data)?))
+            .await?
+            .into()
+    }
+
+    /// Use this method to get the current bot name for the given user language.
+    /// Returns [`BotName`] on success.
+    async fn get_my_name(&self, data: GetMyName) -> Result<BotName> {
+        self.get(APIEndpoint::GetMyName, Some(serde_json::to_value(data)?))
+            .await?
+            .into()
     }
 
     /// Use this method to change the bot's description, which is shown in the
@@ -966,14 +981,10 @@ pub trait API: Sync {
     /// of a user, group or channel, etc.). Returns a [`Chat`] object on
     /// success.
     async fn get_chat(&self, data: GetChat) -> Result<Chat> {
-        Ok(
-            Into::<Chat>::into(
-                Into::<Result<RawChat>>::into(
-                    self.get(APIEndpoint::GetChat, Some(serde_json::to_value(data)?))
-                    .await?
-                )?
-            )
-        )
+        Ok(Into::<Chat>::into(Into::<Result<RawChat>>::into(
+            self.get(APIEndpoint::GetChat, Some(serde_json::to_value(data)?))
+                .await?,
+        )?))
     }
 
     /// Use this method to get a list of administrators in a chat.

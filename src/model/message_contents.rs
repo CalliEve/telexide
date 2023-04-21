@@ -452,7 +452,10 @@ pub struct GeneralForumTopicUnhidden {}
 /// This object represents a service message about a user allowing a bot added
 /// to the attachment menu to write messages. Currently holds no information.
 #[derive(Serialize, Deserialize, Debug, Clone, PartialEq, Eq)]
-pub struct WriteAccessAllowed {}
+pub struct WriteAccessAllowed {
+    /// Name of the Web App which was launched from a link
+    pub web_app_name: Option<String>,
+}
 
 /// This object contains information about the user whose identifier was shared
 /// with the bot using a [`KeyboardButtonRequestUser`] button.

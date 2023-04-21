@@ -1,6 +1,12 @@
 use super::{
-    APIConnector, ClientBuilder, Context, EventHandlerFunc, RawEventHandlerFunc, UpdatesStream,
-    Webhook, WebhookOptions,
+    APIConnector,
+    ClientBuilder,
+    Context,
+    EventHandlerFunc,
+    RawEventHandlerFunc,
+    UpdatesStream,
+    Webhook,
+    WebhookOptions,
 };
 use crate::{
     api::{
