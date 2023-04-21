@@ -13,8 +13,40 @@ pub struct InlineKeyboardMarkup {
     pub inline_keyboard: Vec<Vec<InlineKeyboardButton>>,
 }
 
+impl InlineKeyboardMarkup {
+    pub fn new() -> Self {
+        Self {
+            inline_keyboard: vec![Vec::new()],
+        }
+    }
+
+    pub fn add_button(&mut self, button: InlineKeyboardButton) -> &mut Self {
+        if let Some(row) = self.inline_keyboard.last_mut() {
+            row.push(button);
+        }
+        self
+    }
+
+    pub fn add_new_row(&mut self) -> &mut Self {
+        self.inline_keyboard.push(Vec::new());
+        self
+    }
+
+    pub fn add_row(&mut self, buttons: Vec<InlineKeyboardButton>) -> &mut Self {
+        self.inline_keyboard.push(buttons);
+        self
+    }
+}
+
+impl Default for InlineKeyboardMarkup {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+
 /// This object represents one button of an inline keyboard.
 /// You **must** use exactly one of the optional fields.
+#[build_struct]
 #[derive(Serialize, Deserialize, Debug, Clone, PartialEq, Eq)]
 pub struct InlineKeyboardButton {
     /// Label text on the button
@@ -59,6 +91,10 @@ pub struct InlineKeyboardButton {
     /// This offers a quick way for the user to open your bot in inline mode in
     /// the same chat – good for selecting something from multiple options.
     pub switch_inline_query_current_chat: Option<String>,
+    /// If set, pressing the button will prompt the user to select one of their
+    /// chats of the specified type, open that chat and insert the bot's
+    /// username and the specified inline query in the input field
+    pub switch_inline_query_chosen_chat: Option<SwitchInlineQueryChosenChat>,
     /// Description of the game that will be launched when the user presses the
     /// button.
     ///
@@ -73,6 +109,29 @@ pub struct InlineKeyboardButton {
     /// [Pay button]: https://core.telegram.org/bots/api#payments
     #[serde(default)]
     pub pay: bool,
+}
+
+/// This object represents an inline button that switches the current user to
+/// inline mode in a chosen chat, with an optional default inline query.
+#[build_struct]
+#[derive(Serialize, Deserialize, Debug, Clone, PartialEq, Eq)]
+pub struct SwitchInlineQueryChosenChat {
+    /// The default inline query to be inserted in the input field. If left
+    /// empty, only the bot's username will be inserted
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub query: Option<String>,
+    /// True, if private chats with users can be chosen
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub allow_user_chats: Option<bool>,
+    /// True, if private chats with bots can be chosen
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub allow_bot_chats: Option<bool>,
+    /// True, if group and supergroup chats can be chosen
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub allow_group_chats: Option<bool>,
+    /// True, if channel chats can be chosen
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub allow_channel_shats: Option<bool>,
 }
 
 /// This object represents a custom keyboard with reply options

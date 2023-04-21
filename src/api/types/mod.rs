@@ -1,6 +1,7 @@
 //! This modules provides all the objects describing the payloads to be send to
 //! the different telegram API endpoints
 
+mod bot;
 mod chat;
 mod commands;
 mod edit_messages;
@@ -16,6 +17,7 @@ mod stickers;
 mod updates;
 mod webhooks;
 
+pub use bot::*;
 pub use chat::*;
 pub use commands::*;
 pub use edit_messages::*;

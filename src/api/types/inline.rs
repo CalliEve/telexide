@@ -1,4 +1,4 @@
-use crate::model::{InlineKeyboardMarkup, LabeledPrice, MessageEntity, ParseMode};
+use crate::model::{InlineKeyboardMarkup, LabeledPrice, MessageEntity, ParseMode, WebAppInfo};
 use serde::{Deserialize, Serialize};
 use telexide_proc_macros::build_struct;
 
@@ -29,25 +29,36 @@ pub struct AnswerInlineQuery {
     /// can’t exceed 64 bytes.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub next_offset: Option<String>,
-    /// If passed, clients will display a button with specified text that
-    /// switches the user to a private chat with the bot and sends the bot a
-    /// start message with the parameter switch_pm_parameter
+    /// An  object describing a button to be shown above inline query results
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub switch_pm_text: Option<String>,
-    /// [Deep-linking](https://core.telegram.org/bots#deep-linking) parameter for the /start message sent to the bot when user presses the switch button.
-    /// 1-64 characters, only A-Z, a-z, 0-9, _ and - are allowed.
-    ///
+    pub button: Option<InlineQueryResultsButton>,
+}
+
+#[build_struct]
+#[derive(Serialize, Deserialize, Debug, Clone, PartialEq)]
+pub struct InlineQueryResultsButton {
+    /// Label text on the button
+    pub text: String,
+    /// Description of the [Web App](https://core.telegram.org/bots/webapps) that will be launched when the user presses the button.
+    /// The Web App will be able to switch back to the inline mode using the
+    /// method web_app_switch_inline_query inside the Web App.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub web_app: Option<WebAppInfo>,
+    /// Deep-linking parameter for the /start message sent to the bot when a
+    /// user presses the button. 1-64 characters, only A-Z, a-z, 0-9, _ and
+    /// - are allowed.
+
     /// Example: An inline bot that sends YouTube videos can ask the user to
     /// connect the bot to their YouTube account to adapt search results
-    /// accordingly. To do this, it displays a ‘Connect your YouTube
-    /// account’ button above the results, or even before showing any.
-    /// The user presses the button, switches to a private chat with the bot
-    /// and, in doing so, passes a start parameter that instructs the bot to
-    /// return an oauth link. Once done, the bot can offer a [switch_inline button](https://core.telegram.org/bots/api#inlinekeyboardmarkup)
-    /// so that the user can easily return to the chat where they wanted to use
-    /// the bot's inline capabilities.
+    /// accordingly. To do this, it displays a 'Connect your YouTube account'
+    /// button above the results, or even before showing any. The user presses
+    /// the button, switches to a private chat with the bot and, in doing
+    /// so, passes a start parameter that instructs the bot to return an OAuth
+    /// link. Once done, the bot can offer a switch_inline button so that
+    /// the user can easily return to the chat where they wanted to use the
+    /// bot's inline capabilities.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub switch_pm_parameter: Option<String>,
+    pub start_parameter: Option<String>,
 }
 
 /// This object represents one result of an inline query.
