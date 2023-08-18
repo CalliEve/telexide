@@ -2,26 +2,10 @@ use chrono::{DateTime, Utc};
 use serde::{Deserialize, Serialize};
 
 use super::{
-    message_contents::*,
-    message_entity::*,
-    utils::unix_date_formatting,
-    CallbackQuery,
-    ChatJoinRequest,
-    ChatLocation,
-    ChatMemberUpdated,
-    ChatPhoto,
-    ChatType,
-    ChosenInlineResult,
-    Game,
-    InlineKeyboardMarkup,
-    InlineQuery,
-    Invoice,
-    PassportData,
-    PreCheckoutQuery,
-    ShippingQuery,
-    Sticker,
-    SuccessfulPayment,
-    User,
+    message_contents::*, message_entity::*, utils::unix_date_formatting, CallbackQuery,
+    ChatJoinRequest, ChatLocation, ChatMemberUpdated, ChatPhoto, ChatType, ChosenInlineResult,
+    Game, InlineKeyboardMarkup, InlineQuery, Invoice, PassportData, PreCheckoutQuery,
+    ShippingQuery, Sticker, SuccessfulPayment, User,
 };
 
 /// The raw message, for most usages the [`Message`] object is easier to use
@@ -75,8 +59,9 @@ pub struct RawMessage {
     pub photo: Option<Vec<PhotoSize>>,
     pub sticker: Option<Sticker>,
     pub video: Option<Video>,
-    pub voice: Option<Voice>,
+    pub story: Option<Story>,
     pub video_note: Option<VideoNote>,
+    pub voice: Option<Voice>,
     pub caption: Option<String>,
     pub contact: Option<Contact>,
     pub location: Option<Location>,
@@ -163,6 +148,12 @@ pub struct RawChat {
     ///
     /// [`get_chat`]: ../../api/trait.API.html#method.get_chat
     pub emoji_status_custom_emoji_id: Option<String>,
+    /// Expiration date of the emoji status of the other party in a private chat, if any. Returned only in [`get_chat`].
+    ///
+    /// [`get_chat`]: ../../api/trait.API.html#method.get_chat
+    #[serde(default)]
+    #[serde(with = "unix_date_formatting::optional")]
+    pub emoji_status_expiration_date: Option<DateTime<Utc>>,
     /// Bio of the other party in a private chat. Returned only in [`get_chat`].
     ///
     /// [`get_chat`]: ../../api/trait.API.html#method.get_chat

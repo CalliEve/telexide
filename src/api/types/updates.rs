@@ -63,4 +63,10 @@ pub enum UpdateType {
     Poll,
     #[serde(rename = "poll_answer")]
     PollAnswer,
+    #[serde(rename = "my_chat_member")]
+    MyChatMember,
+    #[serde(rename = "chat_member")]
+    ChatMember,
+    #[serde(rename = "chat_join_request")]
+    ChatJoinRequest,
 }

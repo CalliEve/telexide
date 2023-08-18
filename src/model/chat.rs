@@ -1,10 +1,10 @@
 use chrono::{DateTime, Utc};
-use serde::{Deserialize, Serialize};
+use serde::{Deserialize, Deserializer, Serialize, Serializer};
 
 use super::{raw::RawChat, utils::unix_date_formatting, User};
 
 /// A private chat object, also known as a DM, between the bot and an user
-#[derive(Serialize, Deserialize, Debug, Clone, PartialEq, Eq)]
+#[derive(Debug, Clone, PartialEq, Eq)]
 pub struct PrivateChat {
     /// Unique identifier for this chat
     pub id: i64,
@@ -38,13 +38,17 @@ pub struct PrivateChat {
     /// [`get_chat`].
     ///
     /// [`get_chat`]: ../../api/trait.API.html#method.get_chat
-    #[serde(default)]
     pub active_usernames: Vec<String>,
     /// Custom emoji identifier of emoji status of the other party in a private
     /// chat. Returned only in [`get_chat`].
     ///
     /// [`get_chat`]: ../../api/trait.API.html#method.get_chat
     pub emoji_status_custom_emoji_id: Option<String>,
+    /// Expiration date of the emoji status of the other party in a private
+    /// chat, if any. Returned only in [`get_chat`].
+    ///
+    /// [`get_chat`]: ../../api/trait.API.html#method.get_chat
+    pub emoji_status_expiration_date: Option<DateTime<Utc>>,
     /// The time after which all messages sent to the chat will be automatically
     /// deleted; in seconds. Returned only in [`get_chat`].
     ///
@@ -53,7 +57,7 @@ pub struct PrivateChat {
 }
 
 /// A Group chat object
-#[derive(Serialize, Deserialize, Debug, Clone, PartialEq)]
+#[derive(Debug, Clone, PartialEq)]
 pub struct GroupChat {
     pub id: i64,
     /// Title
@@ -89,7 +93,7 @@ pub struct GroupChat {
 }
 
 /// A supergroup object (a group with more than 200 members)
-#[derive(Serialize, Deserialize, Debug, Clone, PartialEq)]
+#[derive(Debug, Clone, PartialEq)]
 pub struct SuperGroupChat {
     pub id: i64,
     /// Title
@@ -108,7 +112,6 @@ pub struct SuperGroupChat {
     /// [`get_chat`].
     ///
     /// [`get_chat`]: ../../api/trait.API.html#method.get_chat
-    #[serde(default)]
     pub active_usernames: Vec<String>,
     /// True, if users need to join the supergroup before they can send
     /// messages.Returned only in [`get_chat`].
@@ -178,7 +181,7 @@ pub struct SuperGroupChat {
 }
 
 /// A Channel object
-#[derive(Serialize, Deserialize, Debug, Clone, PartialEq)]
+#[derive(Debug, Clone, PartialEq)]
 pub struct ChannelChat {
     pub id: i64,
     /// Title
@@ -193,7 +196,6 @@ pub struct ChannelChat {
     /// [`get_chat`].
     ///
     /// [`get_chat`]: ../../api/trait.API.html#method.get_chat
-    #[serde(default)]
     pub active_usernames: Vec<String>,
     /// Description. Returned only in [`get_chat`].
     ///
@@ -226,16 +228,11 @@ pub struct ChannelChat {
 /// This object represents a chat. It can be a private, group, supergroup or
 /// channel chat
 #[allow(clippy::large_enum_variant)] // Using a box makes it more user-unfriendly
-#[derive(Serialize, Deserialize, Debug, Clone, PartialEq)]
-#[serde(tag = "type")]
+#[derive(Debug, Clone, PartialEq)]
 pub enum Chat {
-    #[serde(rename = "private")]
     Private(PrivateChat),
-    #[serde(rename = "group")]
     Group(GroupChat),
-    #[serde(rename = "supergroup")]
     SuperGroup(SuperGroupChat),
-    #[serde(rename = "channel")]
     Channel(ChannelChat),
 }
 
@@ -335,6 +332,17 @@ impl Chat {
             Chat::SuperGroup(c) => c.id,
         }
     }
+
+    /// Gets the title of the chat, or username if it's a private chat
+    /// In the possible case the user's username is unavailable, it is set to "unknown user"
+    pub fn get_title(&self) -> &str {
+        match self {
+            Chat::Private(c) => c.username.as_ref().map_or("unknown user", String::as_str),
+            Chat::Channel(c) => &c.title,
+            Chat::Group(c) => &c.title,
+            Chat::SuperGroup(c) => &c.title,
+        }
+    }
 }
 
 impl From<RawChat> for Chat {
@@ -361,6 +369,7 @@ impl From<RawChat> for Chat {
                 photo: raw.photo,
                 active_usernames: raw.active_usernames,
                 emoji_status_custom_emoji_id: raw.emoji_status_custom_emoji_id,
+                emoji_status_expiration_date: raw.emoji_status_expiration_date,
                 bio: raw.bio,
                 has_restricted_voice_and_video_messages: raw
                     .has_restricted_voice_and_video_messages,
@@ -417,6 +426,7 @@ impl From<Chat> for RawChat {
                 photo: c.photo,
                 active_usernames: c.active_usernames,
                 emoji_status_custom_emoji_id: c.emoji_status_custom_emoji_id,
+                emoji_status_expiration_date: c.emoji_status_expiration_date,
                 bio: c.bio,
                 has_private_forwards: c.has_private_forwards,
                 message_auto_delete_time: c.message_auto_delete_time,
@@ -467,6 +477,7 @@ impl From<Chat> for RawChat {
                 is_forum: false,
                 active_usernames: Vec::new(),
                 emoji_status_custom_emoji_id: None,
+                emoji_status_expiration_date: None,
             },
             Chat::SuperGroup(c) => RawChat {
                 chat_type: ChatType::SuperGroup,
@@ -497,6 +508,7 @@ impl From<Chat> for RawChat {
                 last_name: None,
                 message_auto_delete_time: None,
                 emoji_status_custom_emoji_id: None,
+                emoji_status_expiration_date: None,
             },
             Chat::Channel(c) => RawChat {
                 chat_type: ChatType::Channel,
@@ -527,8 +539,29 @@ impl From<Chat> for RawChat {
                 join_by_request: false,
                 is_forum: false,
                 emoji_status_custom_emoji_id: None,
+                emoji_status_expiration_date: None,
             },
         }
+    }
+}
+
+impl<'de> Deserialize<'de> for Chat {
+    fn deserialize<D>(deserializer: D) -> Result<Chat, D::Error>
+    where
+        D: Deserializer<'de>,
+    {
+        let raw: RawChat = Deserialize::deserialize(deserializer)?;
+
+        Ok(raw.into())
+    }
+}
+
+impl Serialize for Chat {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: Serializer,
+    {
+        RawChat::from(self.clone()).serialize(serializer)
     }
 }
 

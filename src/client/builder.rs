@@ -72,6 +72,7 @@ impl ClientBuilder {
     }
 
     /// Set the list of update types you want your update handlers to handle
+    /// An empty list means all updates *except* `ChatMember`
     pub fn set_allowed_updates(&mut self, allowed: Vec<UpdateType>) -> &mut Self {
         self.allowed_updates = allowed;
         self
@@ -79,6 +80,8 @@ impl ClientBuilder {
 
     /// Add an update type to the list of update types you want your update
     /// handlers to handle
+    ///
+    /// An empty list means all updates *except* `ChatMember`
     pub fn add_allowed_updates(&mut self, allowed: UpdateType) -> &mut Self {
         self.allowed_updates.push(allowed);
         self
@@ -86,6 +89,8 @@ impl ClientBuilder {
 
     /// Remove an update type from the list of update types you want your update
     /// handlers to handle
+    ///
+    /// Note: An empty list means all updates *except* `ChatMember`
     pub fn remove_allowed_updates(&mut self, denied: &UpdateType) -> &mut Self {
         self.allowed_updates.retain(|t| t != denied);
         self
@@ -106,7 +111,10 @@ impl ClientBuilder {
     /// Creates the [`Client`] object from the settings set in the
     /// [`ClientBuilder`] object
     pub fn build(&mut self) -> Client {
-        if self.framework.is_some() && !self.allowed_updates.contains(&UpdateType::Message) {
+        if self.framework.is_some()
+            && !self.allowed_updates.is_empty()
+            && !self.allowed_updates.contains(&UpdateType::Message)
+        {
             self.allowed_updates.push(UpdateType::Message);
         }
 

@@ -181,6 +181,19 @@ pub struct UnhideGeneralForumTopic {
     pub chat_id: IntegerOrString,
 }
 
+/// struct for holding data needed to call
+/// [`unpin_all_general_forum_topic_messages`]
+///
+/// [`uunpin_all_general_forum_topic_messages`]:
+/// ../../api/trait.API.html#unpin_all_general_forum_topic_messages
+#[build_struct]
+#[derive(Serialize, Deserialize, Debug, Clone, PartialEq, Eq)]
+pub struct UnpinAllGeneralForumTopicMessages {
+    /// Unique identifier for the target chat or username of the target
+    /// supergroup
+    pub chat_id: IntegerOrString,
+}
+
 macro_rules! impl_from_supergroup {
     ($name:ident) => {
         impl From<SuperGroupChat> for $name {
@@ -195,3 +208,4 @@ impl_from_supergroup!(CloseGeneralForumTopic);
 impl_from_supergroup!(ReopenGeneralForumTopic);
 impl_from_supergroup!(HideGeneralForumTopic);
 impl_from_supergroup!(UnhideGeneralForumTopic);
+impl_from_supergroup!(UnpinAllGeneralForumTopicMessages);

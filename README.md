@@ -61,7 +61,7 @@ For more examples, please see the examples directory.
 
 ## Crate Features
 
-- [x] Supports all of the telegram bot API, up to and including version 6.7
+- [x] Supports all of the telegram bot API, up to and including version 6.8
 - [x] easy to use and customisable client
 - [x] long-polling based update handling
   - [x] set your own timeout
@@ -89,7 +89,7 @@ Add the following to your `Cargo.toml` file:
 
 ```toml
 [dependencies]
-telexide = "0.1.14"
+telexide = "0.1.15"
 ```
 
 ### Feature Flags

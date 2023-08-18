@@ -1208,6 +1208,19 @@ pub trait API: Sync {
         .into()
     }
 
+    /// Use this method to clear the list of pinned messages in a General forum topic. The bot must be an administrator in the chat for this to work and must have the can_pin_messages administrator right in the supergroup. Returns True on success.
+    async fn unpin_all_general_forum_topic_messages(
+        &self,
+        data: UnpinAllGeneralForumTopicMessages,
+    ) -> Result<bool> {
+        self.post(
+            APIEndpoint::UnpinAllGeneralForumTopicMessages,
+            Some(serde_json::to_value(data)?),
+        )
+        .await?
+        .into()
+    }
+
     /// Use this method to send answers to callback queries sent from [inline keyboards](https://core.telegram.org/bots#inline-keyboards-and-on-the-fly-updating).
     /// The answer will be displayed to the user as a notification at the top of
     /// the chat screen or as an alert. On success, True is returned.

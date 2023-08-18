@@ -1,8 +1,7 @@
 use super::InputFile;
 use crate::model::{
     utils::{unix_date_formatting, IntegerOrString},
-    Chat,
-    ChatPermissions,
+    Chat, ChatPermissions,
 };
 use chrono::{DateTime, Utc};
 use serde::{Deserialize, Serialize};

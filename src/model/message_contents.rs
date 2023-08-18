@@ -1,4 +1,4 @@
-use super::{utils::unix_date_formatting, User};
+use super::{utils::unix_date_formatting, Chat, User};
 use crate::model::MessageEntity;
 use chrono::{DateTime, Utc};
 use serde::{Deserialize, Serialize};
@@ -284,12 +284,14 @@ pub struct PollOption {
 }
 
 /// This object represents an answer of a user in a non-anonymous poll.
-#[derive(Serialize, Deserialize, Debug, Clone, PartialEq, Eq)]
+#[derive(Serialize, Deserialize, Debug, Clone, PartialEq)]
 pub struct PollAnswer {
     /// Unique poll identifier
     pub poll_id: String,
-    /// The user, who changed the answer to the poll
-    pub user: User,
+    /// The chat that changed the answer to the poll, if the voter is anonymous
+    pub voter_chat: Option<Chat>,
+    /// The user that changed the answer to the poll, if the voter isn't anonymous
+    pub user: Option<User>,
     /// 0-based identifiers of answer options, chosen by the user.
     /// May be empty if the user retracted their vote
     pub option_ids: Vec<usize>,
@@ -486,3 +488,8 @@ pub struct ChatShared {
     /// means.
     pub chat_id: i64,
 }
+
+/// This object represents a message about a forwarded story in the chat.
+/// Currently holds no information.
+#[derive(Serialize, Deserialize, Debug, Clone, PartialEq, Eq)]
+pub struct Story {}
