@@ -35,7 +35,7 @@ pub struct AnswerInlineQuery {
 }
 
 #[build_struct]
-#[derive(Serialize, Deserialize, Debug, Clone, PartialEq)]
+#[derive(Serialize, Deserialize, Debug, Clone, PartialEq, Eq)]
 pub struct InlineQueryResultsButton {
     /// Label text on the button
     pub text: String,

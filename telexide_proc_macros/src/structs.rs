@@ -24,8 +24,9 @@ impl Parse for ListenerFunc {
     fn parse(input: ParseStream<'_>) -> Result<Self> {
         let attributes = input.call(Attribute::parse_outer)?;
 
-        let (cooked, attributes): (Vec<_>, Vec<_>) =
-            attributes.into_iter().partition(|a| a.path.is_ident("cfg"));
+        let (cooked, attributes): (Vec<_>, Vec<_>) = attributes
+            .into_iter()
+            .partition(|a| a.path().is_ident("cfg"));
 
         let visibility = input.parse::<Visibility>()?;
 
@@ -96,8 +97,9 @@ impl Parse for CommandFunc {
     fn parse(input: ParseStream<'_>) -> Result<Self> {
         let attributes = input.call(Attribute::parse_outer)?;
 
-        let (cooked, attributes): (Vec<_>, Vec<_>) =
-            attributes.into_iter().partition(|a| a.path.is_ident("cfg"));
+        let (cooked, attributes): (Vec<_>, Vec<_>) = attributes
+            .into_iter()
+            .partition(|a| a.path().is_ident("cfg"));
 
         let visibility = input.parse::<Visibility>()?;
 

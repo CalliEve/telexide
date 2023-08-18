@@ -29,3 +29,5 @@ jobs:
           rustup override unset
           rustup component add clippy
           cargo clippy
+          cd ./telexide_proc_macros
+          cargo clippy

@@ -14,7 +14,7 @@ impl<T: Parse> Parse for ParenthesisedItems<T> {
     fn parse(input: ParseStream<'_>) -> Result<Self> {
         let content;
         parenthesized!(content in input);
-        Ok(Self(content.parse_terminated(T::parse)?))
+        Ok(Self(content.parse_terminated(T::parse, Token![,])?))
     }
 }
 
@@ -22,7 +22,7 @@ pub struct PunctuatedNamedArgs(pub Punctuated<NamedArgs, Comma>);
 
 impl Parse for PunctuatedNamedArgs {
     fn parse(input: ParseStream<'_>) -> Result<Self> {
-        Ok(Self(input.parse_terminated(NamedArgs::parse)?))
+        Ok(Self(input.parse_terminated(NamedArgs::parse, Token![,])?))
     }
 }
 
@@ -73,8 +73,8 @@ impl BuildImplBlock {
                         arguments: PathArguments::AngleBracketed(args),
                     }) = segments.first()
                     {
-                        if ident.to_string() == "Option" {
-                            if let Some(GenericArgument::Type(ty)) = args.args.first().clone() {
+                        if *ident == "Option" {
+                            if let Some(GenericArgument::Type(ty)) = args.args.first() {
                                 (ty.clone(), BuildFieldType::Settable)
                             } else {
                                 (field.ty, BuildFieldType::Mandatory)
@@ -184,7 +184,7 @@ enum BuildFieldType {
     Settable,
 }
 
-fn fields_to_tokenstreams<F>(fields: &Vec<(Ident, Type)>, func: F) -> Vec<TokenStream>
+fn fields_to_tokenstreams<F>(fields: &[(Ident, Type)], func: F) -> Vec<TokenStream>
 where
     F: FnMut(&(Ident, Type)) -> TokenStream,
 {
