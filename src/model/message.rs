@@ -2,8 +2,16 @@ use chrono::{DateTime, Utc};
 use serde::{Deserialize, Deserializer, Serialize, Serializer};
 
 use super::{
-    message_contents::*, message_entity::*, raw::*, Game, InlineKeyboardMarkup, Invoice,
-    PassportData, Sticker, SuccessfulPayment, User,
+    message_contents::*,
+    message_entity::*,
+    raw::*,
+    Game,
+    InlineKeyboardMarkup,
+    Invoice,
+    PassportData,
+    Sticker,
+    SuccessfulPayment,
+    User,
 };
 
 /// This object represents a message.
@@ -327,13 +335,27 @@ pub struct ForwardData {
 impl Message {
     pub fn get_text(&self) -> Option<String> {
         match self.content {
-            MessageContent::Text { ref content, .. } => Some(content.clone()),
-            MessageContent::Audio { ref caption, .. }
-            | MessageContent::Document { ref caption, .. }
-            | MessageContent::Animation { ref caption, .. }
-            | MessageContent::Video { ref caption, .. }
-            | MessageContent::Voice { ref caption, .. }
-            | MessageContent::Photo { ref caption, .. } => caption.clone(),
+            MessageContent::Text {
+                ref content, ..
+            } => Some(content.clone()),
+            MessageContent::Audio {
+                ref caption, ..
+            }
+            | MessageContent::Document {
+                ref caption, ..
+            }
+            | MessageContent::Animation {
+                ref caption, ..
+            }
+            | MessageContent::Video {
+                ref caption, ..
+            }
+            | MessageContent::Voice {
+                ref caption, ..
+            }
+            | MessageContent::Photo {
+                ref caption, ..
+            } => caption.clone(),
             _ => None,
         }
     }
@@ -441,7 +463,9 @@ impl From<RawMessage> for Message {
         macro_rules! content {
             ($data:expr, $kind:ident) => {
                 if let Some(c) = $data {
-                    return fill_in_content(MessageContent::$kind { content: c });
+                    return fill_in_content(MessageContent::$kind {
+                        content: c,
+                    });
                 }
             };
         }
@@ -610,7 +634,10 @@ impl From<Message> for RawMessage {
         }
 
         match message.content {
-            MessageContent::Text { content, entities } => {
+            MessageContent::Text {
+                content,
+                entities,
+            } => {
                 ret.text = Some(content);
                 ret.entities = Some(entities);
                 ret
@@ -685,123 +712,183 @@ impl From<Message> for RawMessage {
                 ret.has_media_spoiler = has_spoiler;
                 ret
             },
-            MessageContent::Game { content } => {
+            MessageContent::Game {
+                content,
+            } => {
                 ret.game = Some(content);
                 ret
             },
-            MessageContent::Sticker { content } => {
+            MessageContent::Sticker {
+                content,
+            } => {
                 ret.sticker = Some(content);
                 ret
             },
-            MessageContent::VideoNote { content } => {
+            MessageContent::VideoNote {
+                content,
+            } => {
                 ret.video_note = Some(content);
                 ret
             },
-            MessageContent::Contact { content } => {
+            MessageContent::Contact {
+                content,
+            } => {
                 ret.contact = Some(content);
                 ret
             },
-            MessageContent::Location { content } => {
+            MessageContent::Location {
+                content,
+            } => {
                 ret.location = Some(content);
                 ret
             },
-            MessageContent::Venue { content } => {
+            MessageContent::Venue {
+                content,
+            } => {
                 ret.venue = Some(content);
                 ret
             },
-            MessageContent::Poll { content } => {
+            MessageContent::Poll {
+                content,
+            } => {
                 ret.poll = Some(content);
                 ret
             },
-            MessageContent::Dice { content } => {
+            MessageContent::Dice {
+                content,
+            } => {
                 ret.dice = Some(content);
                 ret
             },
-            MessageContent::NewChatMembers { content } => {
+            MessageContent::NewChatMembers {
+                content,
+            } => {
                 ret.new_chat_members = Some(content);
                 ret
             },
-            MessageContent::LeftChatMember { content } => {
+            MessageContent::LeftChatMember {
+                content,
+            } => {
                 ret.left_chat_member = Some(content);
                 ret
             },
-            MessageContent::NewChatTitle { content } => {
+            MessageContent::NewChatTitle {
+                content,
+            } => {
                 ret.new_chat_title = Some(content);
                 ret
             },
-            MessageContent::NewChatPhoto { content } => {
+            MessageContent::NewChatPhoto {
+                content,
+            } => {
                 ret.new_chat_photo = Some(content);
                 ret
             },
-            MessageContent::MessageAutoDeleteTimerChanged { content } => {
+            MessageContent::MessageAutoDeleteTimerChanged {
+                content,
+            } => {
                 ret.message_auto_delete_timer_changed = Some(content);
                 ret
             },
-            MessageContent::MigrateToChatID { content } => {
+            MessageContent::MigrateToChatID {
+                content,
+            } => {
                 ret.migrate_to_chat_id = Some(content);
                 ret
             },
-            MessageContent::MigrateFromChatID { content } => {
+            MessageContent::MigrateFromChatID {
+                content,
+            } => {
                 ret.migrate_from_chat_id = Some(content);
                 ret
             },
-            MessageContent::Invoice { content } => {
+            MessageContent::Invoice {
+                content,
+            } => {
                 ret.invoice = Some(content);
                 ret
             },
-            MessageContent::SuccessfulPayment { content } => {
+            MessageContent::SuccessfulPayment {
+                content,
+            } => {
                 ret.successful_payment = Some(content);
                 ret
             },
-            MessageContent::UserShared { content } => {
+            MessageContent::UserShared {
+                content,
+            } => {
                 ret.user_shared = Some(content);
                 ret
             },
-            MessageContent::ChatShared { content } => {
+            MessageContent::ChatShared {
+                content,
+            } => {
                 ret.chat_shared = Some(content);
                 ret
             },
-            MessageContent::PinnedMessage { content } => {
+            MessageContent::PinnedMessage {
+                content,
+            } => {
                 ret.pinned_message = Some(Box::new((*content).into()));
                 ret
             },
-            MessageContent::ProximityAlertTriggered { content } => {
+            MessageContent::ProximityAlertTriggered {
+                content,
+            } => {
                 ret.proximity_alert_triggered = Some(content);
                 ret
             },
-            MessageContent::VideoChatScheduled { content } => {
+            MessageContent::VideoChatScheduled {
+                content,
+            } => {
                 ret.voice_chat_scheduled = Some(content);
                 ret
             },
-            MessageContent::VideoChatStarted { content } => {
+            MessageContent::VideoChatStarted {
+                content,
+            } => {
                 ret.voice_chat_started = Some(content);
                 ret
             },
-            MessageContent::VideoChatEnded { content } => {
+            MessageContent::VideoChatEnded {
+                content,
+            } => {
                 ret.voice_chat_ended = Some(content);
                 ret
             },
-            MessageContent::VideoChatParticipantsInvited { content } => {
+            MessageContent::VideoChatParticipantsInvited {
+                content,
+            } => {
                 ret.voice_chat_participants_invited = Some(content);
                 ret
             },
-            MessageContent::WebAppData { content } => {
+            MessageContent::WebAppData {
+                content,
+            } => {
                 ret.web_app_data = Some(content);
                 ret
             },
-            MessageContent::ForumTopicCreated { content } => {
+            MessageContent::ForumTopicCreated {
+                content,
+            } => {
                 ret.forum_topic_created = Some(content);
                 ret
             },
-            MessageContent::ForumTopicEdited { content } => {
+            MessageContent::ForumTopicEdited {
+                content,
+            } => {
                 ret.forum_topic_edited = Some(content);
                 ret
             },
-            MessageContent::WriteAccessAllowed { content } => {
+            MessageContent::WriteAccessAllowed {
+                content,
+            } => {
                 ret.write_access_allowed = Some(content);
                 ret
             },
-            MessageContent::Story { content } => {
+            MessageContent::Story {
+                content,
+            } => {
                 ret.story = Some(content);
                 ret
             },

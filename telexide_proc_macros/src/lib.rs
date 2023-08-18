@@ -40,7 +40,7 @@ pub fn prepare_listener(_attr: TokenStream, item: TokenStream) -> TokenStream {
 /// #[command(description = "the command description")]
 /// async fn hello(ctx: Context, message: Message) { ... }
 /// ```
-///
+/// 
 /// | Option      | Usage                            | Description
 /// |
 /// |-------------|----------------------------------|---------------------------------------------------------------------------------------------|

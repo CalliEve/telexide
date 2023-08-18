@@ -3,7 +3,16 @@ use quote::{quote, ToTokens};
 use syn::{
     braced,
     parse::{Parse, ParseStream, Result},
-    Attribute, Block, FnArg, Ident, ItemStruct, ReturnType, Stmt, Token, Type, Visibility,
+    Attribute,
+    Block,
+    FnArg,
+    Ident,
+    ItemStruct,
+    ReturnType,
+    Stmt,
+    Token,
+    Type,
+    Visibility,
 };
 
 use super::utils::{BuildImplBlock, ParenthesisedItems};

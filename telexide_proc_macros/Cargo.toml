@@ -1,6 +1,6 @@
 [package]
 name = "telexide_proc_macros"
-version = "0.1.1"
+version = "0.1.2"
 authors = ["Calli <me@calli.dev>"]
 edition = "2021"
 description = "macros for subscribing to events in telexide"

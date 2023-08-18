@@ -1,6 +1,6 @@
 [package]
 name = "telexide"
-version = "0.1.15"
+version = "0.1.16"
 description = "An async Rust library for the telegram bot API."
 documentation = "https://docs.rs/telexide"
 repository = "https://github.com/callieve/telexide"
@@ -19,7 +19,7 @@ rustls = ["dep:hyper-rustls"]
 
 [dependencies.telexide_proc_macros]
 path = "./telexide_proc_macros"
-version = "0.1.1"
+version = "0.1.2"
 
 [dependencies]
 serde = { version = "1.0", features = ["derive"] }

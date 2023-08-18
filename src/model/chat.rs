@@ -334,7 +334,8 @@ impl Chat {
     }
 
     /// Gets the title of the chat, or username if it's a private chat
-    /// In the possible case the user's username is unavailable, it is set to "unknown user"
+    /// In the possible case the user's username is unavailable, it is set to
+    /// "unknown user"
     pub fn get_title(&self) -> &str {
         match self {
             Chat::Private(c) => c.username.as_ref().map_or("unknown user", String::as_str),

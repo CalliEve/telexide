@@ -290,7 +290,8 @@ pub struct PollAnswer {
     pub poll_id: String,
     /// The chat that changed the answer to the poll, if the voter is anonymous
     pub voter_chat: Option<Chat>,
-    /// The user that changed the answer to the poll, if the voter isn't anonymous
+    /// The user that changed the answer to the poll, if the voter isn't
+    /// anonymous
     pub user: Option<User>,
     /// 0-based identifiers of answer options, chosen by the user.
     /// May be empty if the user retracted their vote

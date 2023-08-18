@@ -5,7 +5,14 @@ use syn::{
     parse::{Parse, ParseStream, Result},
     punctuated::Punctuated,
     token::Comma,
-    Field, GenericArgument, Path, PathArguments, PathSegment, Token, Type, TypePath,
+    Field,
+    GenericArgument,
+    Path,
+    PathArguments,
+    PathSegment,
+    Token,
+    Type,
+    TypePath,
 };
 
 pub struct ParenthesisedItems<T>(pub Punctuated<T, Comma>);
@@ -39,7 +46,10 @@ impl Parse for NamedArgs {
         value = value.trim_start_matches('\"').to_owned();
         value = value.trim_end_matches('\"').to_owned();
 
-        Ok(Self { name, value })
+        Ok(Self {
+            name,
+            value,
+        })
     }
 }
 
@@ -64,7 +74,9 @@ impl BuildImplBlock {
                 })?;
 
                 let (ty, field_type) = if let Type::Path(TypePath {
-                    path: Path { segments, .. },
+                    path: Path {
+                        segments, ..
+                    },
                     ..
                 }) = &field.ty
                 {
