@@ -110,6 +110,10 @@ impl ClientBuilder {
 
     /// Creates the [`Client`] object from the settings set in the
     /// [`ClientBuilder`] object
+    ///
+    /// # Panics
+    ///
+    /// Will panic if no token or custom API client was set
     pub fn build(&mut self) -> Client {
         if self.framework.is_some()
             && !self.allowed_updates.is_empty()

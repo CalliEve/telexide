@@ -1,6 +1,6 @@
 [package]
 name = "telexide"
-version = "0.1.16"
+version = "0.1.17"
 description = "An async Rust library for the telegram bot API."
 documentation = "https://docs.rs/telexide"
 repository = "https://github.com/callieve/telexide"
@@ -44,4 +44,4 @@ typemap_rev = "0.3"
 parking_lot = "0.12"
 paste = "1.0"
 log = "0.4"
-tonic = { version = "0.9", features = ["tls-roots"] }
+tonic = { version = "0.10", features = ["tls-roots"] }

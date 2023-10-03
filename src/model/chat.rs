@@ -602,42 +602,73 @@ pub struct CreatorMemberStatus {
 pub struct AdministratorMemberStatus {
     /// Information about the user
     pub user: User,
-    /// Custom title for this user
-    pub custom_title: Option<String>,
-    /// Owner and administrators only. True, if the user's presence in the chat
-    /// is hidden
-    #[serde(default)]
-    pub is_anonymous: bool,
     /// True, if the bot is allowed to edit administrator privileges of that
     /// user
     #[serde(default)]
     pub can_be_edited: bool,
+    /// Owner and administrators only. True, if the user's presence in the chat
+    /// is hidden
+    #[serde(default)]
+    pub is_anonymous: bool,
     /// True, if the administrator can access the chat event log, chat
     /// statistics, message statistics in channels, see channel members, see
     /// anonymous administrators in supergroups and ignore slow mode.
     /// Implied by any other administrator privilege
     #[serde(default)]
     pub can_manage_chat: bool,
-    /// True, if the administrator can post in the channel; channels only
+    /// True, if the administrator can delete messages of other users
     #[serde(default)]
-    pub can_send_media_messages: bool,
-    /// True, if the user is allowed to send polls
-    #[serde(default)]
-    pub can_send_polls: bool,
-    /// True, if the user is allowed to send animations, games, stickers and use
-    /// inline bots
-    #[serde(default)]
-    pub can_send_other_messages: bool,
-    /// True, if the user is allowed to add web page previews to their messages
-    #[serde(default)]
-    pub can_add_web_page_previews: bool,
+    pub can_delete_messages: bool,
     /// True, if the administrator can manage video chats
     #[serde(default)]
     pub can_manage_video_chats: bool,
+    /// True, if the administrator can restrict, ban or unban chat members, or
+    /// access supergroup statistics
+    #[serde(default)]
+    pub can_restrict_members: bool,
+    /// True, if the administrator can add new administrators with a subset of
+    /// their own privileges or demote administrators that they have promoted,
+    /// directly or indirectly (promoted by administrators that were appointed
+    /// by the user)
+    #[serde(default)]
+    pub can_promote_members: bool,
+    /// True, if the user is allowed to change the chat title, photo and other
+    /// settings
+    #[serde(default)]
+    pub can_change_info: bool,
+    /// True, if the user is allowed to invite new users to the chat
+    #[serde(default)]
+    pub can_invite_users: bool,
+    /// True, if the administrator can post messages in the channel, or access
+    /// channel statistics; channels only
+    #[serde(default)]
+    pub can_post_messages: bool,
+    /// True, if the administrator can edit messages of other users and can pin
+    /// messages; channels only
+    #[serde(default)]
+    pub can_edit_messages: bool,
+    /// True, if the user is allowed to pin messages; groups and supergroups
+    /// only
+    #[serde(default)]
+    pub can_pin_messages: bool,
+    /// True, if the administrator can post stories in the channel; channels
+    /// only
+    #[serde(default)]
+    pub can_post_stories: bool,
+    /// True, if the administrator can edit stories posted by other users;
+    /// channels only
+    #[serde(default)]
+    pub can_edit_stories: bool,
+    /// True, if the administrator can delete stories posted by other users;
+    /// channels only
+    #[serde(default)]
+    pub can_delete_stories: bool,
     /// True, if the user is allowed to create, rename, close, and reopen forum
     /// topics; supergroups only
     #[serde(default)]
     pub can_manage_topics: bool,
+    /// Custom title for this user
+    pub custom_title: Option<String>,
 }
 
 /// Represents a [`ChatMember`] who is a normal member of the [`Chat`] without
@@ -865,6 +896,18 @@ pub struct ChatAdministratorRights {
     /// only
     #[serde(skip_serializing_if = "Option::is_none")]
     pub can_pin_messages: Option<bool>,
+    /// True, if the administrator can post stories in the channel; channels
+    /// only
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub can_post_stories: Option<bool>,
+    /// True, if the administrator can edit stories posted by other users;
+    /// channels only
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub can_edit_stories: Option<bool>,
+    /// True, if the administrator can delete stories posted by other users;
+    /// channels only
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub can_delete_stories: Option<bool>,
     /// True, if the user is allowed to create, rename, close, and reopen forum
     /// topics; supergroups only
     #[serde(skip_serializing_if = "Option::is_none")]
