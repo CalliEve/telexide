@@ -132,6 +132,17 @@ pub struct PromoteChatMember {
     /// other administrator privilege.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub can_manage_chat: Option<bool>,
+    /// If the administrator can post stories in the channel; channels only
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub can_post_stories: Option<bool>,
+    /// If the administrator can edit stories posted by other users; channels
+    /// only
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub can_edit_stories: Option<bool>,
+    /// If the administrator can delete stories posted by other users; channels
+    /// only
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub can_delete_stories: Option<bool>,
     /// If the user is allowed to create, rename, close, and reopen forum
     /// topics, supergroups only
     #[serde(skip_serializing_if = "Option::is_none")]

@@ -456,8 +456,17 @@ pub struct GeneralForumTopicUnhidden {}
 /// to the attachment menu to write messages. Currently holds no information.
 #[derive(Serialize, Deserialize, Debug, Clone, PartialEq, Eq)]
 pub struct WriteAccessAllowed {
+    /// True, if the access was granted after the user accepted an explicit
+    /// request from a Web App sent by the method [requestWriteAccess]
+    ///
+    /// [requestWriteAccess]: https://core.telegram.org/bots/webapps#initializing-mini-apps
+    pub from_request: bool,
     /// Name of the Web App which was launched from a link
     pub web_app_name: Option<String>,
+    /// If the access was granted when the bot was added to the attachment or
+    /// side menu
+    #[serde(default)]
+    pub rom_attachment_menu: bool,
 }
 
 /// This object contains information about the user whose identifier was shared
