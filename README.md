@@ -3,7 +3,7 @@
 [![Crate](https://img.shields.io/crates/v/telexide?style=flat-square)](https://crates.io/crates/telexide)
 [![Docs](https://docs.rs/telexide/badge.svg)](https://docs.rs/telexide)
 [![Build Status](https://img.shields.io/endpoint.svg?url=https%3A%2F%2Factions-badge.atrox.dev%2Fcallieve%2Ftelexide%2Fbadge&style=flat-square)](https://actions-badge.atrox.dev/callieve/telexide/goto)
-[![Rust Version](https://img.shields.io/badge/rust-1.63.0+-93450a.svg?style=flat-square)](https://blog.rust-lang.org/2020/01/30/Rust-1.63.0.html)
+[![Rust Version](https://img.shields.io/badge/rust-1.64.0+-93450a.svg?style=flat-square)](https://blog.rust-lang.org/2022/09/22/Rust-1.64.0.html)
 
 Telexide is an easy to use library for making a telegram bot, built on tokio and hyper.
 
@@ -80,7 +80,7 @@ For more examples, please see the examples directory.
 - [ ] subscribe to non-message events using command (or similar) framework
   - [ ] run command on receiving an inline query or answer to one
   - [ ] run command on receiving a poll that matches your requirements
-- [ ] wait_for style Context method to wait for an update matching your criteria
+- [ ] wait\_for style Context method to wait for an update matching your criteria
 - [ ] methods on models for easier calling of API endpoints (like `ChatMember::kick`)
 
 ## Installation
@@ -102,7 +102,7 @@ In the future flags may be added to enable/disable optional parts of the crate.
 
 ## Supported Rust Versions
 
-The minimum supported version is 1.63. The current Telexide version is not guaranteed to build on Rust versions earlier than the minimum supported version.
+The minimum supported version is 1.64. The current Telexide version is not guaranteed to build on Rust versions earlier than the minimum supported version.
 
 [examples]: https://github.com/callieve/telexide/blob/master/examples
 [client]: https://docs.rs/telexide/*/telexide/client/index.html
