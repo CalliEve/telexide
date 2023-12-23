@@ -11,10 +11,10 @@ pub enum MessageEntity {
     #[serde(rename = "mention")]
     Mention(TextBlock),
     /// A hashtag (`#hashtag`)
-    #[serde(rename = "hash_tag")]
+    #[serde(rename = "hashtag")]
     HashTag(TextBlock),
     /// A cashtag (`$USD`)
-    #[serde(rename = "cash_tag")]
+    #[serde(rename = "cashtag")]
     CashTag(TextBlock),
     /// A bot command (`/start@bot_name`)
     #[serde(rename = "bot_command")]
