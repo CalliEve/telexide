@@ -14,7 +14,7 @@ use crate::{
     Result,
 };
 
-type FutureUpdate = Pin<Box<dyn Future<Output = Result<Vec<Update>>>>>;
+type FutureUpdate = Pin<Box<dyn Future<Output = Result<Vec<Update>>> + Send>>;
 
 /// The stream of incoming updates, created by long polling the telegram API
 /// using their getUpdates endpoint.

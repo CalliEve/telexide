@@ -77,7 +77,7 @@ pub mod macros {
 }
 
 pub use client::Client;
-pub use utils::result::{Error, Result};
+pub use utils::result::{Error, TelegramError, Result};
 
 pub mod prelude {
     //! A default set of exports which can be helpful to use.
